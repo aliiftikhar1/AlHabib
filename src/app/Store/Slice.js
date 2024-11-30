@@ -1,10 +1,8 @@
+import { createSlice } from '@reduxjs/toolkit';
 
-import { createSlice, nanoid } from '@reduxjs/toolkit';
-
-// Retrieve initial state from localStorage (if available)
 const initialState = {
-  user: JSON.parse(localStorage.getItem('user')) || {}, // Retrieve user data from localStorage
-  isAuthenticated: JSON.parse(localStorage.getItem('isAuthenticated')) || false, // Check if authenticated
+  user: {},
+  isAuthenticated: false,
 };
 
 export const userSlice = createSlice({
@@ -13,7 +11,7 @@ export const userSlice = createSlice({
   reducers: {
     // Action to add user and set authentication status
     AddUser(state, action) {
-      const { id,name, role } = action.payload; // Extract name and role from action payload
+      const { id, name, role } = action.payload; // Extract name and role from action payload
       const userData = {
         id, // Generate unique ID for user
         name,
@@ -23,31 +21,20 @@ export const userSlice = createSlice({
       // Update the state
       state.user = userData;
       state.isAuthenticated = true;
-
-      // Save user data and authentication status to localStorage
-      localStorage.setItem('user', JSON.stringify(userData));
-      localStorage.setItem('isAuthenticated', JSON.stringify(true));
     },
 
     // Action to logout the user
     Logout(state) {
       state.user = {};
       state.isAuthenticated = false;
-
-      // Clear user data and authentication status from localStorage
-      localStorage.removeItem('user');
-      localStorage.removeItem('isAuthenticated');
     },
 
-    // Action to update user details (optional)
+    // Action to update user details
     UpdateUser(state, action) {
-      const { id,name, role } = action.payload;
+      const { id, name, role } = action.payload;
       state.user.id = id;
       state.user.name = name;
       state.user.role = role;
-
-      // Update user data in localStorage
-      localStorage.setItem('user', JSON.stringify(state.user));
     },
   },
 });
