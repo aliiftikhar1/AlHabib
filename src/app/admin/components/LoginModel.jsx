@@ -15,7 +15,7 @@ const LoginModal = ({ isOpen, onClose, role }) => {
       if(userrole==='Admin'){
         router.push('/admin-dashboard/Home')
       }else if(userrole==='Agent'){
-        router.push('/admin-dashboard/Home')
+        router.push('/agent-dashboard/Home')
       }
       
     }
