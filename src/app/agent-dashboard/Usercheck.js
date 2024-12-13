@@ -9,7 +9,7 @@ export default function UserChecker(){
   
       if(Authenticated){
         if(userrole==='Admin'){
-          router.push('/admin-dashboard/Home')
+          router.push('/admin-dashboard/Analytics')
         }else if(userrole==='Agent'){
           router.push('/agent-dashboard/Home')
         }

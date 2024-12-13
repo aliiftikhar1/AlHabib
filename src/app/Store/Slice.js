@@ -11,10 +11,12 @@ export const userSlice = createSlice({
   reducers: {
     // Action to add user and set authentication status
     AddUser(state, action) {
-      const { id, name, role } = action.payload; // Extract name and role from action payload
+      const { id, fullname, username, balance = 0, role } = action.payload; // Extract properties, provide default value for balance
       const userData = {
-        id, // Generate unique ID for user
-        name,
+        id,
+        fullname,
+        username,
+        balance,
         role,
       };
 
@@ -23,7 +25,7 @@ export const userSlice = createSlice({
       state.isAuthenticated = true;
     },
 
-    // Action to logout the user
+    // Action to log out the user
     Logout(state) {
       state.user = {};
       state.isAuthenticated = false;
@@ -31,10 +33,15 @@ export const userSlice = createSlice({
 
     // Action to update user details
     UpdateUser(state, action) {
-      const { id, name, role } = action.payload;
-      state.user.id = id;
-      state.user.name = name;
-      state.user.role = role;
+      const { id, fullname, username, balance, role } = action.payload; // Update user with new payload
+      state.user = {
+        ...state.user, // Retain existing user data
+        id: id ?? state.user.id, // Update if provided, else keep current value
+        fullname: fullname ?? state.user.fullname,
+        username: username ?? state.user.username,
+        balance: balance ?? state.user.balance,
+        role: role ?? state.user.role,
+      };
     },
   },
 });

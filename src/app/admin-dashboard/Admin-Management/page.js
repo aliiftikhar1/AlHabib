@@ -1,11 +1,11 @@
 import React from "react";
- 
-import AdminList from "./AdminList";
+
+import AdminUserManagement from "./UserComponent";
 
 const Page = () => {
   return (
     <div>
-      <AdminList/>
+      <AdminUserManagement/>    
     </div>
   );
 };

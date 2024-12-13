@@ -18,6 +18,7 @@ import { useRouter } from 'next/navigation';
 import { MdHistory } from "react-icons/md";
 import { Analytics, AnalyticsOutlined, Home } from '@mui/icons-material';
 import { UserIcon } from '@heroicons/react/24/outline';
+import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { Logout } from '@/app/Store/Slice';
 const Sidebar = () => {
@@ -48,7 +49,7 @@ const Sidebar = () => {
   const menuItems = [
     {
       title: "Agents Management",
-      path: "/admin-dashboard/UserComponent",
+      path: "/admin-dashboard/Admin-Management",
       icon: <FaUsers className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
@@ -128,7 +129,7 @@ const Sidebar = () => {
         <ul className=" space-y-2">
           {/* Dynamic Menu Items */}
           <li key='home'>
-                  <a href='/admin-dashboard/Home'>
+                  <a href='/admin-dashboard/Analytics'>
                     <button className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full">
                       <AnalyticsOutlined/>
                       <span className="ml-3 text-sm font-medium">
@@ -139,7 +140,7 @@ const Sidebar = () => {
                 </li>
 
                 <li key='profile'>
-                  <a href='/admin-dashboard/Home'>
+                  <a href='/admin-dashboard/Manage-Profile'>
                     <button className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full">
                       <UserIcon className='size-5'/>
                       <span className="ml-3 text-sm font-medium">

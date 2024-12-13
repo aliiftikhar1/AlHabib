@@ -4,6 +4,7 @@ import RoleCard from './components/RoleCard';
 import LoginModal from './components/LoginModel';
 import { UserCircleIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 import { Providers } from '../Store/Provider';
+import UserChecker from '../admin-dashboard/Usercheck';
 
 const AdminLoginPage = () => {
   const [modalState, setModalState] = useState({
@@ -21,6 +22,7 @@ const AdminLoginPage = () => {
 
   return (
     <Providers>
+      <UserChecker/>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-center p-4">
       <div className="mb-12 text-center">
         <h1 className="text-5xl font-bold text-primary mb-4 tracking-tight">

@@ -3,12 +3,10 @@ import Navbar from './dashboard/navbar/navbar';
 import Sidebar from './dashboard/sidebar/sidebar';
 import { ToastContainer } from "react-toastify";
 import { Providers } from '../Store/Provider';
-import UserChecker from './Usercheck';
 
 const Layout = ({ children }) => {
   return (
     <Providers>
-      <UserChecker/>
     <div className="flex w-full min-h-screen bg-white">
       <div className="flex w-[350px]">
         <ToastContainer />

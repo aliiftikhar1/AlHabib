@@ -1,54 +1,74 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { AddUser } from '@/app/Store/Slice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation'; // Import router from Next.js
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { Loader } from 'lucide-react'; // Import loader icon
+import toast, { Toaster } from 'react-hot-toast'; // Import toast for notifications
 
 const LoginModal = ({ isOpen, onClose, role }) => {
   const dispatch = useDispatch();
-  const Authenticated = useSelector((data)=>data.isAuthenticated);
-  const userrole = useSelector((data)=>data.user.role);
-  useEffect(()=>{
+  const Authenticated = useSelector((data) => data.isAuthenticated);
+  const userrole = useSelector((data) => data.user.role);
+  const router = useRouter();
 
-    if(Authenticated){
-      if(userrole==='Admin'){
-        router.push('/admin-dashboard/Home')
-      }else if(userrole==='Agent'){
-        router.push('/agent-dashboard/Home')
-      }
-      
-    }
-  },[userrole,Authenticated])
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: '',
   });
   const [errorMessage, setErrorMessage] = useState('');
-  const router = useRouter(); // Initialize the router
+  const [isLoading, setIsLoading] = useState(false); // Track loading state
 
-  const validateAdmin = (email, password) => {
-    return email === 'admin@gmail.com' && password === 'admin';
-  };
+  useEffect(() => {
+    if (Authenticated) {
+      if (userrole === 'admin') {
+        router.push('/admin-dashboard/Analytics');
+      } else if (userrole === 'agent') {
+        router.push('/agent-dashboard/Analytics');
+      }
+    }
+  }, [userrole, Authenticated]);
 
-  const validateAgent = (email, password) => {
-    return email === 'agent@gmail.com' && password === 'agent';
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { email, password } = formData;
+    const { username, password } = formData;
+    setIsLoading(true); // Show loader
 
-    if (role === 'Admin' && validateAdmin(email, password)) {
-      console.log('Admin login successful');
-      dispatch(AddUser({name:email,role,id:1}))
-      router.push('/admin-dashboard/Home'); // Redirect to Admin dashboard
-    } else if (role === 'Agent' && validateAgent(email, password)) {
-      console.log('Agent login successful');
-      dispatch(AddUser({name:email,role,id:2}))
-      router.push('/agent-dashboard/Home'); // Redirect to Agent dashboard
-    } else {
-      setErrorMessage('Invalid email or password');
+    try {
+      // Make API call to login
+      const response = await axios.post('/api/admin/login', { username, password });
+
+      if (response.status === 200) {
+        const { data } = response;
+        dispatch(
+          AddUser({
+            id: data.user.id,
+            fullname: data.user.fullname,
+            username: data.user.username,
+            balance: data.user.balance || 0,
+            role: data.user.role,
+          })
+        );
+
+        toast.success('Login successful! Redirecting to dashboard...');
+        setTimeout(() => {
+          // Redirect based on role
+          if (data.user.role === 'admin') {
+            router.push('/admin-dashboard/Analytics');
+          } else if (data.user.role === 'agent') {
+            router.push('/agent-dashboard/Analytics');
+          }
+        }, 1500);
+      }
+    } catch (error) {
+      const errorMsg =
+        error.response?.data?.message || 'Error logging in. Please try again later.';
+      toast.error(errorMsg);
+      setErrorMessage(errorMsg);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -66,6 +86,7 @@ const LoginModal = ({ isOpen, onClose, role }) => {
       className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-2xl shadow-2xl w-[450px]"
       overlayClassName="fixed inset-0 bg-black/50 backdrop-blur-sm"
     >
+      <Toaster /> 
       <div className="flex flex-col space-y-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-primary">{role} Login</h2>
@@ -78,14 +99,14 @@ const LoginModal = ({ isOpen, onClose, role }) => {
           )}
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Email Address</label>
+            <label className="block text-sm font-medium text-gray-700">Username</label>
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type="text"
+              name="username"
+              value={formData.username}
               onChange={handleChange}
               className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
-              placeholder="Enter your email"
+              placeholder="Enter your username"
               required
             />
           </div>
@@ -118,9 +139,9 @@ const LoginModal = ({ isOpen, onClose, role }) => {
 
           <button
             type="submit"
-            className="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium"
+            className="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium flex items-center justify-center space-x-2"
           >
-            Sign In
+            {isLoading ? <Loader className="animate-spin w-5 h-5" /> : 'Sign In'}
           </button>
         </form>
 

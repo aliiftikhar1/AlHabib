@@ -109,7 +109,7 @@ const Sidebar = () => {
         <ul className=" space-y-2">
           {/* Dynamic Menu Items */}
           <li key='home'>
-                  <a href='/agent-dashboard/Home'>
+                  <a href='/agent-dashboard/Analytics'>
                     <button className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full">
                       <AnalyticsOutlined/>
                       <span className="ml-3 text-sm font-medium">
@@ -119,7 +119,7 @@ const Sidebar = () => {
                   </a>
                 </li>
                 <li key='profile'>
-                  <a href='/admin-dashboard/Home'>
+                  <a href='/admin-dashboard/Manage-Profile'>
                     <button className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full">
                       <UserIcon className='size-5'/>
                       <span className="ml-3 text-sm font-medium">
