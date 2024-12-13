@@ -5,12 +5,13 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 w-full h-16 bg-black/30 backdrop-blur-sm text-white flex items-center px-6 md:px-10 z-50">
+    <header className="fixed top-0 w-full h-16 bg-white backdrop-blur-sm text-black border-b flex items-center px-6 md:px-10 z-50">
       <div className="flex justify-between items-center w-full">
         {/* Logo */}
-        <h1 className="text-4xl font-bold ">
+        {/* <h1 className="text-4xl font-bold ">
           AlHabib
-        </h1>
+        </h1> */}
+        <img src='/logo/logo1.jpg' className="h-16 p-1"></img>
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex gap-8 text-lg">
