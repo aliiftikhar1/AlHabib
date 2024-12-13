@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
 
 export async function POST(request) {
+    console.log("Agent login api is called...")
   const data = await request.json();
   console.log("Payload is ", data);
 
@@ -19,7 +20,7 @@ export async function POST(request) {
   }
 
   try {
-    const user = await prisma.admin.findFirst({
+    const user = await prisma.users.findFirst({
       where: { username },
     });
 

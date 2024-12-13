@@ -6,20 +6,18 @@ import userReducer from './Slice';
 import { PersistGate } from 'redux-persist/integration/react';
 
 const persistConfig = {
-  key: 'root', // Unique key for your persisted state
-  storage, // Default is localStorage
-  whitelist: ['user'], // Optional: List specific reducers to persist (if you want to limit the persisted state)
+  key: 'root', 
+  storage, 
+  whitelist: ['user'], 
 };
 
 const reducer = persistReducer(persistConfig, userReducer);
 
 const Store = configureStore({
   reducer,
-  // Add the serializableCheck option here to disable serializability checks for persisted values
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore specific action types or paths that can have non-serializable values (like functions)
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
     }),

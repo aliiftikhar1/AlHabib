@@ -11,12 +11,14 @@ import Contact from "./components/ContactInformation";
 import Newsletter from "./components/NewsLetter";
 import Partners from "./components/PartenerLogos";
 import Footer from "./components/Footer";
+import NewHeroSection from "./components/NewHeroSection";
 
 export default function Home(){
   return(
     <>
     <Headers/>
-    <Herosection/>
+    <NewHeroSection/>
+    {/* <Herosection/> */}
     <Services/>
     <AboutUs/>
     <Destinations/>

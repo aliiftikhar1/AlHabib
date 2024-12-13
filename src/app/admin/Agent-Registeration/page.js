@@ -1,0 +1,153 @@
+'use client';
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@radix-ui/react-label';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Eye, EyeClosed, EyeClosedIcon, EyeIcon } from 'lucide-react';
+
+const AgentSignup = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    username: '',
+    password: '',
+    phoneno: '',
+    city: '',
+    address: '',
+    bname: '',
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.password !== confirmPassword) {
+      toast.error('Passwords do not match.');
+      return;
+    }
+    try {
+      const response = await axios.post('/api/admin/user/register', formData);
+      toast.success(response.data.message || 'Signup successful!');
+      setFormData({
+        name: '',
+        username: '',
+        password: '',
+        phoneno: '',
+        city: '',
+        address: '',
+        bname: '',
+      });
+      setConfirmPassword('');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Signup failed. Please try again.');
+    }
+  };
+
+  return (
+    <div className="w-full h-screen flex justify-center items-center relative">
+      <div className='w-1/2 h-full'>
+      <img src='/bg/aeroplane.jpg' className='w-full h-full object-cover'>
+      </img>
+
+      </div>
+      <div className="w-1/2 z-10 mx-auto p-6 bg-white/70 backdrop-blur-md rounded-md">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Agent Signup</h2>
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+          {['name', 'username', 'phoneno', 'city', 'address', 'bname'].map((field) => (
+            <div key={field}>
+              <Label
+                htmlFor={field}
+                className="block text-sm font-medium text-gray-800"
+              >
+                {field.charAt(0).toUpperCase() + field.slice(1)}
+              </Label>
+              <Input
+                type="text"
+                id={field}
+                name={field}
+                value={formData[field]}
+                onChange={handleChange}
+                required
+                className="mt-1 w-full rounded-md border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+              />
+            </div>
+          ))}
+
+          <div className="col-span-1">
+            <Label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-800"
+            >
+              Password
+            </Label>
+            <div className="relative">
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="mt-1 w-full rounded-md border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-600"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeIcon/> : <EyeClosedIcon/> }
+              </button>
+            </div>
+          </div>
+
+          <div className="col-span-1">
+            <Label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-800"
+            >
+              Confirm Password
+            </Label>
+            <div className="relative">
+              <Input
+                type={showConfirmPassword ? 'text' : 'password'}
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                className="mt-1 w-full rounded-md border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-600"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ?  <EyeIcon/> : <EyeClosedIcon/> }
+              </button>
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full col-span-2 bg-orange-500 text-white font-medium py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"
+          >
+            Signup
+          </Button>
+        </form>
+      </div>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </div>
+  );
+};
+
+export default AgentSignup;

@@ -5,30 +5,30 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-  
 }
 
 model Admin {
-  id         Int      @id @default(autoincrement()) // Primary key with auto-increment
-  role       String   @db.VarChar(255)             // Role of the user
-  username   String   @db.VarChar(255)             // Username
-  password   String   @db.VarChar(255)             // Password
-  fullname   String   @db.VarChar(255)             // Full name of the user
-  created_at DateTime @default(now()) @db.Timestamp // Timestamp when the record is created
-  updated_at DateTime @updatedAt @db.Timestamp      // Timestamp when the record is updated
+  id         Int      @id @default(autoincrement())
+  role       String   @db.VarChar(255)
+  username   String   @db.VarChar(255)
+  password   String   @db.VarChar(255)
+  fullname   String   @db.VarChar(255)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model Users {
-  id          Int      @id @default(autoincrement()) // Auto-incrementing primary key
-  name        String   // Full name of the user
-  username    String   @unique // Unique username for the user
-  password    String   // Password of the user (stored in hashed form)
-  phoneno     String   // Phone number of the user
-  city        String   // City of the user
-  address     String   // Address of the user
-  bname       String   // Business name, if applicable
-  created_at  DateTime @default(now()) // Timestamp when the user is created
-  updated_at  DateTime @updatedAt // Automatically updates when the record is updated
-
-  @@map("users") 
+  id         Int      @id @default(autoincrement())
+  name       String
+  username   String   @unique
+  password   String
+  phoneno    String
+  city       String
+  address    String
+  bname      String
+  emailverification   String?   @default("False")
+  token      String?
+  status      String?     @default("Pending")
+  created_at DateTime @default(now())
+  updated_at DateTime
 }

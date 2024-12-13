@@ -226,8 +226,8 @@ export default function AdminUserManagement() {
                         <SelectValue placeholder="Select a role" />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="superadmin">Super Admin</SelectItem>
                         <SelectItem value="admin">Admin</SelectItem>
-                        <SelectItem value="agent">Agent</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

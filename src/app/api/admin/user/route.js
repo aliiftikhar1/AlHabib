@@ -1,63 +1,55 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../util/prisma';
+import prisma from '@/utils/prisma';
 import bcrypt from 'bcryptjs';
-import { sendVerificationEmail } from '../../util/sendVerificationEmail';
-import crypto from 'crypto';
 
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { name, email, password, phoneno, city, role, imageUrl } = data;
+    console.log("payload for user", data);
+    const { name, username, password, phoneno, city, address, bname, emailverification, status } = data;
 
-    // Check if the email already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
+    // Check if the username already exists
+    const existingUser = await prisma.users.findFirst({
+      where: { username },
     });
 
     if (existingUser) {
       return NextResponse.json(
-        { message: 'Email already registered. Please use a different email.', status: false },
+        { message: 'Username already taken. Please choose a different username.', status: false },
         { status: 400 }
       );
     }
 
     // Hash the user's password
-    const hashedPassword = bcrypt.hashSync(password, 10);
-
-    // Generate a verification token and expiration date
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    const verificationTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // Token valid for 24 hours
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create the new user in the database
-    const newCustomer = await prisma.user.create({
+    const newUser = await prisma.Users.create({
       data: {
         name,
-        email,
+        username,
         password: hashedPassword,
         phoneno,
         city,
-        role,
-        imageUrl,
-        verificationToken, // Save the verification token
-        verificationTokenExpires, // Save the expiration date
-        emailVerified: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        address,
+        bname,
+        emailverification,
+        status,
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     });
 
-    // Send verification email
-    await sendVerificationEmail(email, verificationToken);
-
     return NextResponse.json({
-      message: 'User registered successfully. Please check your email to verify your account.',
+      message: 'User registered successfully.',
       status: true,
+      user: newUser,
     });
   } catch (error) {
-    console.error('Error creating customer:', error);
+    console.error('Error creating user:', error);
     return NextResponse.json(
       {
-        message: 'Failed to create customer',
+        message: 'Failed to create user',
         status: false,
         error: error.message,
       },
@@ -66,10 +58,11 @@ export async function POST(request) {
   }
 }
 
+
 export async function GET() {
   try {
-    const users = await prisma.user.findMany();
-    console.log('Fetched users:', users); // Add logging here
+    const users = await prisma.Users.findMany();
+    console.log('Fetched users:', users);
     return NextResponse.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);

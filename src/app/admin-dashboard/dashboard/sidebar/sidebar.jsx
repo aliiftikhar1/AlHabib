@@ -48,8 +48,14 @@ const Sidebar = () => {
   // Define menu items with roles
   const menuItems = [
     {
-      title: "Agents Management",
+      title: "Admin Management",
       path: "/admin-dashboard/Admin-Management",
+      icon: <FaUsers className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Agents Management",
+      path: "/admin-dashboard/Agent-Management",
       icon: <FaUsers className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },

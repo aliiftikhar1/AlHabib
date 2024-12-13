@@ -10,9 +10,20 @@ import toast, { Toaster } from 'react-hot-toast'; // Import toast for notificati
 
 const LoginModal = ({ isOpen, onClose, role }) => {
   const dispatch = useDispatch();
-  const Authenticated = useSelector((data) => data.isAuthenticated);
+  // const Authenticated = useSelector((data) => data.isAuthenticated);
   const userrole = useSelector((data) => data.user.role);
   const router = useRouter();
+  const [loginlink, setloginlink] = useState('');
+
+  useEffect(()=>{
+    if(role === "Admin"){
+      setloginlink("admin")
+    }
+    else if(role === "Agent"){
+      setloginlink("admin/user")
+      }
+  },[role])
+  
 
   const [formData, setFormData] = useState({
     username: '',
@@ -22,23 +33,20 @@ const LoginModal = ({ isOpen, onClose, role }) => {
   const [isLoading, setIsLoading] = useState(false); // Track loading state
 
   useEffect(() => {
-    if (Authenticated) {
-      if (userrole === 'admin') {
+      if (userrole === 'admin' || userrole === 'superadmin') {
         router.push('/admin-dashboard/Analytics');
       } else if (userrole === 'agent') {
         router.push('/agent-dashboard/Analytics');
       }
-    }
-  }, [userrole, Authenticated]);
+  }, [userrole]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { username, password } = formData;
-    setIsLoading(true); // Show loader
+    setIsLoading(true); 
 
     try {
-      // Make API call to login
-      const response = await axios.post('/api/admin/login', { username, password });
+      const response = await axios.post(`/api/${loginlink}/login`, { username, password });
 
       if (response.status === 200) {
         const { data } = response;
@@ -55,7 +63,7 @@ const LoginModal = ({ isOpen, onClose, role }) => {
         toast.success('Login successful! Redirecting to dashboard...');
         setTimeout(() => {
           // Redirect based on role
-          if (data.user.role === 'admin') {
+          if (data.user.role === 'admin' || userrole === 'superadmin') {
             router.push('/admin-dashboard/Analytics');
           } else if (data.user.role === 'agent') {
             router.push('/agent-dashboard/Analytics');
@@ -124,7 +132,7 @@ const LoginModal = ({ isOpen, onClose, role }) => {
             />
           </div>
 
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <label className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -135,7 +143,7 @@ const LoginModal = ({ isOpen, onClose, role }) => {
             <a href="#" className="text-sm text-primary hover:text-primary/80">
               Forgot password?
             </a>
-          </div>
+          </div> */}
 
           <button
             type="submit"
