@@ -65,10 +65,13 @@ const LoginModal = ({ isOpen, onClose, role }) => {
           // Redirect based on role
           if (data.user.role === 'admin' || userrole === 'superadmin') {
             router.push('/admin-dashboard/Analytics');
-          } else if (data.user.role === 'agent') {
+          } else
+          {
             router.push('/agent-dashboard/Analytics');
           }
         }, 1500);
+          //  if (data.user.role === 'agent')    
+           
       }
     } catch (error) {
       const errorMsg =
