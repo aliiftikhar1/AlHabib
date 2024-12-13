@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import prisma from '@/utils/prisma';
 import bcrypt from 'bcryptjs';
 
-// GET request to fetch a specific admin user by ID
 export async function GET(request, { params }) {
   try {
     const id = parseInt(params.id);
@@ -54,7 +53,6 @@ export async function PUT(request, { params }) {
   }
 }
 
-// DELETE request to delete a specific admin user by ID
 export async function DELETE(request, { params }) {
   try {
     const id = parseInt(params.id);
