@@ -68,7 +68,7 @@ const Sidebar = () => {
 
     {
       title: "Package Management",
-      path: "/admin-dashboard/category",
+      path: "/admin-dashboard/Package-Management",
       icon: <FaGamepad className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },

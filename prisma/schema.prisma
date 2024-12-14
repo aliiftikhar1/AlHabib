@@ -33,3 +33,14 @@ model Users {
   created_at DateTime @default(now())
   updated_at DateTime
 }
+
+model Packages {
+  id          Int      @id @default(autoincrement()) // Auto-incrementing primary key
+  title       String   // Title of the package
+  description String   // Description of the package
+  image       String    @db.Text  // URL of the package image
+  amount      Float    // Price or cost of the package
+  created_at  DateTime @default(now()) // Timestamp when the package is created
+  updated_at  DateTime @updatedAt // Automatically updates when the record is updated
+
+}
