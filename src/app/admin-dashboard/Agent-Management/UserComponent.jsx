@@ -319,7 +319,17 @@ export default function UserManagement() {
                       )}
                     </TableCell>
                     <TableCell>{user.status}</TableCell>
-                    <TableCell>{user.role}</TableCell>
+                    <TableCell>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs ${
+                            user.role === 'agent'
+                              ? 'bg-indigo-100 text-indigo-800'
+                              : 'bg-green-100 text-green-800'
+                          }`}
+                        >
+                          {user.role}
+                        </span>
+                    </TableCell> 
                     <TableCell>
                       <Button onClick={() => handleUpdateUser(user)} variant="ghost">
                         <PencilIcon className="h-4 w-4" />
