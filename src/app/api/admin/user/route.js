@@ -6,7 +6,7 @@ export async function POST(request) {
   try {
     const data = await request.json();
     console.log("payload for user", data);
-    const { name, username, password, phoneno, city, address, bname, emailverification, status } = data;
+    const { name, username, password, phoneno, city, address, bname, emailverification, status, role } = data;
 
     // Check if the username already exists
     const existingUser = await prisma.users.findFirst({
@@ -35,6 +35,7 @@ export async function POST(request) {
         bname,
         emailverification,
         status,
+        role,
         created_at: new Date(),
         updated_at: new Date(),
       },

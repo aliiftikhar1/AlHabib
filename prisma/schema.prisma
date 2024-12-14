@@ -28,6 +28,7 @@ model Users {
   bname      String
   emailverification   String?   @default("False")
   token      String?
+  role       String?
   status      String?     @default("Pending")
   created_at DateTime @default(now())
   updated_at DateTime

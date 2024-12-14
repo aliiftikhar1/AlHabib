@@ -257,6 +257,25 @@ export default function UserManagement() {
                     </Select>
                   </div>
 
+                  <div className="relative">
+                    <label htmlFor="role" className="block text-sm font-medium">
+                      Role
+                    </label>
+                    <Select
+                      defaultValue={currentUser?.role || 'Customer'}
+                      name="role"
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select Role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                      <SelectItem value="customer">Customer</SelectItem>
+                        <SelectItem value="agent">Agent</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
                 </div>
                 <Button type="submit" className="w-full" disabled={loadingAction === 'form'}>
                   {loadingAction === 'form' && <Loader className="mr-2 animate-spin" />}
@@ -281,6 +300,7 @@ export default function UserManagement() {
                   <TableHead>City</TableHead>
                   <TableHead>Email Verified</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Role</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -299,6 +319,7 @@ export default function UserManagement() {
                       )}
                     </TableCell>
                     <TableCell>{user.status}</TableCell>
+                    <TableCell>{user.role}</TableCell>
                     <TableCell>
                       <Button onClick={() => handleUpdateUser(user)} variant="ghost">
                         <PencilIcon className="h-4 w-4" />

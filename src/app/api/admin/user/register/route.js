@@ -49,6 +49,7 @@ export async function POST(request) {
                     emailverification: "False",
                     status: "Pending",
                     token,
+                    role:"Agent",
                     created_at: new Date(),
                     updated_at: new Date(),
                 },

@@ -13,7 +13,7 @@ const ManageProfile = () => {
   const id = useSelector((data) => data.user.id);
 
   const [formData, setFormData] = useState({
-    fullname: "",
+    name: "",
     username: "",
     password: "",
     role: "",
@@ -26,10 +26,10 @@ const ManageProfile = () => {
   useEffect(() => {
     if (id) {
       axios
-        .get(`/api/admin/adminuser/${id}`)
+        .get(`/api/admin/user/${id}`)
         .then((response) => {
-          const { fullname, username, role } = response.data;
-          setFormData({ fullname, username, password: "", role });
+          const { name, username, role } = response.data;
+          setFormData({ name, username, password: "", role });
           // toast.success("Profile updated successfully");
         })
         .catch((error) => {
@@ -51,7 +51,7 @@ const ManageProfile = () => {
     setLoading(true);
 
     try {
-      await axios.put(`/api/admin/adminuser/${id}`, formData);
+      await axios.put(`/api/admin/user/${id}`, formData);
       toast.success("Profile updated successfully");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -68,13 +68,13 @@ const ManageProfile = () => {
         <h2 className="text-2xl font-bold mb-6">Manage Profile</h2>
         <form onSubmit={handleUpdate} className="space-y-6">
           <div>
-            <label htmlFor="fullname" className="block text-lg font-medium mb-2">
+            <label htmlFor="name" className="block text-lg font-medium mb-2">
               Full Name
             </label>
             <Input
-              id="fullname"
-              name="fullname"
-              value={formData.fullname}
+              id="name"
+              name="name"
+              value={formData.name}
               onChange={handleInputChange}
               required
             />

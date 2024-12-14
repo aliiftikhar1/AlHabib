@@ -6,14 +6,14 @@ import bcrypt from 'bcryptjs';
 export async function GET(request, { params }) {
   try {
     const id = parseInt(params.id);
-    const admin = await prisma.admin.findUnique({ where: { id } });
+    const admin = await prisma.users.findUnique({ where: { id } });
     if (admin) {
       return NextResponse.json(admin);
     } else {
-      return NextResponse.json({ error: 'Admin not found' });
+      return NextResponse.json({ error: 'Agent not found' });
     }
   } catch (error) {
-    console.error('Error fetching admin user:', error);
+    console.error('Error fetching agent user:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
@@ -23,7 +23,7 @@ export async function PUT(request, { params }) {
   try {
     const id = parseInt(params.id);
     const body = await request.json();
-    const { name, username, password, phoneno, city, address, bname , emailverification, status    } = body;
+    const { name, username, password, phoneno, city, address, bname , emailverification, status , role   } = body;
 
  
     // Hash the password if provided
@@ -36,7 +36,7 @@ export async function PUT(request, { params }) {
     const updatedAdmin = await prisma.users.update({
       where: { id: id },
       data: {
-        name, username, password, phoneno, city, address, bname, emailverification, status,
+        name, username, password, phoneno, city, address, bname, emailverification, status, role,
         password: hashedPassword || undefined,  // Only update password if provided
         
       },

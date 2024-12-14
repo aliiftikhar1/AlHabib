@@ -65,7 +65,7 @@ const LoginModal = ({ isOpen, onClose, role }) => {
           // Redirect based on role
           if (data.user.role === 'admin' || userrole === 'superadmin') {
             router.push('/admin-dashboard/Analytics');
-          } else
+          } else if (data.user.role === 'agent')    
           {
             router.push('/agent-dashboard/Analytics');
           }
