@@ -69,7 +69,7 @@ export default function NewHeroSection() {
 
 
       {/* Content */}
-      <div className="relative z-30 mx-auto max-w-7xl px-4 pt-40 sm:px-6 lg:px-8 ">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-40 sm:px-6 lg:px-8 ">
         <h1 className="text-center text-4xl capitalize p-6 border-4 border-white bg-black/10 backdrop-blur-sm font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
           Discover the real value of travel
         </h1>

@@ -17,7 +17,7 @@ const RoleCard = ({ title, icon: Icon, onClick, description }) => {
         Login as {title}
       </button>
       {title === 'Agent'&&(
-      <a href='/admin/Agent-Registeration' className=" px-6 py-2 bg-secondary border border-gray-800 text-black rounded-lg hover:bg-primary/10 transition-colors duration-300">
+      <a href='/User-Registeration' className=" px-6 py-2 bg-secondary border border-gray-800 text-black rounded-lg hover:bg-primary/10 transition-colors duration-300">
           Signup as {title}
         </a>
       )}

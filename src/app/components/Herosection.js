@@ -12,18 +12,18 @@ export default function HeroSection() {
 
             <div className="relative h-full w-full flex flex-col justify-center items-center px-4 py-12">
                 <div className="text-center mb-8 md:mb-12">
-                <h1
-  style={{ WebkitTextStroke: '2px white' }}
-  className="text-6xl md:text-8xl font-[800] text-purple-600"
->
-  AlHabib
-</h1>
+                    <h1
+                        style={{ WebkitTextStroke: '2px white' }}
+                        className="text-6xl md:text-8xl font-[800] text-purple-600"
+                    >
+                        AlHabib
+                    </h1>
 
                     <p className="text-white text-xl md:text-2xl mt-4 max-w-2xl mx-auto">
                         Your Journey Begins With Us - Fly to Your Dreams
                     </p>
                 </div>
-                
+
                 {/* Search Form */}
                 <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl w-full max-w-5xl p-6 md:p-8 transform transition-all duration-300 ">
                     {/* Trip Type Selector */}

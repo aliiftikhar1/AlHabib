@@ -39,12 +39,12 @@ const AdminLoginPage = () => {
           onClick={() => openModal('Admin')}
           description="Access administrative controls and manage system settings"
         />
-        <RoleCard
+        {/* <RoleCard
           title="Agent"
           icon={UserGroupIcon}
           onClick={() => openModal('Agent')}
           description="Handle bookings and manage customer relationships"
-        />
+        /> */}
       </div>
 
       <LoginModal

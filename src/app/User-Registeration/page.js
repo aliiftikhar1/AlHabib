@@ -7,6 +7,7 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Eye, EyeClosed, EyeClosedIcon, EyeIcon } from 'lucide-react';
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
 
 const AgentSignup = () => {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ const AgentSignup = () => {
     city: '',
     address: '',
     bname: '',
+    role: 'customer',
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -47,6 +49,7 @@ const AgentSignup = () => {
         city: '',
         address: '',
         bname: '',
+        role: 'Customer',
       });
       setConfirmPassword('');
     } catch (error) {
@@ -57,12 +60,12 @@ const AgentSignup = () => {
   return (
     <div className="w-full h-screen flex justify-center items-center relative">
       <div className='w-1/2 h-full'>
-      <img src='/bg/aeroplane.jpg' className='w-full h-full object-cover'>
-      </img>
+        <img src='/bg/aeroplane.jpg' className='w-full h-full object-cover'>
+        </img>
 
       </div>
       <div className="w-1/2 z-10 mx-auto p-6 bg-white/70 backdrop-blur-md rounded-md">
-        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Agent Signup</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">User Signup</h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
           {['name', 'username', 'phoneno', 'city', 'address', 'bname'].map((field) => (
             <div key={field}>
@@ -83,6 +86,27 @@ const AgentSignup = () => {
               />
             </div>
           ))}
+          <div className='col-span-1'>
+            <Label htmlFor="role" className="block text-sm font-medium text-gray-800">
+              Select Role
+            </Label>
+            <Select
+              defaultValue={formData.role || 'Customer'}
+              onValueChange={(value) =>
+                setFormData((prevData) => ({ ...prevData, role: value }))
+              }
+              required
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="customer">Customer</SelectItem>
+                <SelectItem value="agent">Agent</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
 
           <div className="col-span-1">
             <Label
@@ -106,7 +130,7 @@ const AgentSignup = () => {
                 className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-600"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? <EyeIcon/> : <EyeClosedIcon/> }
+                {showPassword ? <EyeIcon /> : <EyeClosedIcon />}
               </button>
             </div>
           </div>
@@ -132,7 +156,7 @@ const AgentSignup = () => {
                 className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-600"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                {showConfirmPassword ?  <EyeIcon/> : <EyeClosedIcon/> }
+                {showConfirmPassword ? <EyeIcon /> : <EyeClosedIcon />}
               </button>
             </div>
           </div>
