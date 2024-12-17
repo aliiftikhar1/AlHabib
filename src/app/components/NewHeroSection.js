@@ -38,9 +38,8 @@ export default function NewHeroSection() {
         {backgroundImages.map((image, index) => (
           <div
             key={image}
-            className={`absolute inset-0 transition-opacity duration-1000 ${
-              index === currentImageIndex ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`absolute inset-0 transition-opacity duration-1000 ${index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+              }`}
           >
             <img
               src={image}
@@ -49,24 +48,20 @@ export default function NewHeroSection() {
             />
           </div>
         ))}
-         <div className="absolute bottom-0 left-0 right-0">
-  <svg
-    viewBox="0 0 1440 320"
-    className="w-full"
-    preserveAspectRatio="none"
-    height="160"
-  >
-    <path
-      fill="white"
-      d="M0,128L60,138.7C120,149,240,171,360,160C480,149,600,107,720,96C840,85,960,107,1080,122.7C1200,139,1320,149,1380,154.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
-    ></path>
-  </svg>
-</div>
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg
+            viewBox="0 0 1440 320"
+            className="w-full"
+            preserveAspectRatio="none"
+            height="160"
+          >
+            <path
+              fill="white"
+              d="M0,128L60,138.7C120,149,240,171,360,160C480,149,600,107,720,96C840,85,960,107,1080,122.7C1200,139,1320,149,1380,154.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+            ></path>
+          </svg>
+        </div>
       </div>
-
-      {/* Curved Overlay */}
-     
-
 
       {/* Content */}
       <div className="relative z-10 mx-auto max-w-7xl px-4 pt-40 sm:px-6 lg:px-8 ">
@@ -75,52 +70,52 @@ export default function NewHeroSection() {
         </h1>
 
         {/* Search Form */}
-        <div className="mx-auto mt-10 m-4 max-w-4xl rounded-xl shadow-[7px_8px_8px_rgba(0,0,0,0.3)] ">
+       <div className="relative mx-auto  mt-10 m-4 max-w-4xl rounded-xl shadow-lg">
           {/* Tabs */}
-          <div className=" flex space-x-2">
-            <button 
-              className={`flex items-center border-x border-t transition-all duration-500 border-white space-x-2 px-4 py-2 rounded-t-lg ${
-                activeTab === 'flights' 
-                  ? 'text-black bg-white' 
+          <div className=" flex space-x-2 text-sm md:text-base">
+            <button
+              className={`flex items-center border-x border-t transition-all duration-500 border-black space-x-2 px-4 py-2 rounded-t-lg ${activeTab === 'flights'
+                  ? 'text-black bg-white'
                   : 'text-white  backdrop-blur-sm bg-black/50 hover:bg-white/50  hover:text-black'
-              }`}
+                }`}
               onClick={() => setActiveTab('flights')}
             >
               <Plane className="h-5 w-5" />
               <span>Flights</span>
             </button>
-            <button 
-              className={`flex items-center border-x border-t transition-all duration-500 border-white space-x-2 px-4 py-2 rounded-t-lg ${
-                activeTab === 'hotels' 
-                  ? ' text-black bg-white' 
+            <button
+              className={`flex items-center border-x border-t transition-all duration-500 border-black space-x-2 px-4 py-2 rounded-t-lg ${activeTab === 'hotels'
+                  ? ' text-black bg-white'
                   : 'text-white  backdrop-blur-sm bg-black/50 hover:bg-white/50  hover:text-black'
-              }`}
+                }`}
               onClick={() => setActiveTab('hotels')}
             >
               <Building2 className="h-5 w-5" />
               <span>Hotels</span>
             </button>
-            <button 
-              className={`flex items-center border-x border-t transition-all duration-500 border-white space-x-2 px-4 py-2 rounded-t-lg ${
-                activeTab === 'business' 
-                ? ' text-black bg-white' 
+            <a href='/'>
+            <button
+              className={`flex items-center border-x border-t transition-all duration-500 border-white space-x-2 px-4 py-2 rounded-t-lg ${activeTab === 'business'
+                  ? ' text-black bg-white'
                   : 'text-white  backdrop-blur-sm bg-black/50 hover:bg-white/50  hover:text-black'
-              }`}
-              onClick={() => setActiveTab('business')}
+                }`}
+              // onClick={() => setActiveTab('business')}
             >
               <Briefcase className="h-5 w-5" />
               <span>WegoPro Business Travel</span>
               <span className="ml-1 rounded bg-orange-500 px-1.5 py-0.5 text-xs text-white">NEW</span>
             </button>
+            </a>
           </div>
+          <div className='border-x border-b border-black rounded-b-lg'>
 
           {activeTab === 'flights' && (
             <div className='bg-white pt-4 px-4'>
               {/* Trip Type Selection */}
               <div className="mb-4 flex space-x-4">
-                <button className="rounded-full bg-gray-100 px-4 py-1">One-way</button>
+                <button className="rounded-full bg-white px-4 py-1">One-way</button>
                 <button className="rounded-full bg-primary px-4 py-1 text-white">Round-trip</button>
-                <button className="rounded-full bg-gray-100 px-4 py-1">Multi-city</button>
+                <button className="rounded-full bg-white px-4 py-1">Multi-city</button>
               </div>
 
               {/* Flight Search Fields */}
@@ -133,7 +128,7 @@ export default function NewHeroSection() {
                   <label className="text-sm text-gray-600">To</label>
                   <div className="">
                     <Input placeholder="Enter city or airport" />
-                    <button className="absolute right-[98%] text-2xl border border-black top-[70%] -translate-y-1/2 rounded-full bg-gray-100 p-1">
+                    <button className="hidden md:flex absolute  right-[98%] text-2xl border border-black top-[70%] -translate-y-1/2 rounded-full bg-white p-1">
                       <ArrowLeftRight className="h-4 w-4" />
                     </button>
                   </div>
@@ -183,35 +178,35 @@ export default function NewHeroSection() {
           )}
 
           {activeTab === 'hotels' && (
-            <div  className="bg-white p-4 space-y-2">
+            <div className="bg-white p-4 space-y-2">
               <h2 className="text-xl font-semibold">Where do you want to stay?</h2>
-              
+
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="space-y-1">
                   <label className="text-sm text-gray-600">Destination</label>
-                  <Input 
-                    placeholder="Enter a destination" 
+                  <Input
+                    placeholder="Enter a destination"
                     defaultValue="Dera Ghazi Khan, Pakistan"
                   />
                 </div>
-                
+
                 <div className="space-y-1">
                   <label className="text-sm text-gray-600">Check In</label>
-                  <Input 
-                    type="date" 
+                  <Input
+                    type="date"
                     defaultValue="2024-12-13"
-                    
+
                   />
                 </div>
-                
+
                 <div className="space-y-1">
                   <label className="text-sm text-gray-600">Check Out</label>
-                  <Input 
+                  <Input
                     type="date"
                     defaultValue="2024-12-14"
                   />
                 </div>
-                
+
                 <div className="space-y-1">
                   <label className="text-sm text-gray-600">Guests & Rooms</label>
                   <Select defaultValue="2-1">
@@ -240,6 +235,7 @@ export default function NewHeroSection() {
             <Button className="bg-[#5AB54B] hover:bg-[#4a9e3c]">
               Search
             </Button>
+          </div>
           </div>
         </div>
 

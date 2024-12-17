@@ -50,7 +50,7 @@ export default function VerifyPage() {
   }, [router]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
       <ToastContainer />
       <h1 className="text-2xl font-bold mb-4">Email Verification</h1>
       {verified ? (<>

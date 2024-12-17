@@ -21,7 +21,7 @@ const Testimonials = () => {
   ];
 
   return (
-    <section id="testimonials" className="bg-gray-100 py-16">
+    <section id="testimonials" className="bg-white py-16">
       <div className="container mx-auto text-center px-6">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">What Our Clients Say</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

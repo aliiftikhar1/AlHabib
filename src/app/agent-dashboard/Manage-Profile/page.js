@@ -88,6 +88,7 @@ const ManageProfile = () => {
               id="username"
               name="username"
               value={formData.username}
+              disabled
               onChange={handleInputChange}
               required
             />

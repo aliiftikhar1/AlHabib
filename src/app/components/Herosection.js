@@ -33,7 +33,7 @@ export default function HeroSection() {
                                 key={type}
                                 onClick={() => setTripType(type)}
                                 className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300
-                                           ${tripType === type ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                                           ${tripType === type ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-200'}`}
                             >
                                 {type === 'round' ? 'Round Trip' : 'One Way'}
                             </button>
@@ -54,7 +54,7 @@ export default function HeroSection() {
                                                 <FaPlane className="rotate-0" />
                                             </div>
                                             <select
-                                                className="w-full rounded-lg pl-10 pr-4 py-3 text-gray-600 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-100"
+                                                className="w-full rounded-lg pl-10 pr-4 py-3 text-gray-600 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-white"
                                                 defaultValue="LHE"
                                             >
                                                 <option value="LHE">Lahore (LHE)</option>
@@ -81,7 +81,7 @@ export default function HeroSection() {
                                                 <FaPlane className="rotate-90" />
                                             </div>
                                             <select
-                                                className="w-full rounded-lg pl-10 pr-4 py-3 text-gray-600 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-100"
+                                                className="w-full rounded-lg pl-10 pr-4 py-3 text-gray-600 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-white"
                                                 defaultValue="DXB"
                                             >
                                                 <option value="DXB">Dubai (DXB)</option>
@@ -106,7 +106,7 @@ export default function HeroSection() {
                                             </div>
                                             <input
                                                 type="date"
-                                                className="w-full rounded-lg pl-10 pr-4 py-3 text-gray-600 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-100"
+                                                className="w-full rounded-lg pl-10 pr-4 py-3 text-gray-600 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-white"
                                             />
                                         </div>
                                     </div>
@@ -124,7 +124,7 @@ export default function HeroSection() {
                                                 </div>
                                                 <input
                                                     type="date"
-                                                    className="w-full rounded-lg pl-10 pr-4 py-3 text-gray-600 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-100"
+                                                    className="w-full rounded-lg pl-10 pr-4 py-3 text-gray-600 bg-gray-50 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-white"
                                                 />
                                             </div>
                                         </div>

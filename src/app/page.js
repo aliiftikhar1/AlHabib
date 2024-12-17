@@ -1,4 +1,4 @@
-import { CallToAction } from "@mui/icons-material";
+
 import AboutUs from "./components/AboutUs";
 import FeaturedPackages from "./components/FeaturedPackages";
 import Headers from "./components/Header";
@@ -12,6 +12,8 @@ import Newsletter from "./components/NewsLetter";
 import Partners from "./components/PartenerLogos";
 import Footer from "./components/Footer";
 import NewHeroSection from "./components/NewHeroSection";
+import TwoCards from "./components/TwoCardSection";
+import CallToAction from "./components/CallToAction";
 
 export default function Home(){
   return(
@@ -22,9 +24,11 @@ export default function Home(){
     <Services/>
     <AboutUs/>
     <Destinations/>
+    <TwoCards/>
     <FeaturedPackages/>
     <Testimonials/>
     <WhyChooseUs/>
+    {/* <CallToAction/> */}
     <CallToAction/>
     <Contact/>
     <Newsletter/>

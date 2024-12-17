@@ -5,7 +5,7 @@ import { AddUser } from '@/app/Store/Slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import { Loader } from 'lucide-react'; // Import loader icon
+import { Loader, Menu } from 'lucide-react'; // Import loader icon
 import toast, { Toaster } from 'react-hot-toast'; // Import toast for notifications
 import { Button } from "@/components/ui/button";
 import { Logout } from '@/app/Store/Slice';
@@ -58,15 +58,13 @@ export default function Header() {
 
         toast.success('Login successful! Redirecting to dashboard...');
         setTimeout(() => {
-          // Redirect based on role
-          if (data.user.role === 'admin' || userrole === 'superadmin') {
+          if (data.user.role === 'admin' || data.user.role === 'superadmin') {
             router.push('/admin-dashboard/Analytics');
           } else if (data.user.role === 'agent') {
             router.push('/agent-dashboard/Analytics');
           }
         }, 1500);
         //  if (data.user.role === 'agent')    
-
       }
     } catch (error) {
       const errorMsg =
@@ -114,11 +112,11 @@ export default function Header() {
           </a>
         
         </nav>
-        <div>
-        {username?(<div className='flex justify-center items-center gap-4'><Button onClick={() => dispatch(Logout())} className="bg-red-600 h-8">Logout</Button>
-          {username}
+        <div className=' md:w-auto w-full md:mr-0 mr-4 border-black'>
+        {username?(<div className='flex justify-end md:justify-center items-center gap-4'><Button onClick={() => dispatch(Logout())} className="bg-red-600 h-8">Logout</Button>
+          <div className='hidden md:flex'>{username}</div>
           </div>):(<>
-          <div className="space-x-2">
+          <div className=" space-x-2">
             <Button onClick={()=>{setloginmodalopen(true)}} className="bg-primary hover:bg-secondary hover:text-black border border-black w-20">
               Login
             </Button>
@@ -208,12 +206,13 @@ export default function Header() {
                   </button>
                 </div>
               </Modal>
-            </div>
-            <a href="/User-Registeration">
+              <a href="/User-Registeration">
               <Button className="bg-secondary text-black hover:text-white border-black border w-20">
                 SignUp
               </Button>
             </a>
+            </div>
+           
           </>)}
         </div>
 
@@ -222,9 +221,7 @@ export default function Header() {
           className="block md:hidden focus:outline-none"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
-          <span className="block w-6 h-0.5 bg-black mb-1"></span>
-          <span className="block w-6 h-0.5 bg-black mb-1"></span>
-          <span className="block w-6 h-0.5 bg-black"></span>
+         <Menu/>
         </button>
       </div>
 

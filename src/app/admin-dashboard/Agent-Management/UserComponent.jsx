@@ -257,7 +257,8 @@ export default function UserManagement() {
                     </Select>
                   </div>
 
-                  <div className="relative">
+                  {!currentUser&&(
+                    <div className="relative">
                     <label htmlFor="role" className="block text-sm font-medium">
                       Role
                     </label>
@@ -275,6 +276,8 @@ export default function UserManagement() {
                       </SelectContent>
                     </Select>
                   </div>
+                  )}
+                  
 
                 </div>
                 <Button type="submit" className="w-full" disabled={loadingAction === 'form'}>

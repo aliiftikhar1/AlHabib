@@ -10,12 +10,32 @@ const Partners = () => {
   ];
 
   return (
-    <section id="partners" className="bg-gray-100 py-16">
-      <div className="container mx-auto text-center px-6">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">Our Trusted Partners</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 items-center">
+    <section id="partners" className="bg-white py-16">
+      <div className="md:w-[87vw] mx-auto text-center flex flex-col md:grid grid-cols-6 gap-2">
+        <div className="flex flex-col col-span-2 justify-start md:items-start py-10  ">
+          <h2 className="text-3xl font-bold mb-4">Top Popular Airline In Pakistan</h2>
+          <p className=""> Our airline partners are the best in the industry.</p>
+        </div>
+        <div className="col-span-4 flex flex-wrap justify-between gap-1 md:px-0 px-4">
+          <img src="https://logowik.com/content/uploads/images/pakistan-international-airlines4661.logowik.com.webp" className="size-32"></img>
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2jLtQHwB50n3vE3j-OLhAwARx-Adudntcbg&s" className="size-32"></img>
+          <img src="https://logowik.com/content/uploads/images/pakistan-international-airlines4661.logowik.com.webp" className="size-32"></img>
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2jLtQHwB50n3vE3j-OLhAwARx-Adudntcbg&s" className="size-32"></img>
+          <img src="https://logowik.com/content/uploads/images/pakistan-international-airlines4661.logowik.com.webp" className="size-32"></img>
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2jLtQHwB50n3vE3j-OLhAwARx-Adudntcbg&s" className="size-32"></img>
+          <img src="https://logowik.com/content/uploads/images/pakistan-international-airlines4661.logowik.com.webp" className="size-32"></img>
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2jLtQHwB50n3vE3j-OLhAwARx-Adudntcbg&s" className="size-32"></img>
+        </div>
+
+      </div>
+      <div className="md:w-[87vw] mx-auto text-center flex flex-col  md:grid grid-cols-6 gap-2">
+        <div className="flex flex-col col-span-2 justify-start md:items-start md:py-0 py-10 ">
+          <h2 className="text-3xl font-bold mb-4">Our Trusted Parteners</h2>
+          <p> Our partners are the best in the industry.</p>
+        </div>
+        <div className="col-span-4 flex flex-wrap justify-between gap-1 md:px-0 px-4">
           {partners.map((partner, index) => (
-            <div key={index} className="flex justify-center w-[250px] h-[250px]">
+            <div key={index} className="flex justify-center size-32">
               <img
                 src={partner.logo}
                 alt={partner.name}
@@ -24,6 +44,7 @@ const Partners = () => {
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );
