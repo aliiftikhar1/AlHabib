@@ -19,7 +19,7 @@ const WhyChooseUs = () => {
           {benefits.map((benefit, index) => (
             <div
               key={index}
-              className="flex flex-col md:size-[280px] border border-gray-300 justify-center items-center bg-transparent transition-all duration-500  hover:border-black p-6 rounded-xl hover:scale-105"
+              className="flex flex-col md:size-full border border-gray-300 justify-center items-center bg-transparent transition-all duration-500  hover:border-black p-6 rounded-xl hover:scale-105"
             >
               <div className="mb-4 p-3 ">
                 {benefit.icon}

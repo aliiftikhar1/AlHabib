@@ -268,9 +268,9 @@ export default function PackageManagement() {
                 {filteredpackages.map((packages, index) => (
                   <TableRow key={packages.id}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{packages.image ?
-                      <img src={decodeURIComponent(packages.image)} className='w-24 h-24'></img> :
-                      <img src='/logo/logo1.jpg' className='w-24 h-24'></img>
+                    <TableCell className='size-28'>{packages.image ?
+                      <img src={decodeURIComponent(packages.image)} className='w-full h-full'></img> :
+                      <img src='/logo/logo1.jpg' className='w-full h-full'></img>
                     }
                     </TableCell>
                     <TableCell>{packages.title}</TableCell>
