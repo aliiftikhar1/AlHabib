@@ -18,29 +18,100 @@ model Admin {
 }
 
 model Users {
-  id         Int      @id @default(autoincrement())
-  name       String
-  username   String   @unique
-  password   String
-  phoneno    String
-  city       String
-  address    String
-  bname      String
-  emailverification   String?   @default("False")
-  token      String?
-  role       String?
-  status      String?     @default("Pending")
-  created_at DateTime @default(now())
-  updated_at DateTime
+  id                Int      @id @default(autoincrement())
+  name              String
+  username          String   @unique
+  password          String
+  phoneno           String
+  city              String
+  address           String
+  bname             String
+  created_at        DateTime @default(now())
+  updated_at        DateTime
+  emailverification String?  @default("False")
+  status            String?  @default("Pending")
+  token             String?
+  role              String?
+  balance           Int?
+  Ledger            Ledger[]
+  PackageBookings            PackageBookings[]
 }
 
 model Packages {
-  id          Int      @id @default(autoincrement()) // Auto-incrementing primary key
-  title       String   // Title of the package
-  description String   // Description of the package
-  image       String    @db.Text  // URL of the package image
-  amount      Float    // Price or cost of the package
-  created_at  DateTime @default(now()) // Timestamp when the package is created
-  updated_at  DateTime @updatedAt // Automatically updates when the record is updated
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  image       String   @db.Text
+  amount      Float
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  PackageBookings            PackageBookings[]
+}
+
+model Visa {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  image       String   @db.Text
+  amount      Float
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Tickets {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  image       String   @db.Text
+  amount      Float
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model PaymentRequests {
+  id            Int      @id @default(autoincrement())
+  userid        Int
+  transactionno String
+  img_url       String  @db.Text
+  status        String
+  verified_by   String?
+  amount        Float
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+}
+
+model Ledger {
+  id             Int      @id @default(autoincrement()) // Primary key with auto-increment
+  userId         Int // Foreign key to the User table
+  debit          Float    @default(0.0) // Amount debited
+  credit         Float    @default(0.0) // Amount credited
+  balance        Float    @default(0.0) // Current balance
+  description    String?  @db.VarChar(255) // Description of the transaction
+  transaction_at DateTime @default(now()) @db.Timestamp // Timestamp of the transaction
+  created_at     DateTime @default(now()) @db.Timestamp // Record creation timestamp
+  updated_at     DateTime @updatedAt @db.Timestamp // Record last updated timestamp
+  Users          Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+
+model PackageBookings {
+  booking_id      Int      @id @default(autoincrement()) // Auto-incrementing primary key
+  user_id         Int      // ID of the user who made the booking
+  package_id      Int      // ID of the booked package
+  total_amount    Float    // Total amount for the booking
+  paid_amount     Float    // Amount paid for the booking
+  remaining_amount Float   // Remaining amount to be paid
+  status          String   // Status of the booking (e.g., Confirmed, Pending)
+  payment_method  String   // Payment method (e.g., Credit Card, PayPal)
+  notes           String?  // Additional notes related to the booking
+  created_at      DateTime @default(now()) // Timestamp when the booking is created
+  updated_at      DateTime @updatedAt // Automatically updates when the record is updated
+
+  Users          Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Packages       Packages   @relation(fields: [package_id], references: [id], onDelete: Cascade)
+
 
 }

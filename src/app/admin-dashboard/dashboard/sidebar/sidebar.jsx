@@ -61,7 +61,13 @@ const Sidebar = () => {
     },
     {
       title: "Bookings Management",
-      path: "/admin-dashboard/Quries",
+      path: "/admin-dashboard/Booking-Management",
+      icon: <BiCoinStack className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Payment Requests",
+      path: "/admin-dashboard/Payment-Management",
       icon: <BiCoinStack className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
@@ -76,7 +82,14 @@ const Sidebar = () => {
 
     {
       title: "Visa Management",
-      path: "/admin-dashboard/Products",
+      path: "/admin-dashboard/Visa-Management",
+      icon: <PiHandDeposit className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+
+    {
+      title: "Ticket Management",
+      path: "/admin-dashboard/Ticket-Management",
       icon: <PiHandDeposit className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
@@ -85,7 +98,7 @@ const Sidebar = () => {
 
     {
       title: "Ledgers",
-      path: "/admin-dashboard/Orders",
+      path: "/admin-dashboard/Ledgers",
       icon: <PiHandWithdraw className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },

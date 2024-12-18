@@ -16,7 +16,7 @@ import { BiCoinStack } from "react-icons/bi";
 import { CiBank } from "react-icons/ci";
 import { useRouter } from 'next/navigation';
 import { MdHistory } from "react-icons/md";
-import { Analytics, AnalyticsOutlined, Home } from '@mui/icons-material';
+import { Analytics, AnalyticsOutlined, Home, Money } from '@mui/icons-material';
 import { UserIcon } from '@heroicons/react/24/outline';
 import { useDispatch } from 'react-redux';
 import { Logout } from '@/app/Store/Slice';
@@ -44,14 +44,20 @@ const Sidebar = () => {
   // Define menu items with roles
   const menuItems = [
     {
-      title: "Book Tickets",
-      path: "/agent-dashboard/UserComponent",
+      title: "Add Payment",
+      path: "/agent-dashboard/Add-Payment",
+      icon: <Money className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Book Packages",
+      path: "/agent-dashboard/Book-Package",
       icon: <FaUsers className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
     {
       title: "My Bookings",
-      path: "/agent-dashboard/Quries",
+      path: "/agent-dashboard/My-Booking",
       icon: <BiCoinStack className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
