@@ -4,7 +4,7 @@ import prisma from '@/utils/prisma';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { user_id, package_id, total_amount, paid_amount, remaining_amount, status, payment_method, notes } = body;
+    const { user_id, ticket_id, total_amount, paid_amount, remaining_amount, status, payment_method, notes } = body;
 
     console.log("Payload is ", body);
 
@@ -31,10 +31,10 @@ export async function POST(request) {
     }
 
     // Create the booking if balance is sufficient
-    const newBooking = await prisma.PackageBookings.create({
+    const newBooking = await prisma.TicketBookings.create({
       data: {
         user_id,
-        package_id: parseInt(package_id),
+        ticket_id: parseInt(ticket_id),
         total_amount: parseFloat(total_amount),
         paid_amount: parseFloat(paid_amount),
         remaining_amount: parseFloat(remaining_amount),
@@ -65,9 +65,13 @@ export async function GET(request,{params}) {
     const {id} = parseInt(params);
     console.log("id",id);
   try {
-    const bookings = await prisma.packageBookings.findMany({where:{
+    const bookings = await prisma.ticketBookings.findMany({where:{
         user_id: id
-    } }); // Corrected typo in `packageBookings`
+    } ,
+    include:{
+      Tickets:true
+    }
+  }); // Corrected typo in `ticketBookings`
     return NextResponse.json(bookings);
   } catch (error) {
     console.error('Error fetching bookings:', error.message);

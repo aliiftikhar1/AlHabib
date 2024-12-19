@@ -18,7 +18,7 @@ import { useSelector } from 'react-redux';
 
 // Fetch all bookings
 const fetchBookings = async () => {
-  const response = await fetch('/api/admin/booking');
+  const response = await fetch('/api/admin/ticket-booking');
   if (!response.ok) {
     throw new Error('Failed to fetch bookings');
   }
@@ -27,7 +27,7 @@ const fetchBookings = async () => {
 
 // Update booking status
 const updateBookingStatus = async (id, status) => {
-  const response = await fetch(`/api/admin/booking/${id}`, {
+  const response = await fetch(`/api/admin/ticket-booking/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ status }),
@@ -40,7 +40,7 @@ const updateBookingStatus = async (id, status) => {
 
 // Delete booking
 const deleteBooking = async (id) => {
-  const response = await fetch(`/api/admin/booking/${id}`, {
+  const response = await fetch(`/api/admin/ticket-booking/${id}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -70,7 +70,7 @@ export default function BookingManagement() {
       bookings.filter(
         (booking) =>
           String(booking.user_id).toLowerCase().includes(searchTerm.toLowerCase()) ||
-          String(booking.package_id).toLowerCase().includes(searchTerm.toLowerCase())
+          String(booking.ticket_id).toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
   }, [bookings, searchTerm]);
@@ -157,8 +157,8 @@ export default function BookingManagement() {
                   <TableHead>No.</TableHead>
                   <TableHead>User Name</TableHead>
                   <TableHead>User Email</TableHead>
-                  <TableHead>Package Name</TableHead>
-                  <TableHead>Package Price</TableHead>
+                  <TableHead>Ticket Name</TableHead>
+                  <TableHead>Ticket Price</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -169,8 +169,8 @@ export default function BookingManagement() {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{booking.Users?.name || 'N/A'}</TableCell>
                     <TableCell>{booking.Users?.username || 'N/A'}</TableCell>
-                    <TableCell>{booking.Packages?.title || 'N/A'}</TableCell>
-                    <TableCell>{booking.Packages?.amount || 'N/A'}</TableCell>
+                    <TableCell>{booking.Tickets?.title || 'N/A'}</TableCell>
+                    <TableCell>{booking.Tickets?.amount || 'N/A'}</TableCell>
                     <TableCell>{booking.status}</TableCell>
                     <TableCell>
                       <Button

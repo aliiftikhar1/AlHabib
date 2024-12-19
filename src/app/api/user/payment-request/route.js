@@ -51,7 +51,7 @@ export async function POST(request) {
 // GET request to fetch all visa
 export async function GET() {
   try {
-    const visa = await prisma.visa.findMany();
+    const visa = await prisma.paymentRequests.findMany();
     return NextResponse.json(visa);
   } catch (error) {
     console.error('Error fetching visa:', error.message);

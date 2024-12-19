@@ -50,7 +50,7 @@ const FeaturedPackages = () => {
       <div className="max-w-7xl mx-auto text-center md:px-0 px-2">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">Featured Packages</h2>
         <div className="flex flex-wrap">
-          {fetchedpackages.map((pkg, index) => (
+          {fetchedpackages && fetchedpackages.map((pkg, index) => (
             <div key={index} className="p-1 w-1/2 md:w-1/4">
             <div
               className=" bg-white border border-gray-400 hover:border-blue-400 hover:scale-[1.01] transition-all duration-500 rounded-lg overflow-hidden group cursor-pointer"

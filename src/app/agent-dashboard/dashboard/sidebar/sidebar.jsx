@@ -46,37 +46,41 @@ const Sidebar = () => {
     {
       title: "Add Payment",
       path: "/agent-dashboard/Add-Payment",
-      icon: <Money className="h-5 w-5" />,
+      icon: <PiHandDeposit className="h-5 w-5" />, // Deposit icon for payments
       roles: ["admin", "sub admin"],
     },
     {
       title: "Book Packages",
       path: "/agent-dashboard/Book-Package",
-      icon: <FaUsers className="h-5 w-5" />,
+      icon: <FaGamepad className="h-5 w-5" />, // Travel-related icon
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Book Tickets",
+      path: "/agent-dashboard/Book-Ticket",
+      icon: <MdHistory className="h-5 w-5" />, // Ticket or history-related icon
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Book Visas",
+      path: "/agent-dashboard/Book-Visa",
+      icon: <FaUserTie className="h-5 w-5" />, // Formal/business icon for visas
       roles: ["admin", "sub admin"],
     },
     {
       title: "My Bookings",
       path: "/agent-dashboard/My-Booking",
-      icon: <BiCoinStack className="h-5 w-5" />,
+      icon: <BiCoinStack className="h-5 w-5" />, // Stack icon for personal bookings
       roles: ["admin", "sub admin"],
     },
-
-
-    {
-      title: "Ledgers",
-      path: "/agent-dashboard/Orders",
-      icon: <PiHandWithdraw className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
-  
     {
       title: "Settings",
       path: "/agent-dashboard/settings",
-      icon: <FaCog className="h-5 w-5" />,
+      icon: <FaCog className="h-5 w-5" />, // Settings gear icon
       roles: ["admin"],
     },
   ];
+  
 
   
   const dropdownMenuItems = [

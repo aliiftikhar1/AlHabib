@@ -13,7 +13,7 @@ export default function AddBookingRequest() {
 
   const [formData, setFormData] = useState({
     user_id: userid,
-    package_id: '',
+    ticket_id: '',
     total_amount: '',
     paid_amount: '',
     remaining_amount: '',
@@ -22,20 +22,20 @@ export default function AddBookingRequest() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [packages, setPackages] = useState([]);
+  const [tickets, setTickets] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [selectedTicket, setSelectedTicket] = useState(null);
 
-  // Fetch packages and bookings on component mount
+  // Fetch tickets and bookings on component mount
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const packagesResponse = await fetch('/api/admin/packages');
-        const packagesData = await packagesResponse.json();
-        setPackages(packagesData);
+        const ticketsResponse = await fetch('/api/admin/tickets');
+        const ticketsData = await ticketsResponse.json();
+        setTickets(ticketsData);
 
-        const bookingsResponse = await fetch(`/api/user/package-booking/${userid}`);
+        const bookingsResponse = await fetch(`/api/user/ticket-booking/${userid}`);
         const bookingsData = await bookingsResponse.json();
         setBookings(bookingsData);
       } catch (error) {
@@ -45,18 +45,18 @@ export default function AddBookingRequest() {
     fetchData();
   }, []);
 
-  // Handle package selection change
-  const handlePackageChange = (e) => {
-    const selectedPackageId = e.target.value;
-    const selectedPackage = packages.find((pkg) => pkg.id === parseInt(selectedPackageId));
+  // Handle ticket selection change
+  const handleTicketChange = (e) => {
+    const selectedTicketId = e.target.value;
+    const selectedTicket = tickets.find((pkg) => pkg.id === parseInt(selectedTicketId));
 
-    setSelectedPackage(selectedPackage);
+    setSelectedTicket(selectedTicket);
     setFormData({
       ...formData,
-      package_id: selectedPackageId,
-      total_amount: selectedPackage ? selectedPackage.amount : '',
-      paid_amount: selectedPackage ? selectedPackage.amount : '',
-      remaining_amount: selectedPackage ? selectedPackage.amount : '',
+      ticket_id: selectedTicketId,
+      total_amount: selectedTicket ? selectedTicket.amount : '',
+      paid_amount: selectedTicket ? selectedTicket.amount : '',
+      remaining_amount: selectedTicket ? selectedTicket.amount : '',
     });
   };
 
@@ -74,7 +74,7 @@ export default function AddBookingRequest() {
     try {
       const payload = { ...formData, status: 'Pending' };
 
-      const response = await fetch('/api/user/package-booking', {
+      const response = await fetch('/api/user/ticket-booking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -99,7 +99,7 @@ export default function AddBookingRequest() {
       // Reset form data after successful submission
       setFormData({
         user_id: userid,
-        package_id: '',
+        ticket_id: '',
         total_amount: '',
         paid_amount: '',
         remaining_amount: '',
@@ -128,7 +128,7 @@ export default function AddBookingRequest() {
             <thead>
               <tr className="border-b">
                 <th className="px-4 py-2 text-left font-medium">Booking ID</th>
-                <th className="px-4 py-2 text-left font-medium">Package ID</th>
+                <th className="px-4 py-2 text-left font-medium">Ticket ID</th>
                 <th className="px-4 py-2 text-left font-medium">Total Amount</th>
                 <th className="px-4 py-2 text-left font-medium">Paid Amount</th>
                 <th className="px-4 py-2 text-left font-medium">Remaining Amount</th>
@@ -139,7 +139,7 @@ export default function AddBookingRequest() {
               {bookings.map((booking) => (
                 <tr key={booking.booking_id} className="border-b">
                   <td className="px-4 py-2">{booking.booking_id}</td>
-                  <td className="px-4 py-2">{booking.package_id}</td>
+                  <td className="px-4 py-2">{booking.ticket_id}</td>
                   <td className="px-4 py-2">{booking.total_amount}</td>
                   <td className="px-4 py-2">{booking.paid_amount}</td>
                   <td className="px-4 py-2">{booking.remaining_amount}</td>
@@ -153,31 +153,31 @@ export default function AddBookingRequest() {
         )}
       </div>
 
-      {/* Book Package Button */}
+      {/* Book Ticket Button */}
       <Button onClick={() => setShowModal(true)} className="w-full mb-4">
-        Book New Package
+        Book New Ticket
       </Button>
 
       {/* Modal for new booking */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-2xl font-bold mb-4 text-center">Book a Package</h3>
+            <h3 className="text-2xl font-bold mb-4 text-center">Book a Ticket</h3>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Package Selection */}
+              {/* Ticket Selection */}
               <div>
-                <label htmlFor="package_id" className="block text-sm font-medium">
-                  Package
+                <label htmlFor="ticket_id" className="block text-sm font-medium">
+                  Ticket
                 </label>
                 <select
-                  name="package_id"
-                  value={formData.package_id}
-                  onChange={handlePackageChange}
+                  name="ticket_id"
+                  value={formData.ticket_id}
+                  onChange={handleTicketChange}
                   className="w-full p-2 border rounded-md"
                   required
                 >
-                  <option value="">Select a Package</option>
-                  {packages.map((pkg) => (
+                  <option value="">Select a Ticket</option>
+                  {tickets.map((pkg) => (
                     <option key={pkg.id} value={pkg.id}>
                       {pkg.title}
                     </option>

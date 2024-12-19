@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { Loader } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,7 +18,51 @@ export default function AddPaymentRequest() {
     img_url: '',
   });
   const [loading, setLoading] = useState(false);
-  
+  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [fetchingHistory, setFetchingHistory] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [bankAccounts, setBankAccounts] = useState([]);
+  const [fetchingAccounts, setFetchingAccounts] = useState(false);
+
+  // Fetch payment request history
+  const fetchPaymentHistory = async () => {
+    setFetchingHistory(true);
+    try {
+      const response = await fetch(`/api/user/payment-request/${userid}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch payment history');
+      }
+
+      const data = await response.json();
+      setPaymentHistory(data);
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setFetchingHistory(false);
+    }
+  };
+
+  // Fetch bank accounts
+  const fetchBankAccounts = async () => {
+    setFetchingAccounts(true);
+    try {
+      const response = await fetch('/api/admin/bank-account', {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch bank accounts');
+      }
+
+      const data = await response.json();
+      setBankAccounts(data);
+      setShowModal(true);
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setFetchingAccounts(false);
+    }
+  };
 
   // Handle input changes
   const handleChange = (e) => {
@@ -46,7 +90,7 @@ export default function AddPaymentRequest() {
     try {
       const payload = {
         ...formData,
-        status: 'Pending', 
+        status: 'Pending',
       };
 
       const response = await fetch('/api/user/payment-request', {
@@ -61,6 +105,7 @@ export default function AddPaymentRequest() {
 
       toast.success('Payment request submitted successfully!');
       setFormData({ userid: userid, transactionno: '', amount: '', img_url: '' });
+      fetchPaymentHistory(); // Refresh the payment history after submission
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -68,90 +113,165 @@ export default function AddPaymentRequest() {
     }
   };
 
+  useEffect(() => {
+    fetchPaymentHistory(); // Fetch payment history when the component mounts
+  }, [userid]);
+
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
+    <div className="max-w-7xl mx-auto p-6 bg-white  mt-10 flex space-x-8">
       <ToastContainer />
-      <h2 className="text-2xl font-bold mb-6 text-center">Submit Payment Request</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* User ID */}
-        <div>
-          <label htmlFor="userid" className="block text-sm font-medium">
-            User ID
-          </label>
-          <Input
-            type="number"
-            name="userid"
-            value={userid}
-            // onChange={handleChange}
-            disabled
-            placeholder="Enter your User ID"
-            required
-          />
-        </div>
-
-        {/* Transaction Number */}
-        <div>
-          <label htmlFor="transactionno" className="block text-sm font-medium">
-            Transaction Number
-          </label>
-          <Input
-            type="text"
-            name="transactionno"
-            value={formData.transactionno}
-            onChange={handleChange}
-            placeholder="Enter Transaction Number"
-            required
-          />
-        </div>
-
-        {/* Amount */}
-        <div>
-          <label htmlFor="amount" className="block text-sm font-medium">
-            Amount
-          </label>
-          <Input
-            type="number"
-            name="amount"
-            value={formData.amount}
-            onChange={handleChange}
-            placeholder="Enter Amount"
-            step="0.01"
-            required
-          />
-        </div>
-
-        {/* Image Upload */}
-        <div>
-          <label htmlFor="img_url" className="block text-sm font-medium">
-            Upload Proof of Payment
-          </label>
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            required
-          />
-          {formData.img_url && (
-            <img
-              src={formData.img_url}
-              alt="Preview"
-              className="mt-4 h-32 w-auto rounded-md shadow-md"
+      {/* Payment Request Form */}
+      <div className="max-w-2xl w-full">
+        <h2 className="text-2xl font-bold mb-6 text-center">Submit Payment Request</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="userid" className="block text-sm font-medium">
+              User ID
+            </label>
+            <Input
+              type="number"
+              name="userid"
+              value={userid}
+              disabled
+              placeholder="Enter your User ID"
+              required
             />
-          )}
-        </div>
+          </div>
 
-        {/* Submit Button */}
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? (
-            <>
-              <Loader className="mr-2 animate-spin" />
-              Submitting...
-            </>
-          ) : (
-            'Submit Payment'
-          )}
-        </Button>
-      </form>
+          <div>
+            <label htmlFor="transactionno" className="block text-sm font-medium">
+              Transaction Number
+            </label>
+            <Input
+              type="text"
+              name="transactionno"
+              value={formData.transactionno}
+              onChange={handleChange}
+              placeholder="Enter Transaction Number"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="amount" className="block text-sm font-medium">
+              Amount
+            </label>
+            <Input
+              type="number"
+              name="amount"
+              value={formData.amount}
+              onChange={handleChange}
+              placeholder="Enter Amount"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="img_url" className="block text-sm font-medium">
+              Upload Proof of Payment
+            </label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              required
+            />
+            {formData.img_url && (
+              <img
+                src={formData.img_url}
+                alt="Preview"
+                className="mt-4 h-32 w-auto rounded-md shadow-md"
+              />
+            )}
+          </div>
+
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? (
+              <>
+                <Loader className="mr-2 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              'Submit Payment'
+            )}
+          </Button>
+
+          {/* Button to fetch and show bank accounts */}
+          <Button
+            className="w-full mt-4"
+            onClick={fetchBankAccounts}
+            disabled={fetchingAccounts}
+          >
+            {fetchingAccounts ? (
+              <>
+                <Loader className="mr-2 animate-spin" />
+                Fetching Accounts...
+              </>
+            ) : (
+              'Show Bank Accounts'
+            )}
+          </Button>
+        </form>
+      </div>
+
+      <div className=' bg-transparent w-2 border-r mr-2'></div>
+
+      {/* Payment History Table */}
+      <div className="w-1/2">
+        <h3 className="text-xl font-bold mb-4">Payment History</h3>
+        {fetchingHistory ? (
+          <div className="flex justify-center items-center">
+            <Loader className="animate-spin" />
+          </div>
+        ) : (
+          <table className="min-w-full table-auto border-collapse">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border-b text-left">Transaction No.</th>
+                <th className="px-4 py-2 border-b text-left">Amount</th>
+                <th className="px-4 py-2 border-b text-left">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {paymentHistory.map((payment) => (
+                <tr key={payment.id}>
+                  <td className="px-4 py-2 border-b">{payment.transactionno}</td>
+                  <td className="px-4 py-2 border-b">{payment.amount}</td>
+                  <td className="px-4 py-2 border-b">{payment.status}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* Modal for displaying bank accounts */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-lg w-full">
+            <h3 className="text-xl font-bold mb-2">Bank Accounts</h3>
+            <p className="mb-4">You can send payment to these bank accounts</p>
+            <ul className="space-y-2">
+              {bankAccounts.map((account) => (
+                <li
+                  key={account.id}
+                  className="p-4 border rounded-md flex justify-between"
+                >
+                  <div>
+                    <p className="font-semibold text-xl">{account.bank_title}</p>
+                    <p>{account.account_title}</p>
+                  </div>
+                  <p className="font-mono text-xl">{account.account_no}</p>
+                </li>
+              ))}
+            </ul>
+            <Button className="mt-4 w-full" onClick={() => setShowModal(false)}>
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

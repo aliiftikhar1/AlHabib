@@ -8,9 +8,13 @@ import {
   FaMoneyCheckAlt,
   FaCog,
   FaQuestionCircle,
-  FaUserTie, // Import the new icon for Account Management
+  FaUserTie,
+  FaBoxOpen,
+  FaTicketAlt,
+  FaPassport,
+  FaSuitcaseRolling, // Import the new icon for Account Management
 } from 'react-icons/fa';
-import { PiHandDeposit } from "react-icons/pi";
+import { PiBank, PiHandDeposit } from "react-icons/pi";
 import { PiHandWithdraw } from "react-icons/pi";
 import { BiCoinStack } from "react-icons/bi";
 import { CiBank } from "react-icons/ci";
@@ -56,13 +60,25 @@ const Sidebar = () => {
     {
       title: "Agents Management",
       path: "/admin-dashboard/Agent-Management",
-      icon: <FaUsers className="h-5 w-5" />,
+      icon: <FaUserTie className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
     {
-      title: "Bookings Management",
-      path: "/admin-dashboard/Booking-Management",
-      icon: <BiCoinStack className="h-5 w-5" />,
+      title: "Package Bookings",
+      path: "/admin-dashboard/Package-Booking-Management",
+      icon: <FaBoxOpen className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Ticket Bookings",
+      path: "/admin-dashboard/Ticket-Booking-Management",
+      icon: <FaTicketAlt className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Visa Bookings",
+      path: "/admin-dashboard/Visa-Booking-Management",
+      icon: <FaPassport className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
     {
@@ -71,38 +87,36 @@ const Sidebar = () => {
       icon: <BiCoinStack className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
-
     {
       title: "Package Management",
       path: "/admin-dashboard/Package-Management",
-      icon: <FaGamepad className="h-5 w-5" />,
+      icon: <FaSuitcaseRolling className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
-
-
     {
       title: "Visa Management",
       path: "/admin-dashboard/Visa-Management",
       icon: <PiHandDeposit className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
-
     {
       title: "Ticket Management",
       path: "/admin-dashboard/Ticket-Management",
       icon: <PiHandDeposit className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
-
-
-
     {
       title: "Ledgers",
       path: "/admin-dashboard/Ledgers",
-      icon: <PiHandWithdraw className="h-5 w-5" />,
+      icon: <MdHistory className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
-  
+    {
+      title: "Bank Accounts",
+      path: "/admin-dashboard/Bank-Accounts",
+      icon: <PiBank className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
     {
       title: "Settings",
       path: "/admin-dashboard/settings",
@@ -110,7 +124,7 @@ const Sidebar = () => {
       roles: ["admin"],
     },
   ];
-
+  
   
   const dropdownMenuItems = [
     // {
