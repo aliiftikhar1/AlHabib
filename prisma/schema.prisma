@@ -37,6 +37,7 @@ model Users {
   PackageBookings   PackageBookings[]
   VisaBookings      VisaBookings[]
   TicketBookings    TicketBookings[]
+  PaymentRequests   PaymentRequests[]
 }
 
 model Packages {
@@ -83,6 +84,9 @@ model PaymentRequests {
   amount        Float
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
+
+  Users          Users    @relation(fields: [userid], references: [id], onDelete: Cascade)
+
 }
 
 model Ledger {
@@ -145,7 +149,7 @@ model TicketBookings {
   payment_method   String // Payment method (e.g., Credit Card, PayPal)
   notes            String? // Additional notes related to the booking
   created_at       DateTime @default(now()) // Timestamp when the booking is created
-  updated_at       DateTime @updatedAt // Automatically updates when the record is updated
+  updated_at       DateTime @updatedAt 
 
   Users   Users   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   Tickets Tickets @relation(fields: [ticket_id], references: [id], onDelete: Cascade)

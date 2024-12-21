@@ -53,7 +53,12 @@ export async function POST(request) {
 // GET request to fetch all visa
 export async function GET() {
   try {
-    const visa = await prisma.paymentRequests.findMany();
+    const visa = await prisma.paymentRequests.findMany({
+      include:{
+        Users:true
+      }
+    }
+    );
     return NextResponse.json(visa);
   } catch (error) {
     console.error('Error fetching visa:', error.message);

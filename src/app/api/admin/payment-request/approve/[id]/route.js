@@ -96,7 +96,7 @@ export async function PUT(request, { params }) {
               userId: user.id, // Correct user ID
               credit: parseFloat(data.amount),
               debit: parseFloat(0),
-              balance: parseFloat(newAmount),
+              balance: parseFloat(0),
               description: 'Payment Request is verified',
             },
           }).catch(error => {

@@ -34,7 +34,7 @@ export default function PaymentRequestManagement() {
     amount: '',
     img_url: '',
     status: 'Pending',
-    verified_by:'',
+    verified_by: '',
   });
   const username = useSelector((state) => state.user.username);
 
@@ -192,6 +192,15 @@ export default function PaymentRequestManagement() {
     }
   };
 
+  const handleDownloadImage = (req) => {
+    const a = document.createElement('a');
+    a.href = decodeURIComponent(req.img_url);
+    a.download = `${req.transactionno}.jpg`; // Change file name as needed
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   return (
     <div>
       <ToastContainer />
@@ -204,9 +213,6 @@ export default function PaymentRequestManagement() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 w-auto"
           />
-          {/* <Button onClick={() => setDialogMode('add')} className="bg-blue-600">
-            <PlusIcon className="h-4 w-4 mr-2" /> Add Request
-          </Button> */}
         </div>
         {isLoading ? (
           <div className="flex justify-center">
@@ -219,6 +225,7 @@ export default function PaymentRequestManagement() {
                 <TableRow>
                   <TableHead>No.</TableHead>
                   <TableHead>UserId</TableHead>
+                  <TableHead>User</TableHead>
                   <TableHead>Image</TableHead>
                   <TableHead>Transaction No</TableHead>
                   <TableHead>Amount</TableHead>
@@ -231,6 +238,7 @@ export default function PaymentRequestManagement() {
                   <TableRow key={req.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{req.userid}</TableCell>
+                    <TableCell>{req.Users?.name}</TableCell>
                     <TableCell>
                       {req.img_url ? (
                         <img
@@ -260,16 +268,6 @@ export default function PaymentRequestManagement() {
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      {/* <Button
-                        onClick={() => {
-                          setFormData(req);
-                          setDialogMode('edit');
-                        }}
-                        variant="ghost"
-                        className="text-yellow-600"
-                      >
-                        <PencilIcon className="h-4 w-4" />
-                      </Button> */}
                       <Button
                         onClick={() => handleDelete(req.id)}
                         variant="ghost"
@@ -277,6 +275,7 @@ export default function PaymentRequestManagement() {
                       >
                         <TrashIcon className="h-4 w-4" />
                       </Button>
+                     
                     </TableCell>
                   </TableRow>
                 ))}
@@ -287,7 +286,7 @@ export default function PaymentRequestManagement() {
       </div>
 
       <Dialog open={!!dialogMode} onOpenChange={() => setDialogMode(null)}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle>
               {dialogMode === 'view' && 'Payment Request Details'}
@@ -297,33 +296,48 @@ export default function PaymentRequestManagement() {
           </DialogHeader>
           {dialogMode === 'view' && selectedRequest && (
             <>
-              <div className="space-y-4">
-                <div>
-                  <strong>UserId:</strong> {selectedRequest.userid}
+              <div className='flex w-full'>
+                <div className="w-1/2 space-y-4">
+                  <div>
+                    <strong>UserId:</strong> {selectedRequest.userid}
+                  </div>
+                  <div>
+                    <strong>Transaction No:</strong> {selectedRequest.transactionno}
+                  </div>
+                  <div>
+                    <strong>Amount:</strong> {selectedRequest.amount}
+                  </div>
+                  <div>
+                    <strong>Status:</strong> {selectedRequest.status}
+                  </div>
                 </div>
-                <div>
-                  <strong>Transaction No:</strong> {selectedRequest.transactionno}
+                <div className='w-1/2'>
+                  <img
+                    src={decodeURIComponent(selectedRequest.img_url)}
+                    alt="Payment"
+                    className="w-full h-80 object-contain"
+                  />
                 </div>
-                <div>
-                  <strong>Amount:</strong> {selectedRequest.amount}
-                </div>
-                <div>
-                  <strong>Status:</strong> {selectedRequest.status}
-                </div>
-                <img
-                  src={decodeURIComponent(selectedRequest.img_url)}
-                  alt="Payment"
-                  className="w-full h-40 object-cover"
-                />
               </div>
-              <div className="mt-4 flex space-x-4">
+              <div className="mt-4 flex w-full  ">
                 {selectedRequest.status === 'Pending' && (
-                  <>
+                  <div className='flex justify-between w-full'>
+                    <div className='space-x-4'>
                     <Button onClick={handleApprove}>Approve</Button>
                     <Button onClick={handleReject} className="bg-red-600">
                       Reject
                     </Button>
-                  </>
+                    </div>
+                    <div>
+                    <Button
+                        onClick={() => handleDownloadImage(selectedRequest)}
+
+                        className="text-green-600 bg-white hover:bg-gray-100 border-green-600 border"
+                      >
+                        Download Image
+                      </Button>
+                      </div>
+                  </div>
                 )}
               </div>
             </>

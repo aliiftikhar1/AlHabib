@@ -19,11 +19,11 @@ const Contact = () => {
             <div className="space-y-4 text-left">
               <div className="flex items-center gap-2">
                 <MapPin className="text-blue-600" size={24} />
-                <p className="text-gray-600">123 Travel Street, City, Country</p>
+                <p className="text-gray-600">Jamia-tul-Habib jhung road Faisalabad </p>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="text-blue-600" size={24} />
-                <p className="text-gray-600">Phone: +123 456 7890</p>
+                <p className="text-gray-600">Phone: +92 322 2355327</p>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="text-blue-600" size={24} />
@@ -33,8 +33,8 @@ const Contact = () => {
 
             {/* Google Map */}
             <div className="mt-8">
-              <iframe
-                src="https://maps.google.com/maps?q=New%20York&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d212.83415924471316!2d73.03720660898065!3d31.404576794543125!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x392243c2a7d13f81%3A0x9b9e5bbdec46b5a0!2sjamia-tul-Habib%20jhung%20road%20Faisalabad!5e0!3m2!1sen!2s!4v1734780681443!5m2!1sen!2s"
                 className="w-full h-60 border rounded-lg"
                 allowFullScreen
                 loading="lazy"
