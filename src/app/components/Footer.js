@@ -60,9 +60,6 @@ const Footer = () => {
           <a href="#" className="hover:text-blue-500 hover:underline">
             Hoteliers
           </a>
-          <a href="#" className="hover:text-blue-500 hover:underline">
-            Data Privacy Policy
-          </a>
         
         </div>
 
