@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@radix-ui/react-label';
@@ -8,6 +8,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Eye, EyeClosed, EyeClosedIcon, EyeIcon } from 'lucide-react';
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 
 const AgentSignup = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +26,16 @@ const AgentSignup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const router = useRouter();
+
+  const userrole = useSelector((data) => data.user.role);
+   useEffect(() => {
+        if (userrole === 'admin' || userrole === 'superadmin') {
+          router.push('/admin-dashboard/Analytics');
+        } else if (userrole === 'agent') {
+          router.push('/agent-dashboard/Analytics');
+        }
+    }, [userrole]);
 
   const handleChange = (e) => {
     setFormData({

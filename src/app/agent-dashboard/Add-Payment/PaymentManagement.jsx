@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 
 export default function AddPaymentRequest() {
   const userid = useSelector((state) => state.user.id);
+  const userbalance = useSelector((state) => state.user.balance);
 
   const [formData, setFormData] = useState({
     userid: userid,
@@ -118,10 +119,26 @@ export default function AddPaymentRequest() {
   }, [userid]);
 
   return (
-    <div className="max-w-7xl mx-auto p-6 bg-white  mt-10 flex space-x-8">
+    <> <p className="w-48 mt-4 absolute z-0 top-[60px] right-[250px] text-lg px-4 py-1 rounded-full border-gray-600  border font-bold">Balance : {userbalance}</p>
+     <Button
+    className="w-48 mt-4 absolute z-0 top-[60px] right-[30px]"
+    onClick={fetchBankAccounts}
+    disabled={fetchingAccounts}
+  >
+    {fetchingAccounts ? (
+      <>
+        <Loader className="mr-2 animate-spin" />
+        Fetching Accounts...
+      </>
+    ) : (
+      'Show Bank Accounts'
+    )}
+  </Button>
+    <div className="w-full  mx-auto p-0 bg-white  mt-16 flex space-x-8">
       <ToastContainer />
+      
       {/* Payment Request Form */}
-      <div className="max-w-2xl w-full">
+      <div className="max-w-sm  w-full">
         <h2 className="text-2xl font-bold mb-6 text-center">Submit Payment Request</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -198,24 +215,11 @@ export default function AddPaymentRequest() {
           </Button>
 
           {/* Button to fetch and show bank accounts */}
-          <Button
-            className="w-full mt-4"
-            onClick={fetchBankAccounts}
-            disabled={fetchingAccounts}
-          >
-            {fetchingAccounts ? (
-              <>
-                <Loader className="mr-2 animate-spin" />
-                Fetching Accounts...
-              </>
-            ) : (
-              'Show Bank Accounts'
-            )}
-          </Button>
+         
         </form>
       </div>
 
-      <div className=' bg-transparent w-2 border-r mr-2'></div>
+      {/* <div className=' bg-transparent w-2 border-r mr-2'></div> */}
 
       {/* Payment History Table */}
       <div className="w-1/2">
@@ -225,12 +229,14 @@ export default function AddPaymentRequest() {
             <Loader className="animate-spin" />
           </div>
         ) : (
-          <table className="min-w-full table-auto border-collapse">
+          <table className="w-full table-full border-collapse text-sm">
             <thead>
               <tr>
-                <th className="px-4 py-2 border-b text-left">Transaction No.</th>
+                <th className="px-4 py-2 border-b text-left">Trnx No.</th>
                 <th className="px-4 py-2 border-b text-left">Amount</th>
                 <th className="px-4 py-2 border-b text-left">Status</th>
+                <th className="px-4 py-2 border-b text-left">Created At</th>
+                <th className="px-4 py-2 border-b text-left">Updated At</th>
               </tr>
             </thead>
             <tbody>
@@ -239,6 +245,8 @@ export default function AddPaymentRequest() {
                   <td className="px-4 py-2 border-b">{payment.transactionno}</td>
                   <td className="px-4 py-2 border-b">{payment.amount}</td>
                   <td className="px-4 py-2 border-b">{payment.status}</td>
+                  <td className="px-4 py-2 border-b text-xs">{Date(payment.created_at)}</td>
+                  <td className="px-4 py-2 border-b text-xs">{Date(payment.updated_at)}</td>
                 </tr>
               ))}
             </tbody>
@@ -273,5 +281,6 @@ export default function AddPaymentRequest() {
         </div>
       )}
     </div>
+    </>
   );
 }

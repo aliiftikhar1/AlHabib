@@ -6,7 +6,7 @@ import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 const Footer = () => {
   return (
     <footer className="bg-gray-700 w-full text-white py-8 border-t">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 gap-8 md:grid-cols-6 ">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 gap-8 md:grid-cols-5 ">
         {/* Company Information */}
         <div className="flex flex-col gap-3  col-span-2">
           <h2 className="text-3xl font-bold">AlHabib Travels</h2>
@@ -48,8 +48,8 @@ const Footer = () => {
         {/* Learn More Links */}
         <div className="flex flex-col gap-2">
           <h2 className="text-xl font-semibold">Learn More</h2>
-          <a href="#" className="hover:text-blue-500 hover:underline">
-            Book on AlHabib
+          <a href="/User-Registeration" className="hover:text-blue-500 hover:underline">
+            Become an Agent
           </a>
           <a href="#" className="hover:text-blue-500 hover:underline">
             Affiliates
@@ -64,7 +64,7 @@ const Footer = () => {
         </div>
 
         {/* Explore Links */}
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <h2 className="text-xl font-semibold">Explore</h2>
           <a href="#" className="hover:text-blue-500 hover:underline">
             Airport Directory
@@ -78,11 +78,11 @@ const Footer = () => {
           <a href="#" className="hover:text-blue-500 hover:underline">
             Hotel Chains
           </a>
-        </div>
+        </div> */}
 
         {/* Download Links */}
         <div className="flex flex-col gap-2  justify-between">
-          <div className="flex flex-col gap-2">
+          {/* <div className="flex flex-col gap-2">
           <h2 className="text-xl font-semibold">Download</h2>
           <a href="#" className="hover:text-blue-500 hover:underline">
             AlHabib App (iOS)
@@ -90,12 +90,12 @@ const Footer = () => {
           <a href="#" className="hover:text-blue-500 hover:underline">
             AlHabib App (Android)
           </a>
-          </div>
+          </div> */}
           <div>
           <h2 className="text-xl font-semibold">Follow Us</h2>
           <div className="flex gap-4 text-3xl">
           <a href="https://www.facebook.com/profile.php?id=100090524899051" className="hover:text-blue-500 hover:underline">
-            <FaFacebook/>
+            <FaFacebook/> 
           </a> 
           <a href="https://www.instagram.com/alhabibtraveland" className="hover:text-blue-500 hover:underline">
             <FaInstagram/>

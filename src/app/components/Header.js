@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import { AddUser } from '@/app/Store/Slice';
+import { AddUser, UpdateUser } from '@/app/Store/Slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
@@ -9,12 +9,14 @@ import { Loader, Menu } from 'lucide-react'; // Import loader icon
 import toast, { Toaster } from 'react-hot-toast'; // Import toast for notifications
 import { Button } from "@/components/ui/button";
 import { Logout } from '@/app/Store/Slice';
+import UpdateUserRedux from './updateuserredux';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const dispatch = useDispatch();
   // const Authenticated = useSelector((data) => data.isAuthenticated);
+  const userid = useSelector((data) => data.user.id);
   const userrole = useSelector((data) => data.user.role);
   const username = useSelector((data) => data.user.username);
   const router = useRouter();
@@ -27,14 +29,11 @@ export default function Header() {
   });
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); // Track loading state
+  if(userid){
+    UpdateUserRedux();
+  }
 
-  // useEffect(() => {
-  //   if (userrole === 'admin' || userrole === 'superadmin') {
-  //     router.push('/admin-dashboard/Analytics');
-  //   } else if (userrole === 'agent') {
-  //     router.push('/agent-dashboard/Analytics');
-  //   }
-  // }, [userrole]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,7 +82,7 @@ export default function Header() {
     });
   };
 
-
+  
   return (
     <header className="fixed top-0 w-full h-16 bg-white backdrop-blur-sm text-black border-b flex items-center px-6 md:px-10 z-40">
       <div className="flex justify-between items-center w-full">

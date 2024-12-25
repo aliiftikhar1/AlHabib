@@ -32,9 +32,9 @@ export default function NewHeroSection() {
   }, [])
 
   return (
-    <div className="relative  flex flex-col justify-center items-center overflow-hidden ">
+    <div className="relative  flex flex-col h-screen justify-center items-center overflow-hidden ">
       {/* Background Images Slider */}
-      <div className="absolute inset-0 transition-opacity duration-1000 h-[550px]">
+      <div className="absolute inset-0 transition-opacity duration-1000 h-screen">
         {backgroundImages.map((image, index) => (
           <div
             key={image}
@@ -48,7 +48,7 @@ export default function NewHeroSection() {
             />
           </div>
         ))}
-        <div className="absolute bottom-0 left-0 right-0">
+        {/* <div className="absolute bottom-0 left-0 right-0">
           <svg
             viewBox="0 0 1440 320"
             className="w-full"
@@ -60,11 +60,11 @@ export default function NewHeroSection() {
               d="M0,128L60,138.7C120,149,240,171,360,160C480,149,600,107,720,96C840,85,960,107,1080,122.7C1200,139,1320,149,1380,154.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
             ></path>
           </svg>
-        </div>
+        </div> */}
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-40 sm:px-6 lg:px-8 ">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:px-8 ">
         <h1 className="text-center text-4xl capitalize p-6 border-4 border-white bg-black/10 backdrop-blur-sm font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
           Discover the real value of travel
         </h1>
@@ -107,7 +107,7 @@ export default function NewHeroSection() {
             </button>
             </a>
           </div>
-          <div className='border-x border-b border-black rounded-b-lg'>
+          <div className='border-x border-b border-black rounded-b-lg bg-white'>
 
           {activeTab === 'flights' && (
             <div className='bg-white pt-4 px-4'>

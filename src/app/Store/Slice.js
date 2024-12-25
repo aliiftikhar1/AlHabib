@@ -11,7 +11,7 @@ export const userSlice = createSlice({
   reducers: {
     // Action to add user and set authentication status
     AddUser(state, action) {
-      const { id, fullname, username, balance = 0, role } = action.payload; // Extract properties, provide default value for balance
+      const { id, fullname, username, balance, role } = action.payload; // Extract properties, provide default value for balance
       const userData = {
         id,
         fullname,
