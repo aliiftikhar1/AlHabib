@@ -25,6 +25,7 @@ import { UserIcon } from '@heroicons/react/24/outline';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { Logout } from '@/app/Store/Slice';
+import Image from 'next/image';
 const Sidebar = () => {
   const dispatch = useDispatch();
   const [userName, setUserName] = useState('Guest'); // Default values
@@ -153,7 +154,9 @@ const Sidebar = () => {
       <div className="px-6 pt-2 text-center">
         <div
           className=" mx-auto mb-4 size-24 text-3xl flex justify-center items-center rounded-full border"
-        >AL</div>
+        >
+          <Image src="/logo.png" width={50} height={50} alt="logo" />
+        </div>
         <h2 className="text-xl font-semibold">Al Habib</h2>
       </div>
 

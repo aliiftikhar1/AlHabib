@@ -44,6 +44,18 @@ const Sidebar = () => {
   // Define menu items with roles
   const menuItems = [
     {
+      title: "Book Tickets",
+      path: "/agent-dashboard/Book-Ticket",
+      icon: <MdHistory className="h-5 w-5" />, // Ticket or history-related icon
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Book Flights",
+      path: "/agent-dashboard/Book-Flights",
+      icon: <MdHistory className="h-5 w-5" />, // Ticket or history-related icon
+      roles: ["admin", "sub admin"],
+    },
+    {
       title: "Add Payment",
       path: "/agent-dashboard/Add-Payment",
       icon: <PiHandDeposit className="h-5 w-5" />, // Deposit icon for payments
@@ -55,12 +67,7 @@ const Sidebar = () => {
       icon: <FaGamepad className="h-5 w-5" />, // Travel-related icon
       roles: ["admin", "sub admin"],
     },
-    {
-      title: "Book Tickets",
-      path: "/agent-dashboard/Book-Ticket",
-      icon: <MdHistory className="h-5 w-5" />, // Ticket or history-related icon
-      roles: ["admin", "sub admin"],
-    },
+   
     {
       title: "Book Visas",
       path: "/agent-dashboard/Book-Visa",
@@ -109,9 +116,11 @@ const Sidebar = () => {
       {/* Profile Section */}
       <div className="px-6 pt-2 text-center">
         <div
-          className=" mx-auto mb-4 size-24 text-3xl flex justify-center items-center rounded-full border"
-        >AL</div>
-        <h2 className="text-xl font-semibold">Al Habib</h2>
+          className=" mb-4 w-full text-3xl flex justify-center items-center "
+        >
+          <img src="/logo/logo1.jpg" width={50} height={50} alt="logo" className='object-contain w-full h-20'/>
+          </div>
+        {/* <h2 className="text-xl font-semibold">Al Habib</h2> */}
       </div>
 
       {/* Menu Section */}
@@ -128,16 +137,7 @@ const Sidebar = () => {
                     </button>
                   </a>
                 </li>
-                <li key='profile'>
-                  <a href='/agent-dashboard/Manage-Profile'>
-                    <button className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full">
-                      <UserIcon className='size-5'/>
-                      <span className="ml-3 text-sm font-medium">
-                        Manage Profile
-                      </span>
-                    </button>
-                  </a>
-                </li>
+                
           {menuItems.map(
             (item) =>
               item.roles.includes(userRole) && (
@@ -153,7 +153,16 @@ const Sidebar = () => {
                 </li>
               )
           )}
-
+          <li key='profile'>
+                  <a href='/agent-dashboard/Manage-Profile'>
+                    <button className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full">
+                      <UserIcon className='size-5'/>
+                      <span className="ml-3 text-sm font-medium">
+                        Manage Profile
+                      </span>
+                    </button>
+                  </a>
+                </li>
           {/* Dropdown Menu */}
           {dropdownMenuItems.map(
             (category, index) =>
