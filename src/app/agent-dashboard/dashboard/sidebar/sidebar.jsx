@@ -56,24 +56,25 @@ const Sidebar = () => {
       roles: ["admin", "sub admin"],
     },
     {
-      title: "Add Payment",
-      path: "/agent-dashboard/Add-Payment",
-      icon: <PiHandDeposit className="h-5 w-5" />, // Deposit icon for payments
-      roles: ["admin", "sub admin"],
-    },
-    {
       title: "Book Packages",
       path: "/agent-dashboard/Book-Package",
       icon: <FaGamepad className="h-5 w-5" />, // Travel-related icon
       roles: ["admin", "sub admin"],
     },
-   
     {
-      title: "Book Visas",
-      path: "/agent-dashboard/Book-Visa",
-      icon: <FaUserTie className="h-5 w-5" />, // Formal/business icon for visas
+      title: "Add Payment",
+      path: "/agent-dashboard/Add-Payment",
+      icon: <PiHandDeposit className="h-5 w-5" />, // Deposit icon for payments
       roles: ["admin", "sub admin"],
     },
+   
+   
+    // {
+    //   title: "Book Visas",
+    //   path: "/agent-dashboard/Book-Visa",
+    //   icon: <FaUserTie className="h-5 w-5" />, // Formal/business icon for visas
+    //   roles: ["admin", "sub admin"],
+    // },
     {
       title: "My Bookings",
       path: "/agent-dashboard/My-Booking",

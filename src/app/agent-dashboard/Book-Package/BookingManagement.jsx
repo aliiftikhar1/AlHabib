@@ -118,8 +118,15 @@ export default function AddBookingRequest() {
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
       <ToastContainer />
-      <h2 className="text-2xl font-bold mb-6 text-center">Booking Requests</h2>
-
+      <div className='w-full flex justify-between'>
+        <div></div>
+        <div>
+        <h2 className="text-2xl font-bold mb-6 text-center">Booking Requests</h2>
+        </div>
+        <div><Button onClick={() => setShowModal(true)} className="w-full mb-4">
+        Book New Package
+      </Button></div>
+      </div>
       {/* Show existing bookings in a table */}
       <div className="mb-6">
         <h3 className="text-xl font-semibold mb-4">Your Bookings</h3>
@@ -154,9 +161,7 @@ export default function AddBookingRequest() {
       </div>
 
       {/* Book Package Button */}
-      <Button onClick={() => setShowModal(true)} className="w-full mb-4">
-        Book New Package
-      </Button>
+      
 
       {/* Modal for new booking */}
       {showModal && (
