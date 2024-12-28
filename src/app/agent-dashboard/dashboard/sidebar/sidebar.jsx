@@ -43,12 +43,12 @@ const Sidebar = () => {
 
   // Define menu items with roles
   const menuItems = [
-    {
-      title: "Book Tickets",
-      path: "/agent-dashboard/Book-Ticket",
-      icon: <MdHistory className="h-5 w-5" />, // Ticket or history-related icon
-      roles: ["admin", "sub admin"],
-    },
+    // {
+    //   title: "Book Tickets",
+    //   path: "/agent-dashboard/Book-Ticket",
+    //   icon: <MdHistory className="h-5 w-5" />, // Ticket or history-related icon
+    //   roles: ["admin", "sub admin"],
+    // },
     {
       title: "Book Flights",
       path: "/agent-dashboard/Book-Flights",

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { User, Plus, Minus } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Calendar } from "@/components/ui/calendar";
+import Flights from "./Flights";
 
 const FlightSearchBar = () => {
   const [tripType, setTripType] = useState("one-way");
@@ -42,6 +43,8 @@ const FlightSearchBar = () => {
   };
 
   return (
+    <div className="w-full flex flex-col">
+     
     <div className="border-gray-200 border p-6 rounded-lg shadow-[0_0_5px_gray] mt-4 max-w-5xl mx-auto">
       {/* Trip Type */}
       <div className="flex space-x-6">
@@ -165,7 +168,7 @@ const FlightSearchBar = () => {
             onClick={handleModify}
             className="bg-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-blue-700"
           >
-            Modify
+            Search
           </button>
         </div>
       </div>
@@ -203,6 +206,10 @@ const FlightSearchBar = () => {
           </button>
         </Dialog.Content>
       </Dialog.Root>
+    </div>
+    <div>
+      <Flights/>
+      </div>
     </div>
   );
 };

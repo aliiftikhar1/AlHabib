@@ -96,9 +96,9 @@ model Ledger {
   credit         Float    @default(0.0) // Amount credited
   balance        Float    @default(0.0) // Current balance
   description    String?  @db.VarChar(255) // Description of the transaction
-  transaction_at DateTime @default(now()) @db.Timestamp // Timestamp of the transaction
-  created_at     DateTime @default(now()) @db.Timestamp // Record creation timestamp
-  updated_at     DateTime @updatedAt @db.Timestamp // Record last updated timestamp
+  transaction_at DateTime @default(now()) 
+  created_at     DateTime @default(now()) 
+  updated_at     DateTime @updatedAt 
   Users          Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -163,4 +163,66 @@ model BankAccounts {
   created_at    DateTime @default(now()) 
   updated_at    DateTime @updatedAt       // Automatically updates when the record is updated
 
+}
+
+
+model FlightDetails {
+  id          Int      @id @default(autoincrement())
+  airline     String
+  airline_sn  String
+  meal        Boolean
+  fare        String
+  type        String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  SingleFlight   SingleFlight[]
+  FlightBookings FlightBookings[]
+}
+
+model SingleFlight {
+  id               Int           @id @default(autoincrement())
+  flightdetails_id Int
+  flight_number    Int
+  flight_date      DateTime      @default(now())
+  origin           String
+  destination      String
+  dept_time        DateTime      @default(now())
+  arrival_time     DateTime      @default(now())
+  baggage          String
+  seats            Int            @default(2)
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+
+  FlightDetails FlightDetails @relation(fields: [flightdetails_id], references: [id], onDelete: Cascade)
+}
+
+model FlightBookings {
+  id               Int           @id @default(autoincrement())
+  flightdetails_id Int
+  passenger_id     Int
+  childs           Int
+  adults           Int
+  infants          Int
+  status           String
+  remarks          String
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+
+  FlightDetails FlightDetails @relation(fields: [flightdetails_id], references: [id], onDelete: Cascade)
+  Passengers    Passengers    @relation(fields: [passenger_id], references: [id], onDelete: Cascade)
+}
+
+model Passengers {
+  id          Int      @id @default(autoincrement())
+  givenname   String
+  surname     String
+  title       String
+  type        String    @default("Adult")
+  passportid  String
+  dob         String
+  doe         String
+ created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+  FlightBookings FlightBookings[]
 }
