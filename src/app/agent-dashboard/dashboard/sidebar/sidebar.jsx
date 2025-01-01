@@ -56,6 +56,12 @@ const Sidebar = () => {
       roles: ["admin", "sub admin"],
     },
     {
+      title: "My Flight Booking",
+      path: "/agent-dashboard/Flight-Bookings",
+      icon: <FaGamepad className="h-5 w-5" />, // Travel-related icon
+      roles: ["admin", "sub admin"],
+    },
+    {
       title: "Book Packages",
       path: "/agent-dashboard/Book-Package",
       icon: <FaGamepad className="h-5 w-5" />, // Travel-related icon

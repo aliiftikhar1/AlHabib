@@ -65,6 +65,30 @@ const Sidebar = () => {
       roles: ["admin", "sub admin"],
     },
     {
+      title: "Flight Groups",
+      path: "/admin-dashboard/Flight-Group-Management",
+      icon: <FaBoxOpen className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Flight Sector",
+      path: "/admin-dashboard/Flight-Sector-Management",
+      icon: <FaBoxOpen className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Flight Airline",
+      path: "/admin-dashboard/Flight-Airline-Management",
+      icon: <FaBoxOpen className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Flights",
+      path: "/admin-dashboard/Group-Flight-Management",
+      icon: <FaBoxOpen className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
       title: "Package Bookings",
       path: "/admin-dashboard/Package-Booking-Management",
       icon: <FaBoxOpen className="h-5 w-5" />,
@@ -150,14 +174,13 @@ const Sidebar = () => {
 
   return (
     <div className="bg-white text-gray-800 w-full min-h-screen flex flex-col border">
-      {/* Profile Section */}
-      <div className="px-6 pt-2 text-center">
+    <div className="px-6 pt-2 text-center">
         <div
-          className=" mx-auto mb-4 size-24 text-3xl flex justify-center items-center rounded-full border"
+          className=" mb-4 w-full text-3xl flex justify-center items-center "
         >
-          <Image src="/logo.png" width={50} height={50} alt="logo" />
-        </div>
-        <h2 className="text-xl font-semibold">Al Habib</h2>
+          <img src="/logo/logo1.jpg" width={50} height={50} alt="logo" className='object-contain w-full h-20'/>
+          </div>
+        {/* <h2 className="text-xl font-semibold">Al Habib</h2> */}
       </div>
 
       {/* Menu Section */}
