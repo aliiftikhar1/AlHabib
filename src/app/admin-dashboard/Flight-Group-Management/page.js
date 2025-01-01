@@ -253,7 +253,7 @@ export default function FlightGroupManagement() {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{group.title}</TableCell>
                     <TableCell>
-                      <img src={group.image} alt={group.title} className="h-10 w-10 object-cover" />
+                      <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${group.image}`} alt={group.title} className="h-10 w-10 object-cover" />
                     </TableCell>   
                     <TableCell>
                       <Button onClick={() => handleUpdateGroup(group)} variant="ghost">
