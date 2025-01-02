@@ -32,42 +32,29 @@ export async function GET(request, { params }) {
 
 // PUT: Update a SingleGroupFlight by ID
 export async function PUT(request, { params }) {
+  const { id } = params;
+
   try {
-    const { id } = params;
-    const body = await request.json();
-    const {
-      flightgroup_id,
-      flightsector_id,
-      flightairline_id,
-      flight_number,
-      flight_date,
-      origin,
-      destination,
-      dept_time,
-      arrival_time,
-      baggage,
-      seats,
-      fare,
-      meal,
-    } = body;
+    const flight = await request.json();
+    console.log('id:', id);
+    console.log('body:', flight);
+   
 
     const updatedFlight = await prisma.SingleGroupFlight.update({
-      where: { id: parseInt(id, 10) },
+      where: { id: parseInt(id) },
       data: {
-        flightgroup_id:parseInt(flightgroup_id),
-        flightsector_id:parseInt(flightsector_id),
-        flightairline_id:parseInt(flightairline_id),
-        flight_number: parseInt(flight_number),
-        flight_date: new Date(flight_date) || new Date(),
-        origin,
-        destination,
-        dept_time: new Date(dept_time)  || new Date(),
-        arrival_time:  new Date(arrival_time)  || new Date(),
-        baggage,
-        seats:parseInt(seats),
-        fare:parseInt(fare),
-        meal:meal ,
-        updated_at: new Date(),
+            flight_number: parseInt(flight.flight_number),
+            flight_date: new Date(flight.flight_date),
+            origin: flight.origin,
+            destination: flight.destination,
+            dept_time: new Date(flight.dept_time),
+            arrival_time: new Date(flight.arrival_time),
+            baggage: flight.baggage,
+            seats: parseInt(flight.seats),
+            fare: parseInt(flight.fare),
+            created_at: new Date(),
+            updated_at: new Date(),
+            meal:flight.meal ,
       },
     });
 
@@ -85,13 +72,13 @@ export async function PUT(request, { params }) {
   }
 }
 
-// DELETE: Delete a SingleGroupFlight by ID
+// DELETE: Delete a single group flight
 export async function DELETE(request, { params }) {
-  try {
-    const { id } = params;
+  const { id } = params;
 
+  try {
     await prisma.SingleGroupFlight.delete({
-      where: { id: parseInt(id, 10) },
+      where: { id: parseInt(id) },
     });
 
     return NextResponse.json({

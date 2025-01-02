@@ -56,6 +56,12 @@ const Sidebar = () => {
       roles: ["admin", "sub admin"],
     },
     {
+      title: "Flight Groups",
+      path: "/agent-dashboard/Flight-Groups",
+      icon: <MdHistory className="h-5 w-5" />, // Ticket or history-related icon
+      roles: ["admin", "sub admin"],
+    },
+    {
       title: "My Flight Booking",
       path: "/agent-dashboard/Flight-Bookings",
       icon: <FaGamepad className="h-5 w-5" />, // Travel-related icon

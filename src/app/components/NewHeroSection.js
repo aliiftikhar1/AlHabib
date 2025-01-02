@@ -64,8 +64,8 @@ export default function NewHeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-20 sm:px-6 lg:px-8 ">
-        <h1 className="text-center text-4xl capitalize p-6 border-4 border-white bg-black/10 backdrop-blur-sm font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+      <div className="relative z-10 mx-auto md:max-w-7xl px-4 mt-20 md:mt-0 md:pt-20  md:px-8 ">
+        <h1 className="text-center text-2xl md:text-4xl capitalize p-6 border-4 border-white bg-black/10 backdrop-blur-sm font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
           Discover the real value of travel
         </h1>
 
@@ -119,7 +119,7 @@ export default function NewHeroSection() {
               </div>
 
               {/* Flight Search Fields */}
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
                 <div className="space-y-2">
                   <label className="text-sm text-gray-600">From</label>
                   <Input placeholder="Enter city or airport" />
@@ -145,8 +145,8 @@ export default function NewHeroSection() {
 
               {/* Additional Options */}
               <div className="mt-4 flex flex-wrap items-center gap-4">
-                <Select defaultValue="1">
-                  <SelectTrigger className="w-[180px]">
+                <Select defaultValue="1" >
+                  <SelectTrigger className="w-[48%]">
                     <SelectValue placeholder="Select passengers" />
                   </SelectTrigger>
                   <SelectContent>
@@ -157,7 +157,7 @@ export default function NewHeroSection() {
                 </Select>
 
                 <Select defaultValue="economy">
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-[48%]">
                     <SelectValue placeholder="Select class" />
                   </SelectTrigger>
                   <SelectContent>
@@ -181,7 +181,7 @@ export default function NewHeroSection() {
             <div className="bg-white p-4 space-y-2">
               <h2 className="text-xl font-semibold">Where do you want to stay?</h2>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
                 <div className="space-y-1">
                   <label className="text-sm text-gray-600">Destination</label>
                   <Input

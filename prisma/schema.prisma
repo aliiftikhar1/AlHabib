@@ -320,3 +320,39 @@ model GroupPassengers {
   updated_at          DateTime            @updatedAt
   GroupFlightBookings GroupFlightBookings @relation(fields: [groupbooking_id], references: [id], onDelete: Cascade)
 }
+
+model RoomType{
+  id                  Int                 @id @default(autoincrement())
+  title               String
+  description        String
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  Hotel               Hotel[]
+}
+
+model  Hotel{
+  id                  Int                 @id @default(autoincrement())
+  name                String
+  description        String
+  location             String
+  price                 Int
+  roomtype              Int
+  availability          Boolean
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  RoomType             RoomType           @relation(fields: [roomtype], references: [id], onDelete: Cascade)
+  HotelBooking          HotelBooking[]
+}
+
+model HotelBooking{
+  id                  Int                 @id @default(autoincrement())
+  hotel_id            Int
+  check_in_date         DateTime            @default(now())
+  check_out             DateTime            @default(now())
+  rooms                  Int
+  adults                  Int
+  childs                  Int
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  Hotel                 Hotel             @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
+}
