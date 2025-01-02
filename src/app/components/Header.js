@@ -262,6 +262,20 @@ export default function Header() {
           >
             Contact
           </a>
+          <a
+            href="/"
+            className="hover:text-blue-500"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Flights
+          </a>
+          <a
+            href="/"
+            className="hover:text-blue-500"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Hotels
+          </a>
         </nav>
       )}
     </header>

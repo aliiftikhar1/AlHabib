@@ -1,18 +1,17 @@
 import prisma from "@/utils/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET(request,{params}) {
+export async function GET(request, { params }) {
   try {
     const { id } = params;
-    // const newid = await getid(slug);
     const groupflights = await prisma.singleGroupFlight.findMany({
       where: {
         flightgroup_id: parseInt(id),
       },
-      include:{
+      include: {
         FlightGroups: true,
-        FlightSector:true,
-        FlightAirline:true,
+        FlightSector: true,
+        FlightAirline: true,
       }
     });
     return NextResponse.json(groupflights);
@@ -29,11 +28,3 @@ export async function GET(request,{params}) {
   }
 }
 
-async function getid(slug) {
-  const response = await prisma.flightGroups.findMany({
-    where: {
-      title: slug,
-    },
-  });
-  return resposne[0].id;
-}

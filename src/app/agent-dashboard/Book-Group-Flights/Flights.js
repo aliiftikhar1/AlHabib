@@ -48,7 +48,7 @@ export default function Flights(group) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {flightGroup.map((flight, flightIndex) => (
+                                
                                     <tr
                                         key={flightIndex}
                                         className={`${
@@ -83,7 +83,7 @@ export default function Flights(group) {
                                         <td className="p-2">{flight.baggage}</td>
                                         <td className="p-2">{flightGroup.meal ? "Yes" : "No"}</td>
                                     </tr>
-                                ))}
+                                
                             </tbody>
                         </table>
                         <div className="flex justify-end mt-2">

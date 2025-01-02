@@ -8,7 +8,7 @@ const AboutUs = () => {
           {/* Left Side - Content */}
           <div className="md:w-1/2 text-center md:text-left flex flex-col text-base md:text-lg">
             <h2 className="text-4xl font-bold text-gray-800 mb-6">About Us</h2>
-            <p className="text-gray-600 md:leading-relaxed md:px-0 px-2 text-justify md:text-pretty">
+            <p className="text-gray-600 md:leading-relaxed md:px-0 px-4 text-justify md:text-pretty">
               Welcome to Al Habib Travel Agency, your trusted partner for seamless travel experiences. With over 20 years of expertise, we specialize in creating unforgettable journeys tailored to your needs.
               <br></br>
               At the heart of our agency lies a passion for connecting people to the world through travel. We believe that every journey should be as unique as the traveler embarking on it. Whether it's a solo adventure, a family vacation, or a corporate retreat, we are dedicated to crafting personalized itineraries that reflect your dreams and desires.
