@@ -5,11 +5,12 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Eye, Loader } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import html2canvas from 'html2canvas';
-
-
+import { Label } from '@radix-ui/react-label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectTrigger, SelectContent, SelectValue, SelectItem } from '@/components/ui/select';
 // Fetch Ledger Entries from API
 const fetchLedgerEntries = async () => {
 
@@ -25,13 +26,23 @@ export default function LedgerManagement() {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [ledgerEntries, setLedgerEntries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showManualEntryDialog, setShowManualEntryDialog] = useState(false)
+  const [extra, setextra]=useState(false)
+  const [manualEntry, setManualEntry] = useState({
+    agent_id: 8,
+    description: '',
+    amount_in: 0,
+    amount_out: 0,
+    type: '',
+    balance:'',
+  })
 
   useEffect(() => {
     fetchLedgerEntries()
       .then(setLedgerEntries)
       .catch((err) => toast.error(err.message))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [extra]);
 
   useEffect(() => {
     console.log("Selected Entry", selectedEntry)
@@ -73,8 +84,42 @@ export default function LedgerManagement() {
       console.error('Failed to capture screenshot for printing:', error);
     }
   };
-
-
+  const AddManualEntry = async (entry) => {
+    const response = await fetch('/api/admin/ledger/manual-entry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(entry),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to add manual entry');
+    }
+    return response.json();
+  };
+  
+  const handleManualEntrySubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const result = await AddManualEntry(manualEntry);
+      toast.success('Manual entry added successfully!');
+      console.log('Manual entry submitted:', result);
+      setextra(!extra);
+    } catch (error) {
+      toast.error(error.message || 'An error occurred while adding manual entry');
+      console.error('Error:', error);
+    }
+  
+    setShowManualEntryDialog(false);
+    setManualEntry({
+      agent_id: 8,
+      description: '',
+      amount_in: 0,
+      amount_out: 0,
+      type: '',
+      balance: '',
+    });
+  };
   // Calculate total debit and credit
   const totalDebit = ledgerEntries.reduce((total, entry) => total + entry.amount_in, 0);
   const totalCredit = ledgerEntries.reduce((total, entry) => total + entry.amount_out, 0);
@@ -83,6 +128,130 @@ export default function LedgerManagement() {
     <div>
       <ToastContainer />
       <div className="p-6">
+      <div>
+      {/* Table component would go here */}
+      <Button onClick={() => setShowManualEntryDialog(true)} className="mb-4">
+        Add Manual Entry
+      </Button>
+      {/* Table component would go here */}
+      <Dialog open={showManualEntryDialog} onOpenChange={setShowManualEntryDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Manual Ledger Entry</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleManualEntrySubmit}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="agent_id" className="text-right">
+                  Agent ID
+                </Label>
+                <Input
+                  id="agent_id"
+                  value={manualEntry.agent_id}
+                  disabled
+                  onChange={(e) =>
+                    setManualEntry({ ...manualEntry, agent_id: e.target.value })
+                  }
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="description" className="text-right">
+                  Description
+                </Label>
+                <Input
+                  id="description"
+                  value={manualEntry.description}
+                  onChange={(e) =>
+                    setManualEntry({ ...manualEntry, description: e.target.value })
+                  }
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="amount_in" className="text-right">
+                  Amount In
+                </Label>
+                <Input
+                  id="amount_in"
+                  type="number"
+                  value={manualEntry.amount_in}
+                  onChange={(e) =>
+                    setManualEntry({
+                      ...manualEntry,
+                      amount_in: parseFloat(e.target.value),
+                    })
+                  }
+                  className="col-span-3"
+                />
+              </div>
+             
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="amount_out" className="text-right">
+                  Amount Out
+                </Label>
+                <Input
+                  id="amount_out"
+                  type="number"
+                  value={manualEntry.amount_out}
+                  onChange={(e) =>
+                    setManualEntry({
+                      ...manualEntry,
+                      amount_out: parseFloat(e.target.value),
+                    })
+                  }
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="balance" className="text-right">
+                  Balance
+                </Label>
+                <Input
+                  id="balance"
+                  type="number"
+                  value={manualEntry.balance}
+                  onChange={(e) =>
+                    setManualEntry({
+                      ...manualEntry,
+                      balance: parseFloat(e.target.value),
+                    })
+                  }
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="type" className="text-right">
+                  Type
+                </Label>
+                <Select
+                  onValueChange={(value) =>
+                    setManualEntry({ ...manualEntry, type: value })
+                  }
+                >
+                  <SelectTrigger className="col-span-3">
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="hotel-booking">Hotel Booking</SelectItem>
+                    <SelectItem value="flight-booking">Flight Booking</SelectItem>
+                    <SelectItem value="group-flight-booking">
+                      Group Flight Booking
+                    </SelectItem>
+                    <SelectItem value="payment-request">
+                      Payment Request
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit">Add Entry</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
         {isLoading ? (
           <div className="flex justify-center">
             <Loader className="h-8 w-8 animate-spin" />
@@ -124,6 +293,11 @@ export default function LedgerManagement() {
                         </>
                       )}
                       {entry.type === 'flight-booking' && (
+                        <>
+                          -
+                        </>
+                      )} 
+                      {entry.type === 'group-flight-booking' && (
                         <>
                           -
                         </>
