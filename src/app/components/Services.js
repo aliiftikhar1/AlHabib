@@ -27,15 +27,15 @@ const Services = () => {
 
   return (
     <section id="services" className=" py-16">
-      <div className="container mx-auto px-4 md:px-6 text-center">
+      <div className="container mx-auto px-2 md:px-6 text-center">
         <h2 className="text-4xl font-semibold text-gray-700 mb-12">
           Our Services
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-8">
           {services.map((service, index) => (
             <div
               key={index}
-              className="group relative p-8  border border-gray-300 hover:border-gray-500 bg-white rounded-2xl shadow-md transition-all duration-300 hover:scale-105"
+              className="group relative p-4 md:p-8  border border-gray-300 hover:border-gray-500 bg-white rounded-2xl shadow-md transition-all duration-300 hover:scale-105"
             >
               {/* Icon with circular background */}
               <div className="flex items-center justify-center mb-4">
@@ -44,11 +44,11 @@ const Services = () => {
                 </div>
               </div>
               {/* Title */}
-              <h3 className="text-xl font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-all duration-300">
+              <h3 className="text-sm md:text-xl font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-all duration-300">
                 {service.title}
               </h3>
               {/* Description */}
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
                 {service.description}
               </p>
               {/* Decorative Line */}

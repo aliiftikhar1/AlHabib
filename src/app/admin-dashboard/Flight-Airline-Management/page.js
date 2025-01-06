@@ -199,6 +199,17 @@ export default function AirlineManagement() {
                     />
                   </div>
                   <div>
+                    <label htmlFor="name" className="block text-sm font-medium">
+                      Serial Number
+                    </label>
+                    <Input
+                      type="text"
+                      name="sn"
+                      defaultValue={currentAirline?.sn || ''}
+                      required
+                    />
+                  </div>
+                  <div>
                     <label htmlFor="image" className="block text-sm font-medium">
                       Upload Image
                     </label>
@@ -234,6 +245,7 @@ export default function AirlineManagement() {
                 <TableRow>
                   <TableHead>No.</TableHead>
                   <TableHead>Name</TableHead>
+                  <TableHead>Serial Number</TableHead>
                   <TableHead>Image</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -243,6 +255,7 @@ export default function AirlineManagement() {
                   <TableRow key={airline.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{airline.name}</TableCell>
+                    <TableCell>{airline.sn}</TableCell>
                     <TableCell>
                       <img
                         src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${airline.image}`}

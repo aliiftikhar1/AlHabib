@@ -155,11 +155,8 @@ export default function SingleGroupFlightManagement() {
     const handleUpdateFlight = (flight) => {
         setCurrentFlight({
             ...flight,
-            flightgroup_id: undefined,
-            flightsector_id: undefined,
-            flightairline_id: undefined
         });
-        setsectortype('one-way');
+        setsectortype(flight.FlightSector?.type);
         setIsModalOpen(true);
     };
 
@@ -191,59 +188,47 @@ export default function SingleGroupFlightManagement() {
                 await updateSingleGroupFlight({ 
                     ...currentFlight, 
                     ...flightData,
-                    flightgroup_id: currentFlight.flightgroup_id,
-                    flightsector_id: currentFlight.flightsector_id,
-                    flightairline_id: currentFlight.flightairline_id
                 });
                 toast.success('Flight updated successfully');
             } else {
                 const flights = sectortype === 'two-way'
-                    ? [
-                        {
+                    ?  {
                             flight_number: flightData.flight_number,
                             origin: flightData.origin,
                             destination: flightData.destination,
                             baggage: flightData.baggage,
                             seats: flightData.seats,
                             fare: flightData.fare,
+                            meal: flightData.meal,
                             flight_date: flightData.flight_date,
                             dept_time: flightData.dept_time,
                             arrival_time: flightData.arrival_time,
+                            flight_number2: flightData.flight_number2,
+                            origin2: flightData.origin2,
+                            destination2: flightData.destination2,
+                            flight_date2: flightData.flight_date2,
+                            dept_time2: flightData.dept_time2,
+                            arrival_time2: flightData.arrival_time2,
                             flightgroup_id: flightData.flightgroup_id,
                             flightsector_id: flightData.flightsector_id,
                             flightairline_id: flightData.flightairline_id,
-                        },
-                        {
-                            flight_number: flightData.flight_number2,
-                            origin: flightData.origin2,
-                            destination: flightData.destination2,
-                            baggage: flightData.baggage2,
-                            seats: flightData.seats2,
-                            fare: flightData.fare2,
-                            flight_date: flightData.flight_date2,
-                            dept_time: flightData.dept_time2,
-                            arrival_time: flightData.arrival_time2,
-                            flightgroup_id: flightData.flightgroup_id,
-                            flightsector_id: flightData.flightsector_id,
-                            flightairline_id: flightData.flightairline_id,
-                        },
-                    ]
-                    : [
-                        {
+                        }
+                    : {
                             flight_number: flightData.flight_number,
                             origin: flightData.origin,
                             destination: flightData.destination,
                             baggage: flightData.baggage,
                             seats: flightData.seats,
                             fare: flightData.fare,
+                            meal: flightData.meal,
                             flight_date: flightData.flight_date,
                             dept_time: flightData.dept_time,
                             arrival_time: flightData.arrival_time,
                             flightgroup_id: flightData.flightgroup_id,
                             flightsector_id: flightData.flightsector_id,
                             flightairline_id: flightData.flightairline_id,
-                        },
-                    ];
+                        };
+
                 await addSingleGroupFlight({ flights });
                 toast.success('Flight added successfully');
             }
@@ -299,78 +284,8 @@ export default function SingleGroupFlightManagement() {
                             </DialogHeader>
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 {/* First Flight Section */}
-                                <div className="grid grid-cols-2 gap-4">
-                                    <h3 className="col-span-2 text-lg font-semibold">First Flight Details</h3>
-                                    {['flight_number', 'origin', 'destination', 'baggage', 'seats', 'fare'].map((field) => (
-                                        <div key={field}>
-                                            <label htmlFor={field} className="block text-sm font-medium">
-                                                {field.replace('_', ' ').toUpperCase()}
-                                            </label>
-                                            <Input
-                                                type={field === 'seats' || field === 'fare' ? 'number' : 'text'}
-                                                name={field}
-                                                defaultValue={currentFlight?.[field] || ''}
-                                            />
-                                        </div>
-                                    ))}
-                                    {['flight_date', 'dept_time', 'arrival_time'].map((field) => (
-                                        <div key={field}>
-                                            <label htmlFor={field} className="block text-sm font-medium">
-                                                {field.replace('_', ' ').toUpperCase()}
-                                            </label>
-                                            <Input
-                                                type="datetime-local"
-                                                name={field}
-                                                defaultValue={
-                                                    currentFlight?.[field] &&
-                                                        !isNaN(new Date(currentFlight[field]).getTime())
-                                                        ? new Date(currentFlight[field]).toISOString().slice(0, 16)
-                                                        : ''
-                                                }
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-
-                                {sectortype === 'two-way' && (
-                                    <div className="grid grid-cols-2 gap-4">
-                                        {/* Second Flight Section */}
-                                        <h3 className="col-span-2 text-lg font-semibold">Second Flight Details</h3>
-                                        {['flight_number2', 'origin2', 'destination2', 'baggage2', 'seats2', 'fare2'].map((field) => (
-                                            <div key={field}>
-                                                <label htmlFor={field} className="block text-sm font-medium">
-                                                    {field.replace('2', '').replace('_', ' ').toUpperCase()}
-                                                </label>
-                                                <Input
-                                                    type={field.includes('seats') || field.includes('fare') ? 'number' : 'text'}
-                                                    name={field}
-                                                    defaultValue={currentFlight?.[field] || ''}
-                                                />
-                                            </div>
-                                        ))}
-                                        {['flight_date2', 'dept_time2', 'arrival_time2'].map((field) => (
-                                            <div key={field}>
-                                                <label htmlFor={field} className="block text-sm font-medium">
-                                                    {field.replace('2', '').replace('_', ' ').toUpperCase()}
-                                                </label>
-                                                <Input
-                                                    type="datetime-local"
-                                                    name={field}
-                                                    defaultValue={
-                                                        currentFlight?.[field] &&
-                                                            !isNaN(new Date(currentFlight[field]).getTime())
-                                                            ? new Date(currentFlight[field]).toISOString().slice(0, 16)
-                                                            : ''
-                                                    }
-                                                />
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {/* Dropdown Fields */}
-                                {currentFlight ? ( <></>) :(
-                                <div className="grid grid-cols-2 gap-4">
+                                {/* {currentFlight ? ( <></>) :( */}
+                                <div className="grid grid-cols-3 gap-2">
                                     <div>
                                         <label htmlFor="flightgroup_id" className="block text-sm font-medium">
                                             Flight Group
@@ -427,7 +342,105 @@ export default function SingleGroupFlightManagement() {
                                     </div>
                                     
                                 </div>
-                            )}
+                            {/* )} */}
+                                <div className="grid grid-cols-2 gap-4">
+                                {['baggage', 'seats', 'fare'].map((field) => (
+                                        <div key={field}>
+                                            <label htmlFor={field} className="block text-sm font-medium">
+                                                {field.replace('_', ' ').toUpperCase()}
+                                            </label>
+                                            <Input
+                                                type={field === 'seats' || field === 'fare' ? 'number' : 'text'}
+                                                name={field}
+                                                defaultValue={currentFlight?.[field] || ''}
+                                            />
+                                        </div>
+                                    ))}
+                                    <div>
+                                        <label htmlFor="meal" className="block text-sm font-medium">
+                                            meal
+                                        </label>
+                                        <select
+                                            name="meal"
+                                            defaultValue={currentFlight?.meal || 'true'}
+                                            className="w-full p-2 border border-gray-300 rounded-md"
+                                        >
+                                            <option value='true'>Yes</option>
+                                            <option value='false'>No</option>
+                                           
+                                        </select>
+                                    </div>
+                                    <h3 className="col-span-2 text-lg font-semibold">First Flight Details</h3>
+                                    {['flight_number', 'origin', 'destination'].map((field) => (
+                                        <div key={field}>
+                                            <label htmlFor={field} className="block text-sm font-medium">
+                                                {field.replace('_', ' ').toUpperCase()}
+                                            </label>
+                                            <Input
+                                                type={field === 'seats' || field === 'fare' ? 'number' : 'text'}
+                                                name={field}
+                                                defaultValue={currentFlight?.[field] || ''}
+                                            />
+                                        </div>
+                                    ))}
+                                    {['flight_date', 'dept_time', 'arrival_time'].map((field) => (
+                                        <div key={field}>
+                                            <label htmlFor={field} className="block text-sm font-medium">
+                                                {field.replace('_', ' ').toUpperCase()}
+                                            </label>
+                                            <Input
+                                                type="datetime-local"
+                                                name={field}
+                                                defaultValue={
+                                                    currentFlight?.[field] &&
+                                                        !isNaN(new Date(currentFlight[field]).getTime())
+                                                        ? new Date(currentFlight[field]).toISOString().slice(0, 16)
+                                                        : ''
+                                                }
+                                            />
+                                        </div>
+                                    ))}
+                                     
+                                </div>
+
+                                {sectortype === 'two-way' && (
+                                    <div className="grid grid-cols-2 gap-4">
+                                        {/* Second Flight Section */}
+                                        <h3 className="col-span-2 text-lg font-semibold">Second Flight Details</h3>
+                                        {['flight_number2', 'origin2', 'destination2'].map((field) => (
+                                            <div key={field}>
+                                                <label htmlFor={field} className="block text-sm font-medium">
+                                                    {field.replace('2', '').replace('_', ' ').toUpperCase()}
+                                                </label>
+                                                <Input
+                                                    type={field.includes('seats') || field.includes('fare') ? 'number' : 'text'}
+                                                    name={field}
+                                                    defaultValue={currentFlight?.[field] || ''}
+                                                />
+                                            </div>
+                                        ))}
+                                        {['flight_date2', 'dept_time2', 'arrival_time2'].map((field) => (
+                                            <div key={field}>
+                                                <label htmlFor={field} className="block text-sm font-medium">
+                                                    {field.replace('2', '').replace('_', ' ').toUpperCase()}
+                                                </label>
+                                                <Input
+                                                    type="datetime-local"
+                                                    name={field}
+                                                    defaultValue={
+                                                        currentFlight?.[field] &&
+                                                            !isNaN(new Date(currentFlight[field]).getTime())
+                                                            ? new Date(currentFlight[field]).toISOString().slice(0, 16)
+                                                            : ''
+                                                    }
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Dropdown Fields */}
+                              
 
                                 {/* Submit Button */}
                                 <Button type="submit" className="w-full" disabled={loadingAction === 'form'}>
@@ -523,9 +536,18 @@ export default function SingleGroupFlightManagement() {
                                         <TableCell>{flight.FlightGroups?.title}</TableCell>
                                         <TableCell>{flight.FlightSector?.to + ' - ' + flight.FlightSector?.from + (flight.FlightSector?.to2 ? ' - ' + flight.FlightSector?.to2 : '')}</TableCell>
                                         <TableCell>{flight.FlightSector?.type}</TableCell>
-                                        <TableCell>{flight.flight_number}</TableCell>
-                                        <TableCell>{flight.origin}</TableCell>
-                                        <TableCell>{flight.destination}</TableCell>
+                                        <TableCell>
+                                            <div>{flight.flight_number}</div>
+                                            {flight.FlightSector?.type==='two-way'&&(<div>{flight.flight_number2}</div>)}
+                                        </TableCell>
+                                        <TableCell>
+                                        <div>{flight.origin}</div>
+                                        {flight.FlightSector?.type==='two-way'&&(<div>{flight.origin2}</div>)}
+                                        </TableCell>
+                                        <TableCell>
+                                        <div>{flight.destination}</div>
+                                        {flight.FlightSector?.type==='two-way'&&(<div>{flight.destination2}</div>)}
+                                        </TableCell>
                                         <TableCell>{flight.baggage}</TableCell>
                                         <TableCell>{flight.seats}</TableCell>
                                         <TableCell>
@@ -562,64 +584,106 @@ export default function SingleGroupFlightManagement() {
 export function DisplayFlightDetails({ flight }) {
     if (!flight) return null;
   
+    const isTwoWay = flight.FlightSector?.type === 'two-way';
+  
     return (
-      <div className="flex flex-col items-center justify-center ">
-        <div className="bg-white rounded-lg  w-full">
+      <div className="flex flex-col items-center justify-center w-full">
+        <div className="bg-white rounded-lg w-full">
           <h2 className="text-lg font-bold mb-4">Flight Details</h2>
   
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="flex flex-col">
-              <label className=" font-semibold">Flight Number</label>
-              <p className="">{flight.flight_number}</p>
+              <label className="font-semibold">Flight Group</label>
+              <p>{flight.FlightGroups?.title}</p>
             </div>
             <div className="flex flex-col">
-              <label className=" font-semibold">Origin</label>
-              <p className="">{flight.origin}</p>
+              <label className="font-semibold">Flight Sector</label>
+              <p>{flight.FlightSector?.to + ' - ' + flight.FlightSector?.from + (flight.FlightSector?.to2 ? ' - ' + flight.FlightSector?.to2 : '')}</p>
             </div>
             <div className="flex flex-col">
-              <label className=" font-semibold">Destination</label>
-              <p className="">{flight.destination}</p>
+              <label className="font-semibold">Flight Airline</label>
+              <p>{flight.FlightAirline?.name}</p>
             </div>
             <div className="flex flex-col">
-              <label className=" font-semibold">Baggage</label>
-              <p className="">{flight.baggage}</p>
+              <label className="font-semibold">Baggage</label>
+              <p>{flight.baggage}</p>
             </div>
             <div className="flex flex-col">
-              <label className=" font-semibold">Seats</label>
-              <p className="">{flight.seats}</p>
+              <label className="font-semibold">Seats</label>
+              <p>{flight.seats}</p>
             </div>
             <div className="flex flex-col">
-              <label className=" font-semibold">Fare</label>
-              <p className="">{flight.fare}</p>
+              <label className="font-semibold">Fare</label>
+              <p>{flight.fare}</p>
             </div>
             <div className="flex flex-col">
-              <label className=" font-semibold">Flight Date</label>
-              <p className="">{flight.flight_date}</p>
-            </div>
-            <div className="flex flex-col">
-              <label className=" font-semibold">Departure Time</label>
-              <p className="">{flight.dept_time}</p>
-            </div>
-            <div className="flex flex-col">
-              <label className=" font-semibold">Arrival Time</label>
-              <p className="">{flight.arrival_time}</p>
-            </div>
-            <div className="flex flex-col">
-              <label className=" font-semibold">Flight Group</label>
-              <p className="">{flight.FlightGroups?.title}</p>
-            </div>
-            <div className="flex flex-col">
-              <label className=" font-semibold">Flight Sector</label>
-              <p className="">{flight.FlightSector?.to + ' - ' + flight.FlightSector?.from + (flight.FlightSector?.to2 ? ' - ' + flight.FlightSector?.to2 : '')}</p>
-            </div>
-            <div className="flex flex-col">
-              <label className=" font-semibold">Flight Airline</label>
-              <p className="">{flight.FlightAirline?.name}</p>
+              <label className="font-semibold">Meal</label>
+              <p>{flight.meal ? 'Yes' : 'No'}</p>
             </div>
           </div>
+          <div className='flex w-full gap-4'>
+            <div className='w-full'>
+          <h3 className="text-md font-semibold mb-2">Outbound Flight</h3>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="flex flex-col">
+              <label className="font-semibold">Flight Number</label>
+              <p>{flight.flight_number}</p>
+            </div>
+            <div className="flex flex-col">
+              <label className="font-semibold">Origin</label>
+              <p>{flight.origin}</p>
+            </div>
+            <div className="flex flex-col">
+              <label className="font-semibold">Destination</label>
+              <p>{flight.destination}</p>
+            </div>
+            <div className="flex flex-col">
+              <label className="font-semibold">Flight Date</label>
+              <p>{new Date(flight.flight_date).toLocaleDateString()}</p>
+            </div>
+            <div className="flex flex-col">
+              <label className="font-semibold">Departure Time</label>
+              <p>{new Date(flight.dept_time).toLocaleTimeString()}</p>
+            </div>
+            <div className="flex flex-col">
+              <label className="font-semibold">Arrival Time</label>
+              <p>{new Date(flight.arrival_time).toLocaleTimeString()}</p>
+            </div>
+          </div>
+          </div>
+          {isTwoWay && (
+            <div className='w-full'>
+              <h3 className="text-md font-semibold mb-2">Return Flight</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <label className="font-semibold">Flight Number</label>
+                  <p>{flight.flight_number2}</p>
+                </div>
+                <div className="flex flex-col">
+                  <label className="font-semibold">Origin</label>
+                  <p>{flight.origin2}</p>
+                </div>
+                <div className="flex flex-col">
+                  <label className="font-semibold">Destination</label>
+                  <p>{flight.destination2}</p>
+                </div>
+                <div className="flex flex-col">
+                  <label className="font-semibold">Flight Date</label>
+                  <p>{new Date(flight.flight_date2).toLocaleDateString()}</p>
+                </div>
+                <div className="flex flex-col">
+                  <label className="font-semibold">Departure Time</label>
+                  <p>{new Date(flight.dept_time2).toLocaleTimeString()}</p>
+                </div>
+                <div className="flex flex-col">
+                  <label className="font-semibold">Arrival Time</label>
+                  <p>{new Date(flight.arrival_time2).toLocaleTimeString()}</p>
+                </div>
+              </div>
+            </div>
+          )}
+</div>
         </div>
       </div>
     );
   }
-  
-  

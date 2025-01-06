@@ -7,7 +7,7 @@ export async function POST(request) {
     const body = await request.json();
     console.log("Payload is ", body);
     const {   name,
-        image,} = body;
+        image,sn} = body;
 
     console.log("Payload is ", body);
 
@@ -15,6 +15,7 @@ export async function POST(request) {
       data: {
         name,
         image,
+        sn,
         created_at: new Date(),
         updated_at: new Date(),
       },

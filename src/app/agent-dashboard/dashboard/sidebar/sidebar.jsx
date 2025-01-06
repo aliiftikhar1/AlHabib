@@ -20,6 +20,7 @@ import { Analytics, AnalyticsOutlined, Home, Money } from '@mui/icons-material';
 import { UserIcon } from '@heroicons/react/24/outline';
 import { useDispatch } from 'react-redux';
 import { Logout } from '@/app/Store/Slice';
+import { Book } from 'lucide-react';
 const Sidebar = () => {
   const dispatch = useDispatch();
   const [userName, setUserName] = useState('Guest'); // Default values
@@ -41,7 +42,7 @@ const Sidebar = () => {
     // Optional: You can add logic here for loading user info if needed
   }, []);
 
-  // Define menu items with roles
+  
   const menuItems = [
     // {
     //   title: "Book Tickets",
@@ -91,6 +92,12 @@ const Sidebar = () => {
       title: "My Bookings",
       path: "/agent-dashboard/My-Booking",
       icon: <BiCoinStack className="h-5 w-5" />, // Stack icon for personal bookings
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "My Ledger",
+      path: "/agent-dashboard/Ledgers",
+      icon: <Book className="h-5 w-5" />, // Stack icon for personal bookings
       roles: ["admin", "sub admin"],
     },
     {

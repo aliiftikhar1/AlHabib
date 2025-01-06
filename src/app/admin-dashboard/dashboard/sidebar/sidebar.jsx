@@ -66,29 +66,72 @@ const Sidebar = () => {
       roles: ["admin", "sub admin"],
     },
     {
-      title: "Flight Groups",
-      path: "/admin-dashboard/Flight-Group-Management",
-      icon: <Group className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
-    {
-      title: "Flight Sector",
-      path: "/admin-dashboard/Flight-Sector-Management",
-      icon: <LocalActivity className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
-    {
-      title: "Flight Airline",
-      path: "/admin-dashboard/Flight-Airline-Management",
-      icon: <Plane className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
-    {
-      title: "Flights",
-      path: "/admin-dashboard/Group-Flight-Management",
+      title: "Flight",
       icon: <PlaneLanding className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
+      subitems: [
+        {
+          title: "Flight Groups",
+          path: "/admin-dashboard/Flight-Group-Management",
+          icon: <Group className="h-5 w-5" />,
+          roles: ["admin", "sub admin"],
+        },
+        {
+          title: "Flight Sector",
+          path: "/admin-dashboard/Flight-Sector-Management",
+          icon: <LocalActivity className="h-5 w-5" />,
+          roles: ["admin", "sub admin"],
+        },
+        {
+          title: "Flight Airline",
+          path: "/admin-dashboard/Flight-Airline-Management",
+          icon: <Plane className="h-5 w-5" />,
+          roles: ["admin", "sub admin"],
+        },
+        {
+          title: "Flights",
+          path: "/admin-dashboard/Group-Flight-Management",
+          icon: <PlaneLanding className="h-5 w-5" />,
+          roles: ["admin", "sub admin"],
+        },
+        {
+          title: "Flights Bookings",
+          path: "/admin-dashboard/Flight-Booking-Management",
+          icon: <PlaneLanding className="h-5 w-5" />,
+          roles: ["admin", "sub admin"],
+        },
+        {
+          title: "Group Flights Bookings",
+          path: "/admin-dashboard/Group-Flight-Booking-Management",
+          icon: <PlaneLanding className="h-5 w-5" />,
+          roles: ["admin", "sub admin"],
+        },
+      ]
     },
+    // {
+    //   title: "Flight Groups",
+    //   path: "/admin-dashboard/Flight-Group-Management",
+    //   icon: <Group className="h-5 w-5" />,
+    //   roles: ["admin", "sub admin"],
+    // },
+    // {
+    //   title: "Flight Sector",
+    //   path: "/admin-dashboard/Flight-Sector-Management",
+    //   icon: <LocalActivity className="h-5 w-5" />,
+    //   roles: ["admin", "sub admin"],
+    // },
+    // {
+    //   title: "Flight Airline",
+    //   path: "/admin-dashboard/Flight-Airline-Management",
+    //   icon: <Plane className="h-5 w-5" />,
+    //   roles: ["admin", "sub admin"],
+    // },
+    // {
+    //   title: "Flights",
+    //   path: "/admin-dashboard/Group-Flight-Management",
+    //   icon: <PlaneLanding className="h-5 w-5" />,
+    //   roles: ["admin", "sub admin"],
+    // },
     {
       title: "Hotel Management",
       icon: <PlaneLanding className="h-5 w-5" />,

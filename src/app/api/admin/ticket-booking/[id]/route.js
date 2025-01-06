@@ -56,7 +56,7 @@ export async function PUT(request,{params}) {
           userId: parseInt(booking.user_id), // Correct user ID
           credit: parseFloat(0),
           debit: parseFloat(booking.total_amount),
-          balance: parseFloat(0),
+          balance: parseFloat(newamount>0 ? newamount : 0),
           description: 'Booking is happened',
         },
       }).catch(error => {

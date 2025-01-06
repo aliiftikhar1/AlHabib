@@ -10,7 +10,21 @@ import { useSelector } from 'react-redux';
 
 export default function AddPaymentRequest() {
   const userid = useSelector((state) => state.user.id);
-  const userbalance = useSelector((state) => state.user.balance);
+  const [userbalance, setUserbalance] = useState(0);
+  // const userbalance = useSelector((state) => state.user.balance);
+  useEffect(()=>{
+     async function fetchuserbalance(){
+      const response = await fetch(`/api/user/getuserbalance/${userid}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch user balance');
+      }
+      const data = await response.json();
+      setUserbalance(data);
+      console.log("data",data);
+    }
+    fetchuserbalance();
+
+  },[userid]);
 
   const [formData, setFormData] = useState({
     userid: userid,

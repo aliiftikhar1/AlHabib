@@ -3,10 +3,28 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-   
-    const ledgerEntries = await prisma.ledger.findMany({
+
+    const ledgerEntries = await prisma.NewLedger.findMany({
       include: {
         Users: true,
+        HotelBooking: {
+          include:{
+            Hotel:true,
+            Hoteliers:true,
+          }
+        },
+        FlightBookings: true,
+        GroupFlightBookings: {
+          include: {
+            SingleGroupFlight: true,
+            FlightGroups: true,
+            FlightSector: true,
+            FlightAirline: true,
+            GroupPassengers: true,
+            Users: true,
+          },
+        },
+        PaymentRequests: true,
       },
     });
     return NextResponse.json(ledgerEntries);

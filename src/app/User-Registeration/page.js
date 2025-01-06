@@ -70,15 +70,16 @@ const AgentSignup = () => {
   };
 
   return (
-    <div className="w-full h-screen flex justify-center items-center relative">
-      <div className='w-1/2 h-full'>
+    <div className="w-full h-screen md:h-screen  flex justify-center items-center relative">
+      <div className='hidden md:flex w-1/2 h-full'>
         <img src='/bg/aeroplane.jpg' className='w-full h-full object-cover'>
         </img>
 
       </div>
-      <div className="w-1/2 z-10 mx-auto p-6 bg-white/70 backdrop-blur-md rounded-md">
+      <div className="md:w-1/2 z-10 mx-auto p-2 md:p-6 bg-white/70 backdrop-blur-md rounded-md">
+      <img src='/logo/logo1.jpg' className='h-24 mx-auto mb-2 md:mb-4'></img>
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">User Signup</h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-2 md:gap-6">
           {['name', 'username', 'phoneno', 'city', 'address', 'bname'].map((field) => (
             <div key={field}>
               <Label
@@ -119,8 +120,8 @@ const AgentSignup = () => {
             </Select>
           </div>
 
-
-          <div className="col-span-1">
+<div className='col-span-2 grid grid-cols-2 gap-2 md:gap-6 w-full'>
+          <div className="col-span-1 w-full">
             <Label
               htmlFor="password"
               className="block text-sm font-medium text-gray-800"
@@ -172,7 +173,7 @@ const AgentSignup = () => {
               </button>
             </div>
           </div>
-
+          </div>
           <Button
             type="submit"
             className="w-full col-span-2 bg-orange-500 text-white font-medium py-2 px-4 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-300"

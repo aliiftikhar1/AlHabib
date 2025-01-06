@@ -22,13 +22,13 @@ const Testimonials = () => {
 
   return (
     <section id="testimonials" className="bg-white py-16">
-      <div className="container mx-auto text-center px-6">
+      <div className="container mx-auto text-center px-2 md:px-6">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">What Our Clients Say</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-8">
           {testimonials.map((testimonial, index) => (
             <div
               key={index}
-              className="p-6 bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg"
+              className="p-2 md:p-6 bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg"
             >
               <img
                 src={testimonial.image}

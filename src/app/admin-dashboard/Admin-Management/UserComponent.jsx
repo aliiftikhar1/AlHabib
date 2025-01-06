@@ -21,7 +21,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const fetchAdminUsers = async () => {
   const response = await fetch('/api/admin/adminuser');
-  
   if (!response.ok) {
     throw new Error('Failed to fetch admin users');
   }

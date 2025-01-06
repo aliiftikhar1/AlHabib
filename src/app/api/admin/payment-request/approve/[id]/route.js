@@ -91,15 +91,17 @@ export async function PUT(request, { params }) {
         console.log("Ledger record is going to create");
         console.log("data",user.id,data.amount,newAmount,data.transactionno)
         // Create the ledger record with updated balance
-        const newrecord = await prisma.ledger.create({
-            data: {
-              userId: user.id, // Correct user ID
-              credit: parseFloat(data.amount),
-              debit: parseFloat(0),
-              balance: parseFloat(0),
-              description: 'Payment Request is verified',
-            },
-          }).catch(error => {
+        const newrecord = await prisma.NewLedger.create({
+          data: {
+            agent_id: parseInt(user.id), // Correct user ID
+            amount_in: parseFloat(data.amount),
+            amount_out: parseFloat(0),
+            balance: parseFloat(newAmount>0 ? newAmount : 0),
+            description: 'Payment Request is approved',
+            type: 'payment-request',
+            payment_request_id: parseInt(data.id),
+          },
+        }).catch(error => {
             console.error("Error creating ledger record:", error);
             throw new Error("Failed to create ledger record");
           });

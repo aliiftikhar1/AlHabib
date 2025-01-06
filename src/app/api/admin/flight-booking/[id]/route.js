@@ -7,13 +7,28 @@ export async function PUT(request,{params}) {
     const body = await request.json();
     const { status } = body;
 
+    if(status === 'Rejected'){
+      const newBooking = await prisma.FlightBookings.update({
+        where:{id: parseInt(id)},
+        data: {
+          status,
+          updated_at: new Date(),
+        },
+      });
+  
+      return NextResponse.json(newBooking);
+
+    }
     console.log("Payload is ", body);
 
     // Fetch user's balance
     
 
-    const booking = await prisma.ticketBookings.findUnique({
-      where: { booking_id: parseInt(id) },
+    const booking = await prisma.FlightBookings.findUnique({
+      where: { id: parseInt(id) },
+      include:{
+        FlightDetails:true
+      }
     });
 
     // Check if user exists and balance is sufficient
@@ -25,7 +40,7 @@ export async function PUT(request,{params}) {
     }
 
     const user = await prisma.users.findUnique({
-      where: { id: booking.user_id },
+      where: { id: booking.agent_id },
     });
 
     // Check if user exists and balance is sufficient
@@ -35,29 +50,31 @@ export async function PUT(request,{params}) {
         { status: 404 }
       );
     }
-    if (user.balance < booking.total_amount) {
+    if (user.balance < booking.FlightDetails?.fare) {
         console.log("insufficient balance")
       return NextResponse.json(
         { message: 'Insufficient balance', status: false },
         { status: 400 }
       );
     }else{
-      const newamount = user.balance - booking.total_amount;
+      const newamount = user.balance - booking.FlightDetails?.fare;
       const update = await prisma.users.update({
-        where: { id: booking.user_id },
+        where: { id: booking.agent_id },
         data:{
           balance: newamount>0 ? newamount : 0
         }
       });
-      console.log("ledger is going to create")
+      console.log("ledger is going to create",booking.agent_id,booking.FlightDetails?.fare)
 
-      const newrecord = await prisma.ledger.create({
+      const newrecord = await prisma.NewLedger.create({
         data: {
-          userId: parseInt(booking.user_id), // Correct user ID
-          credit: parseFloat(0),
-          debit: parseFloat(booking.total_amount),
-          balance: parseFloat(0),
+          agent_id: parseInt(booking.agent_id), // Correct user ID
+          amount_in: parseFloat(0),
+          amount_out: parseFloat(booking.FlightDetails?.fare),
+          balance: parseFloat(newamount>0 ? newamount : 0),
           description: 'Booking is happened',
+          type: 'flight-booking',
+          flight_booking_id: parseInt(booking.id),
         },
       }).catch(error => {
         console.error("Error creating ledger record:", error);

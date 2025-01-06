@@ -32,7 +32,7 @@ export default function NewHeroSection() {
   }, [])
 
   return (
-    <div className="relative  flex flex-col h-screen justify-center items-center overflow-hidden ">
+    <div className="relative  flex flex-col md:h-screen justify-center items-center overflow-hidden ">
       {/* Background Images Slider */}
       <div className="absolute inset-0 transition-opacity duration-1000 h-screen">
         {backgroundImages.map((image, index) => (
@@ -65,16 +65,16 @@ export default function NewHeroSection() {
 
       {/* Content */}
       <div className="relative z-10 mx-auto md:max-w-7xl px-4 mt-20 md:mt-0 md:pt-20  md:px-8 ">
-        <h1 className="text-center text-2xl md:text-4xl capitalize p-6 border-4 border-white bg-black/10 backdrop-blur-sm font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
+        <h1 className="text-center text-xl md:text-4xl capitalize p-4 md:p-6 border-4 border-white bg-black/10 backdrop-blur-sm font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
           Discover the real value of travel
         </h1>
 
         {/* Search Form */}
-       <div className="relative mx-auto  mt-10 m-4 max-w-4xl rounded-xl shadow-lg">
+       <div className="relative mx-auto  mt-10 m-4 w-full md:max-w-4xl rounded-xl shadow-lg">
           {/* Tabs */}
-          <div className=" flex space-x-2 text-sm md:text-base">
+          <div className=" flex space-x-2 text-xs md:text-base">
             <button
-              className={`flex items-center border-x border-t transition-all duration-500 border-black space-x-2 px-4 py-2 rounded-t-lg ${activeTab === 'flights'
+              className={`flex items-center border-x border-t transition-all duration-500 border-black space-x-2 px-1 py-1 md:px-4 md:py-2 rounded-t-lg ${activeTab === 'flights'
                   ? 'text-black bg-white'
                   : 'text-white  backdrop-blur-sm bg-black/50 hover:bg-white/50  hover:text-black'
                 }`}
@@ -95,7 +95,7 @@ export default function NewHeroSection() {
             </button>
             <a href='/'>
             <button
-              className={`flex items-center border-x border-t transition-all duration-500 border-white space-x-2 px-4 py-2 rounded-t-lg ${activeTab === 'business'
+              className={`flex items-center relative border-x border-t transition-all duration-500 border-white space-x-2 px-4 py-2 rounded-t-lg ${activeTab === 'business'
                   ? ' text-black bg-white'
                   : 'text-white  backdrop-blur-sm bg-black/50 hover:bg-white/50  hover:text-black'
                 }`}
@@ -103,48 +103,48 @@ export default function NewHeroSection() {
             >
               <Briefcase className="h-5 w-5" />
               <span>WegoPro Business Travel</span>
-              <span className="ml-1 rounded bg-orange-500 px-1.5 py-0.5 text-xs text-white">NEW</span>
+              <span className="ml-1 absolute -right-2 -top-2  rounded bg-orange-500 px-1.5 py-0.5 text-xs text-white">NEW</span>
             </button>
             </a>
           </div>
-          <div className='border-x border-b border-black rounded-b-lg bg-white'>
+          <div className='border-x border-b border-black rounded-b-lg bg-white text-xs md:text-base'>
 
           {activeTab === 'flights' && (
             <div className='bg-white pt-4 px-4'>
               {/* Trip Type Selection */}
-              <div className="mb-4 flex space-x-4">
-                <button className="rounded-full bg-white px-4 py-1">One-way</button>
-                <button className="rounded-full bg-primary px-4 py-1 text-white">Round-trip</button>
-                <button className="rounded-full bg-white px-4 py-1">Multi-city</button>
+              <div className="mb-4 flex space-x-4 ">
+                <button className="rounded-full border bg-white px-4 py-1">One-way</button>
+                <button className="rounded-full border bg-primary px-4 py-1 text-white">Round-trip</button>
+                <button className="rounded-full border bg-white px-4 py-1">Multi-city</button>
               </div>
 
               {/* Flight Search Fields */}
-              <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+              <div className="grid gap-2 md:gap-4 grid-cols-2 md:grid-cols-4">
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-600">From</label>
-                  <Input placeholder="Enter city or airport" />
+                  <label className="text-xs md:text-sm text-gray-600">From</label>
+                  <Input placeholder="Enter city or airport" className='text-xs md:text-base'/>
                 </div>
                 <div className="space-y-2 relative">
-                  <label className="text-sm text-gray-600">To</label>
+                  <label className="text-xs md:text-sm text-gray-600">To</label>
                   <div className="">
-                    <Input placeholder="Enter city or airport" />
+                    <Input placeholder="Enter city or airport" className='text-xs md:text-base'/>
                     <button className="hidden md:flex absolute  right-[98%] text-2xl border border-black top-[70%] -translate-y-1/2 rounded-full bg-white p-1">
                       <ArrowLeftRight className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-600">Depart</label>
-                  <Input type="date" />
+                  <label className="text-xs md:text-sm text-gray-600">Depart</label>
+                  <Input type="date" className='text-xs md:text-base'/>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm text-gray-600">Return</label>
-                  <Input type="date" />
+                  <label className="text-xs md:text-sm text-gray-600">Return</label>
+                  <Input type="date" className='text-xs md:text-base'/>
                 </div>
               </div>
 
               {/* Additional Options */}
-              <div className="mt-4 flex flex-wrap items-center gap-4">
+              <div className="mt-4 flex flex-nowrap items-center gap-4">
                 <Select defaultValue="1" >
                   <SelectTrigger className="w-[48%]">
                     <SelectValue placeholder="Select passengers" />
@@ -166,14 +166,14 @@ export default function NewHeroSection() {
                     <SelectItem value="first">First Class</SelectItem>
                   </SelectContent>
                 </Select>
-
-                <div className="flex items-center space-x-2">
+                </div>
+                <div className="flex items-center space-x-2 mt-4">
                   <input type="checkbox" id="direct-flight" className="rounded border-gray-300" />
                   <label htmlFor="direct-flight" className="text-sm text-gray-600">
                     Direct flight only
                   </label>
                 </div>
-              </div>
+              
             </div>
           )}
 

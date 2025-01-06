@@ -14,10 +14,12 @@ import Footer from "./components/Footer";
 import NewHeroSection from "./components/NewHeroSection";
 import TwoCards from "./components/TwoCardSection";
 import CallToAction from "./components/CallToAction";
+import WhatsAppButton from "./components/WhatsappPlugin";
 
 export default function Home(){
   return(
     <>
+    <WhatsAppButton/>
     <Headers/>
     <NewHeroSection/>
     {/* <Herosection/> */}

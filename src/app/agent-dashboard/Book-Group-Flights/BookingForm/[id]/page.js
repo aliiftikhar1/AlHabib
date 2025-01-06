@@ -27,7 +27,7 @@ export default function BookingForm() {
     async function fetchflight() {
         setLoading(true);
         try {
-            const response = await fetch(`/api/admin/fetchflights/${id}`);
+            const response = await fetch(`/api/admin/fetchgroupflights/${id}`);
             const result = await response.json();
             setFlightdata(result.data);
         } catch (error) {
@@ -61,7 +61,7 @@ export default function BookingForm() {
             children +
             infants;
 
-        const totalSeats = flightdata?.SingleFlight?.[0]?.seats || 0; // Use the first flight's seats for now
+        const totalSeats = flightdata.seats || 0; // Use the first flight's seats for now
 
         if (passengers.length + totalNewPassengers > totalSeats) {
             alert(`Only ${totalSeats} seats are available`);
@@ -101,7 +101,10 @@ export default function BookingForm() {
         setLoading(true);
         try {
             const bookingData = {
-                flightdetails_id: id,
+                flightgroup_id: flightdata.FlightGroups?.id,
+                flightsector_id: flightdata.FlightSector?.id,
+                flightairline_id: flightdata.FlightAirline?.id,
+                flight_id: flightdata.id,
                 agent_id: userid,
                 agentRemarks,
                 adults,
@@ -111,7 +114,7 @@ export default function BookingForm() {
             };
 
             try {
-                const response = await fetch('/api/user/makeflightbooking', {
+                const response = await fetch('/api/user/makegroupflightbooking', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -166,14 +169,16 @@ export default function BookingForm() {
                                         <TableCell>Airline SN</TableCell>
                                         <TableCell>Meal</TableCell>
                                         <TableCell>Type</TableCell>
+                                        <TableCell>Fare</TableCell>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     <TableRow>
-                                        <TableCell>{flightdata.airline}</TableCell>
-                                        <TableCell>{flightdata.airline_sn}</TableCell>
+                                        <TableCell>{flightdata.FlightAirline?.name}</TableCell>
+                                        <TableCell>{flightdata.FlightAirline?.sn}</TableCell>
                                         <TableCell>{flightdata.meal ? "Yes" : "No"}</TableCell>
-                                        <TableCell>{flightdata.type}</TableCell>
+                                        <TableCell>{flightdata.FlightSector?.type}</TableCell>
+                                        <TableCell>{flightdata.fare}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
@@ -191,20 +196,32 @@ export default function BookingForm() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {flightdata.SingleFlight?.map((flight, index) => {
-                                        return (
-                                            <TableRow key={index}>
-                                                <TableCell>{flight.flight_number}</TableCell>
-                                                <TableCell>{format(new Date(flight.flight_date), 'MMMM do yyyy')}</TableCell>
-                                                <TableCell>{flight.origin}</TableCell>
-                                                <TableCell>{flight.destination}</TableCell>
-                                                <TableCell>{format(new Date(flight.dept_time), 'h:mm a')}</TableCell>
-                                                <TableCell>{format(new Date(flight.arrival_time), 'h:mm a')}</TableCell>
-                                                <TableCell>{flight.baggage}</TableCell>
-                                                <TableCell>{flight.seats}</TableCell>
+                                    {flightdata && (<>
+                                            <TableRow key='1'>
+                                                <TableCell>{flightdata.flight_number}</TableCell>
+                                                <TableCell>{format(new Date(flightdata.flight_date), 'MMMM do yyyy')}</TableCell>
+                                                <TableCell>{flightdata.origin}</TableCell>
+                                                <TableCell>{flightdata.destination}</TableCell>
+                                                <TableCell>{format(new Date(flightdata.dept_time), 'h:mm a')}</TableCell>
+                                                <TableCell>{format(new Date(flightdata.arrival_time), 'h:mm a')}</TableCell>
+                                                <TableCell>{flightdata.baggage}</TableCell>
+                                                <TableCell>{flightdata.seats}</TableCell>
                                             </TableRow>
+                                            {flightdata.FlightSector?.type === "two-way" && (
+                                            <TableRow key='2'>
+                                                <TableCell>{flightdata.flight_number2}</TableCell>
+                                                <TableCell>{format(new Date(flightdata.flight_date2), 'MMMM do yyyy')}</TableCell>
+                                                <TableCell>{flightdata.origin2}</TableCell>
+                                                <TableCell>{flightdata.destination2}</TableCell>
+                                                <TableCell>{format(new Date(flightdata.dept_time2), 'h:mm a')}</TableCell>
+                                                <TableCell>{format(new Date(flightdata.arrival_time2), 'h:mm a')}</TableCell>
+                                                <TableCell>{flightdata.baggage}</TableCell>
+                                                <TableCell>{flightdata.seats}</TableCell>
+                                            </TableRow>
+                                            )}
+                                            </>
                                         )
-                                    })}
+                                    }
                                 </TableBody>
                             </Table>
                         </div>

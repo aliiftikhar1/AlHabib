@@ -9,7 +9,7 @@ import { Loader, Menu } from 'lucide-react'; // Import loader icon
 import toast, { Toaster } from 'react-hot-toast'; // Import toast for notifications
 import { Button } from "@/components/ui/button";
 import { Logout } from '@/app/Store/Slice';
-import UpdateUserRedux from './updateuserredux';
+// import UpdateUserRedux from './updateuserredux';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -29,9 +29,16 @@ export default function Header() {
   });
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false); // Track loading state
-  if(userid){
-    UpdateUserRedux();
-  }
+  
+    useEffect( () => {
+      const fetchuserdetails = async () => {
+        const data = await fetch(`/api/user/${userid}`);
+        const user = await data.json();
+        dispatch(UpdateUser({id:user.id, fullname:user.fullname, username:user.username, balance:user.balance, role:user.role}))
+      }
+      fetchuserdetails();
+    }, [userid]);
+    
 
 
 
@@ -84,13 +91,13 @@ export default function Header() {
 
   
   return (
-    <header className="fixed top-0 w-full h-16 bg-white backdrop-blur-sm text-black border-b flex items-center px-6 md:px-10 z-40">
+    <header className="fixed top-0 w-full h-12 md:h-16 bg-white backdrop-blur-sm text-black border-b flex items-center px-6 md:px-10 z-40">
       <div className="flex justify-between items-center w-full">
         {/* Logo */}
         {/* <h1 className="text-4xl font-bold ">
           AlHabib
         </h1> */}
-        <img src='/logo/logo1.jpg' className="h-16 p-1"></img>
+        <img src='/logo/logo1.jpg' className="md:h-16 h-12 p-1"></img>
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex gap-8 text-lg">
@@ -111,7 +118,7 @@ export default function Header() {
           </a>
         
         </nav>
-        <div className=' md:w-auto w-full md:mr-0 mr-4 border-black'>
+        <div className='hidden md:flex md:w-auto w-full md:mr-0 mr-4 border-black'>
         {username?(<div className='flex justify-end md:justify-center items-center gap-4'><Button onClick={() => dispatch(Logout())} className="bg-red-600 h-8">Logout</Button>
           <div className='hidden md:flex'>{username}</div>
           </div>):(<>
@@ -119,10 +126,11 @@ export default function Header() {
             <Button onClick={()=>{setloginmodalopen(true)}} className="bg-primary hover:bg-secondary hover:text-black border border-black w-20">
               Login
             </Button>
+            
               <Modal
                 isOpen={loginmodalopen}
                 onRequestClose={()=>{setloginmodalopen(false)}}
-                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-2xl shadow-2xl w-[450px]"
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-2 md:p-8 rounded-2xl shadow-2xl md:w-[450px] w-full "
                 overlayClassName="fixed z-40 inset-0 bg-black/50 backdrop-blur-sm"
               >
                 <Toaster />
@@ -186,7 +194,7 @@ export default function Header() {
 
                   <button
                     onClick={()=>{setloginmodalopen(false)}}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                    className="absolute -top-2 right-4 md:top-4 md:right-4 text-gray-400 hover:text-gray-600 transition-colors"
                     aria-label="Close modal"
                   >
                     <svg
@@ -226,7 +234,7 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <nav className="absolute top-16 left-0 w-full bg-black/90 text-white flex flex-col items-center gap-6 py-6 md:hidden">
+        <nav className="absolute top-12 left-0 w-full bg-black/90 text-white flex flex-col items-center gap-6 py-6 md:hidden">
           <a
             href="/"
             className="hover:text-blue-500"
@@ -276,6 +284,21 @@ export default function Header() {
           >
             Hotels
           </a>
+          {username?(<div className='flex justify-end md:justify-center items-center gap-4'><Button onClick={() => dispatch(Logout())} className="bg-red-600 h-8">Logout</Button>
+          <div className='hidden md:flex'>{username}</div>
+          </div>):(<>
+          <div className=" space-x-2">
+            <Button onClick={()=>{setloginmodalopen(true)}} className="bg-blue-500 hover:bg-secondary hover:text-black border border-black w-20">
+              Login
+            </Button>
+              <a href="/User-Registeration">
+              <Button className="bg-green-500 text-white hover:text-white border-black border w-20">
+                SignUp
+              </Button>
+            </a>
+            </div>
+           
+          </>)}
         </nav>
       )}
     </header>

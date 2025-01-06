@@ -27,14 +27,14 @@ export default function Flights(group) {
                 <p className="text-gray-500">No flights available at the moment.</p>
             )}
             <div className="space-y-4">
-                {flights.map((flightGroup, index) => (
+                {flights.map((flight, index) => (
                     <div
                         key={index}
                         className="border border-gray-300 rounded-lg shadow-lg p-4 bg-white"
                     >
                         <div className="flex justify-between items-center bg-blue-500 text-white p-2 rounded-t-lg">
-                            <div className="flex space-x-4"><p className="font-semibold">Airline: {flightGroup.FlightAirline?.name}</p> </div>
-                            <p>Price: {flightGroup.fare} PKR</p>
+                            <div className="flex space-x-4"><p className="font-semibold">Airline: {flight.FlightAirline?.name}</p> </div>
+                            <p>Price: {flight.fare} PKR</p>
                         </div>
                         <table className="w-full text-left mt-2">
                             <thead>
@@ -50,9 +50,44 @@ export default function Flights(group) {
                             <tbody>
                                 
                                     <tr
-                                        key={flightIndex}
+                                        key='1'
                                         className={`${
-                                            flightIndex % 2 === 0 ? "bg-gray-100" : "bg-white"
+                                            1 % 2 === 0 ? "bg-gray-100" : "bg-white"
+                                        }`}
+                                    >
+                                        <td className="p-2">
+                                            {new Date(flight.dept_time2).toLocaleDateString(
+                                                "en-GB",
+                                                {
+                                                    day: "numeric",
+                                                    month: "short",
+                                                    year: "numeric",
+                                                }
+                                            )}
+                                        </td>
+                                        <td className="p-2">{flight.flight_number2}</td>
+                                        <td className="p-2">
+                                            {flight.origin2} - {flight.destination2}
+                                        </td>
+                                        <td className="p-2">
+                                            {new Date(flight.dept_time2).toLocaleTimeString(
+                                                "en-GB",
+                                                { hour: "2-digit", minute: "2-digit" }
+                                            )}{" "}
+                                            -{" "}
+                                            {new Date(flight.arrival_time2).toLocaleTimeString(
+                                                "en-GB",
+                                                { hour: "2-digit", minute: "2-digit" }
+                                            )}
+                                        </td>
+                                        <td className="p-2">{flight.baggage}</td>
+                                        <td className="p-2">{flight.meal ? "Yes" : "No"}</td>
+                                    </tr>
+                                    {flight.FlightSector?.type === "two-way" && (
+                                        <tr
+                                        key='2'
+                                        className={`${
+                                            2 % 2 === 0 ? "bg-gray-100" : "bg-white"
                                         }`}
                                     >
                                         <td className="p-2">
@@ -81,13 +116,14 @@ export default function Flights(group) {
                                             )}
                                         </td>
                                         <td className="p-2">{flight.baggage}</td>
-                                        <td className="p-2">{flightGroup.meal ? "Yes" : "No"}</td>
+                                        <td className="p-2">{flight.meal ? "Yes" : "No"}</td>
                                     </tr>
+                                        )}
                                 
                             </tbody>
                         </table>
                         <div className="flex justify-end mt-2">
-                            <a href={`/agent-dashboard/Book-Flights/BookingForm/${flightGroup.id}`} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                            <a href={`/agent-dashboard/Book-Group-Flights/BookingForm/${flight.id}`} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                                 Book Now
                             </a>
                         </div>

@@ -6,31 +6,52 @@ export async function POST(request) {
   try {
     const body = await request.json();
     console.log("Payload is ", body);
-    const { flights, flightgroup_id, flightsector_id, flightairline_id } = body;
+    const {  flight_number,
+      origin,
+      destination,
+      baggage,
+      seats,
+      fare,
+      flight_date,
+      dept_time,
+      arrival_time,
+      flight_number2,
+      origin2,
+      destination2,
+      flight_date2,
+      dept_time2,
+      arrival_time2,
+      flightgroup_id,
+      flightsector_id,
+      flightairline_id,meal } = body;
 
-    const createdFlights = await Promise.all(
-      flights.map((flight) =>
-        prisma.SingleGroupFlight.create({
-          data: {
-            flightgroup_id: parseInt(flight.flightgroup_id),
-            flightsector_id: parseInt(flight.flightsector_id),
-            flightairline_id: parseInt(flight.flightairline_id),
-            flight_number: parseInt(flight.flight_number),
-            flight_date: new Date(flight.flight_date),
-            origin: flight.origin,
-            destination: flight.destination,
-            dept_time: new Date(flight.dept_time),
-            arrival_time: new Date(flight.arrival_time),
-            baggage: flight.baggage,
-            seats: parseInt(flight.seats),
-            fare: parseInt(flight.fare),
-            created_at: new Date(),
-            updated_at: new Date(),
-            meal:flight.meal || false,
-          },
-        })
-      )
-    );
+    const createdFlights = await
+      prisma.SingleGroupFlight.create({
+        data: {
+          flightgroup_id: parseInt(flightgroup_id),
+          flightsector_id: parseInt(flightsector_id),
+          flightairline_id: parseInt(flightairline_id),
+          flight_number: parseInt(flight_number),
+          flight_date: new Date(flight_date),
+          origin: origin,
+          destination: destination,
+          dept_time: new Date(dept_time),
+          arrival_time: new Date(arrival_time),
+          flight_number2: parseInt(flight_number2),
+          flight_date2: new Date(flight_date2),
+          origin2: origin2,
+          destination2: destination2,
+          dept_time2: new Date(dept_time2),
+          arrival_time2: new Date(arrival_time2),
+          baggage: baggage,
+          seats: parseInt(seats),
+          fare: parseInt(fare),
+          created_at: new Date(),
+          updated_at: new Date(),
+          meal: meal? meal==='true'? true : false : false,
+        },
+      })
+
 
     return NextResponse.json(createdFlights);
   } catch (error) {
