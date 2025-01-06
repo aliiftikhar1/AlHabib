@@ -226,13 +226,14 @@ const Sidebar = () => {
 
           {/* Logout Button */}
           <li className="mt-6">
-            <button
+            <a
               className="flex hover:ml-3 transform transition-all duration-300 items-center p-3 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full"
               onClick={handleLogout}
+              href='/'
             >
               <FaSignOutAlt className="h-5 w-5" />
               <span className="ml-3 text-sm font-medium">Logout</span>
-            </button>
+            </a>
           </li>
         </ul>
       </div>

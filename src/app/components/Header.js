@@ -116,10 +116,28 @@ export default function Header() {
           <a href="#contact" className="hover:text-blue-500">
             Contact
           </a>
+          <a
+            href="/"
+            className="hover:text-blue-500"
+            // onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Flights
+          </a>
+          <a
+            href="/"
+            className="hover:text-blue-500"
+            // onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Hotels
+          </a>
         
         </nav>
         <div className='hidden md:flex md:w-auto w-full md:mr-0 mr-4 border-black'>
-        {username?(<div className='flex justify-end md:justify-center items-center gap-4'><Button onClick={() => dispatch(Logout())} className="bg-red-600 h-8">Logout</Button>
+        
+        {username?(
+          <div className='flex justify-end md:justify-center items-center gap-4'>
+            <a href='/admin' className='px-4 py-1 rounded-full border hover:bg-blue-100'>Dashboard</a>
+            <Button onClick={() => dispatch(Logout())} className="bg-red-600 h-8">Logout</Button>
           <div className='hidden md:flex'>{username}</div>
           </div>):(<>
           <div className=" space-x-2">
@@ -284,6 +302,7 @@ export default function Header() {
           >
             Hotels
           </a>
+          <button className='p-2 rounded-full border'>Dashboard</button>
           {username?(<div className='flex justify-end md:justify-center items-center gap-4'><Button onClick={() => dispatch(Logout())} className="bg-red-600 h-8">Logout</Button>
           <div className='hidden md:flex'>{username}</div>
           </div>):(<>

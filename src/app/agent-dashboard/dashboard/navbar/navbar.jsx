@@ -48,12 +48,13 @@ const Navbar = () => {
           </button>
           {userDropdown && (
             <div className="absolute top-full z-10 bg-white px-3 py-3 right-0 flex flex-col border">
-              <button
+              <a
                 onClick={() => dispatch(Logout())}
+                href='/'
                 className="border border-gray-300/0 hover:border-gray-800 px-2 py-1 rounded"
               >
                 Logout
-              </button>
+              </a>
             </div>
           )}
         </div>
