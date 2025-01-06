@@ -102,7 +102,7 @@ export default function NewHeroSection() {
               // onClick={() => setActiveTab('business')}
             >
               <Briefcase className="h-5 w-5" />
-              <span>WegoPro Business Travel</span>
+              <span>Group Tickets</span>
               <span className="ml-1 absolute -right-2 -top-2  rounded bg-orange-500 px-1.5 py-0.5 text-xs text-white">NEW</span>
             </button>
             </a>
