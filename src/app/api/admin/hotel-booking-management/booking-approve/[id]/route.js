@@ -72,6 +72,16 @@ export async function PUT(request, { params }) {
                         hotel_booking_id: booking.id,
                     },
                 });
+                const notification = await prisma.Notifications.create({
+                    data: {
+                      user_id: parseInt(booking.agent_id), // Correct user ID
+                      message: "Your Hotel booking has been approved",
+                      status: "sent"
+                    },
+                  }).catch(error => {
+                    console.error("Error creating ledger record:", error);
+                    throw new Error("Failed to create ledger record");
+                  });
 
                 return NextResponse.json(
                     { message: "Successfully updated", status: true },

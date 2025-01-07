@@ -82,6 +82,17 @@ export async function PUT(request,{params}) {
       });
 
       if(newrecord){
+        const notification = await prisma.Notifications.create({
+          data: {
+            user_id: parseInt(booking.agent_id), // Correct user ID
+            message: "Your Group Flight booking has been approved",
+            status: "sent"
+          },
+        }).catch(error => {
+          console.error("Error creating ledger record:", error);
+          throw new Error("Failed to create ledger record");
+        });
+
         const newBooking = await prisma.GroupFlightBookings.update({
           where:{id: parseInt(id)},
           data: {

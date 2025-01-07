@@ -105,6 +105,17 @@ export async function PUT(request, { params }) {
             console.error("Error creating ledger record:", error);
             throw new Error("Failed to create ledger record");
           });
+
+          const notification = await prisma.Notifications.create({
+            data: {
+              user_id: parseInt(user.id), // Correct user ID
+              message: "Your payment request has been approved",
+              status: "sent"
+            },
+          }).catch(error => {
+            console.error("Error creating ledger record:", error);
+            throw new Error("Failed to create ledger record");
+          });
                   
   
         // if (!newrecord) {

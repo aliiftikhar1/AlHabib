@@ -42,6 +42,7 @@ model Users {
   GroupFlightBookings GroupFlightBookings[]
   NewLedger           NewLedger[]
   HotelBooking        HotelBooking[]
+  Notifications       Notifications[]
 }
 
 model Packages {
@@ -425,3 +426,13 @@ model NewLedger {
   @@index([payment_request_id])
 }
 
+
+model Notifications{
+  id             Int            @id @default(autoincrement())
+  user_id         Int
+  message        String
+  status          String
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  Users           Users         @relation(fields: [user_id], references: [id], onDelete:Cascade)
+}
