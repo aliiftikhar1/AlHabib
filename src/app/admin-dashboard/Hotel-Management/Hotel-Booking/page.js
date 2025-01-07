@@ -208,9 +208,6 @@ export default function HotelBookingManagement() {
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-7xl h-auto max-h-[90vh] overflow-auto">
-                          <DialogHeader>
-                            <DialogTitle>Hotel Booking Details</DialogTitle>
-                          </DialogHeader>
                           <BookingDetails
                             booking={selectedBooking}
                             onApprove={() => handleStatusUpdateBooking('approve', selectedBooking)}

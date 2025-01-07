@@ -81,7 +81,7 @@ model Tickets {
 model PaymentRequests {
   id            Int      @id @default(autoincrement())
   userid        Int
-  transactionno String
+  transactionno String   @unique
   img_url       String   @db.Text
   status        String
   verified_by   String?
