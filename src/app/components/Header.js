@@ -86,7 +86,7 @@ export default function Header() {
   return (
     <header className="fixed top-0 w-full h-12 md:h-16 bg-white backdrop-blur-sm text-black border-b flex items-center px-6 md:px-10 z-40">
       <div className="flex justify-between items-center w-full">
-        <Image src='/logo/logo1.jpg' alt="AlHabib Logo" width={64} height={64} className="md:h-16 h-12 w-full p-1" />
+        <Image src='/logo/logo1.jpg' alt="AlHabib Logo" width={1000} height={1000} className="md:h-16 h-12 w-auto  p-1" />
 
         <nav className="hidden md:flex gap-8 text-lg">
           {navItems.map(({ href, label }) => (
