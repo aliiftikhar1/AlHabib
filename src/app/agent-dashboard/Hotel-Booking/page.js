@@ -22,9 +22,10 @@ import {
 } from '@/components/ui/dialog';
 import { PencilIcon, TrashIcon, PlusIcon, Loader, Eye } from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
-import { fetchHotelBookings, fetchHotel, addHotelBooking, updateHotelBooking, deleteHotelBooking } from './api';
+import { fetchHotelBookings, fetchHotel, addHotelBooking } from './api';
 import BookingForm from './BookingForm';
 import BookingDetails from './BookingDetails';
+import { useSelector } from 'react-redux';
 
 export default function HotelBookingManagement() {
   const [bookings, setBookings] = useState([]);
@@ -37,12 +38,13 @@ export default function HotelBookingManagement() {
   const [loadingAction, setLoadingAction] = useState(null);
   const [hotels, setHotels] = useState([]);
   const [updateTrigger, setUpdateTrigger] = useState(0);
+  const userid = useSelector((data)=>data.user.id)
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
       const [bookingsData, hotelsData] = await Promise.all([
-        fetchHotelBookings(),
+        fetchHotelBookings(userid),
         fetchHotel()
       ]);
       setBookings(bookingsData);
@@ -68,38 +70,14 @@ export default function HotelBookingManagement() {
     setIsViewModalOpen(true);
   }, []);
 
-  const handleUpdateBooking = useCallback((booking) => {
-    setCurrentBooking(booking);
-    setIsModalOpen(true);
-  }, []);
-
-  const handleDeleteBooking = useCallback(async (id) => {
-    if (window.confirm('Are you sure you want to delete this booking?')) {
-      setLoadingAction(id);
-      try {
-        await deleteHotelBooking(id);
-        setUpdateTrigger(prev => prev + 1);
-        toast.success('Booking deleted successfully');
-      } catch (err) {
-        toast.error(err.message);
-      } finally {
-        setLoadingAction(null);
-      }
-    }
-  }, []);
-
- 
   const handleSubmit = useCallback(async (bookingData) => {
     setLoadingAction('form');
-    const updatedBooking = { ...bookingData, agent_id: 8 }; 
+    console.log("Booking data : ",bookingData);
+    const updatedBooking = { ...bookingData, agent_id: userid }; 
+    console.log("New Booking data with agent_id : ", updatedBooking);
     try {
-      if (currentBooking) {
-        await updateHotelBooking({ ...currentBooking, ...updatedBooking });
-        toast.success('Booking updated successfully');
-      } else {
         await addHotelBooking(updatedBooking);
         toast.success('Booking added successfully');
-      }
       setUpdateTrigger(prev => prev + 1);
       setIsModalOpen(false);
     } catch (err) {
@@ -109,33 +87,6 @@ export default function HotelBookingManagement() {
     }
   }, [currentBooking]);
 
-  const handleStatusUpdateBooking = useCallback(async (status, booking) => {
-    setApiLoading(true);
-    try {
-      const response = await fetch(
-        `/api/admin/hotel-booking-management/booking-${status}/${booking.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ bookingid: booking.id, status: status === 'approve' ? "Approved" : "Rejected" }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || `Failed to ${status} booking`);
-      }
-      setIsViewModalOpen(false)
-      toast.success(data.message || `Booking successfully ${status}d`);
-      setUpdateTrigger(prev => prev + 1);
-    } catch (error) {
-      console.error(error);
-      toast.error(`An unexpected error occurred while ${status}ing the booking`);
-    } finally {
-      setApiLoading(false);
-    }
-  }, []);
 
   return (
     <div>
@@ -213,27 +164,9 @@ export default function HotelBookingManagement() {
                           </DialogHeader>
                           <BookingDetails
                             booking={selectedBooking}
-                            onApprove={() => handleStatusUpdateBooking('approve', selectedBooking)}
-                            onReject={() => handleStatusUpdateBooking('reject', selectedBooking)}
-                            isLoading={apiLoading}
                           />
                         </DialogContent>
                       </Dialog>
-                      {/* <Button onClick={() => handleUpdateBooking(booking)} variant="ghost">
-                        <PencilIcon className="h-4 w-4" />
-                      </Button> */}
-                      <Button
-                        onClick={() => handleDeleteBooking(booking.id)}
-                        variant="ghost"
-                        className="text-red-600"
-                        disabled={loadingAction === booking.id}
-                      >
-                        {loadingAction === booking.id ? (
-                          <Loader className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <TrashIcon className="h-4 w-4" />
-                        )}
-                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}

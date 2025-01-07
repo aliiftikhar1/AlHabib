@@ -1,52 +1,37 @@
 "use client";
-import { useState } from "react";
 import { useParams } from "next/navigation";
-import { User, Plus, Minus } from "lucide-react";
-import * as Dialog from "@radix-ui/react-dialog";
-import { Calendar } from "@/components/ui/calendar";
 import Flights from "../Flights";
+import { useEffect, useState } from "react";
+import { Loader } from "lucide-react";
 
-const FlightSearchBar  = async () => {
+const FlightSearchBar = () => {
+  const [group , setgroup]= useState('null')
+  const [loading, setloading]= useState(false)
   const params = useParams();
-  const [tripType, setTripType] = useState("one-way");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
-  const [showFromDropdown, setShowFromDropdown] = useState(false);
-  const [showToDropdown, setShowToDropdown] = useState(false);
-  const [departureDate, setDepartureDate] = useState(null);
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [travelers, setTravelers] = useState({ adults: 1, children: 0, infants: 0 });
-  const [showTravelersDialog, setShowTravelersDialog] = useState(false);
-  const slug = await params.slug;
+  const slug = params.slug;
   console.log(slug);
-  const locations = {
-    from: ["Sialkot (SKT)", "Lahore (LHE)", "Karachi (KHI)", "Islamabad (ISB)", "Peshawar (PEW)"],
-    to: ["Riyadh (RUH)", "Jeddah (JED)", "Dubai (DXB)", "Doha (DOH)", "Istanbul (IST)"],
-  };
-
-  const handleModify = () => {
-    console.log({ tripType, from, to, departureDate, travelers });
-  };
-
-  const handleTravelerChange = (type, increment) => {
-    setTravelers((prev) => ({
-      ...prev,
-      [type]: Math.max(0, prev[type] + increment),
-    }));
-  };
-
-  const handleFromSelect = (location) => {
-    setFrom(location);
-    setShowFromDropdown(false);
-  };
-
-  const handleToSelect = (location) => {
-    setTo(location);
-    setShowToDropdown(false);
-  };
-
+  async function getFlightData() {
+    setloading(true)
+    const response = await fetch(`/api/user/fetchgroup/${slug}`);
+    const data = await response.json();
+    console.log("data",data.data);
+    setgroup(data.data);
+    setloading(false)
+  }
+  useEffect(() => {
+    async function fetchData() {
+      await getFlightData();
+    }
+    fetchData();
+  }, [slug]);
   return (
     <div className="w-full flex flex-col">
+      {/* {loading&& <Loader className="animate-spin"/>} */}
+      <div className="flex justify-center items-center">
+        <h2 className="text-3xl font-semibold">
+          {group.title}
+        </h2>
+        </div>
       <div>
       <Flights group={slug}/>
       </div>

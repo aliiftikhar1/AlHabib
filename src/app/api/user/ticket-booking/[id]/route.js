@@ -62,11 +62,11 @@ export async function POST(request) {
 
 // GET request to fetch all bookings
 export async function GET(request,{params}) {
-    const {id} = parseInt(params);
+    const id = params.id
     console.log("id",id);
   try {
     const bookings = await prisma.ticketBookings.findMany({where:{
-        user_id: id
+        user_id: parseInt(id)
     } ,
     include:{
       Tickets:true

@@ -360,7 +360,7 @@ model  Hotel{
 
 model HotelBooking{
   id                  Int                 @id @default(autoincrement())
-  agent_id            Int                 @default(2)
+  agent_id            Int                 @default(8)
   hotel_id            Int
   check_in_date         DateTime            @default(now())
   check_out             DateTime            @default(now())

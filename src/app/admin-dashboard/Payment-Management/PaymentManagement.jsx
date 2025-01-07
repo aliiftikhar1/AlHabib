@@ -193,13 +193,13 @@ export default function PaymentRequestManagement() {
   };
 
   const handleDownloadImage = (req) => {
-    const a = document.createElement('a');
-    a.href = decodeURIComponent(req.img_url);
-    a.download = `${req.transactionno}.jpg`; // Change file name as needed
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const imageUrl = `${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${req.img_url}`;
+    const filename = `${req.transactionno}.jpg`;
+    const apiUrl = `/api/download-image?imageUrl=${encodeURIComponent(imageUrl)}&filename=${encodeURIComponent(filename)}`;
+    window.location.href = apiUrl;
   };
+
+
 
   return (
     <div>
@@ -240,9 +240,10 @@ export default function PaymentRequestManagement() {
                     <TableCell>{req.userid}</TableCell>
                     <TableCell>{req.Users?.name}</TableCell>
                     <TableCell>
+
                       {req.img_url ? (
                         <img
-                          src={decodeURIComponent(req.img_url)}
+                          src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${req.img_url}`}
                           className="w-12 h-12"
                           alt="Payment"
                         />
@@ -275,7 +276,7 @@ export default function PaymentRequestManagement() {
                       >
                         <TrashIcon className="h-4 w-4" />
                       </Button>
-                     
+
                     </TableCell>
                   </TableRow>
                 ))}
@@ -313,30 +314,30 @@ export default function PaymentRequestManagement() {
                 </div>
                 <div className='w-1/2'>
                   <img
-                    src={decodeURIComponent(selectedRequest.img_url)}
+                    src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${selectedRequest.img_url}`}
                     alt="Payment"
                     className="w-full h-80 object-contain"
                   />
                 </div>
               </div>
-              <div className="mt-4 flex w-full  ">
-                {selectedRequest.status === 'Pending' && (
+              <div className="mt-4 flex w-full">
+                {selectedRequest.status !== 'Approved' && (
                   <div className='flex justify-between w-full'>
                     <div className='space-x-4'>
-                    <Button onClick={handleApprove}>Approve</Button>
-                    <Button onClick={handleReject} className="bg-red-600">
-                      Reject
-                    </Button>
+                      <Button onClick={handleApprove}>Approve</Button>
+                      <Button onClick={handleReject} className="bg-red-600">
+                        Reject
+                      </Button>
                     </div>
                     <div>
-                    <Button
+                      <Button
                         onClick={() => handleDownloadImage(selectedRequest)}
 
                         className="text-green-600 bg-white hover:bg-gray-100 border-green-600 border"
                       >
                         Download Image
                       </Button>
-                      </div>
+                    </div>
                   </div>
                 )}
               </div>

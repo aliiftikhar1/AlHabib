@@ -118,23 +118,48 @@ export default function PackageManagement() {
     setIsModalOpen(true);
   };
 
-  const handleimagechange = (e) => {
-    // console.log("Handle image change function is called..");
-    const selectedfile = e.target.files[0];
-    // console.log("Selected file is :", selectedfile);
-    if (selectedfile) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imagedata = e.target.result;
-        // console.log("Image data is : ", imagedata);
-        const dataurl = `data:image/jpeg;base64,${btoa(imagedata)}`;
-        console.log("image data is : ", dataurl);
-        setpackageimage(dataurl);
+
+  const uploadImage = async (imageFile) => {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+      reader.onload = async () => {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: reader.result }),
+          });
+          if (!response.ok) throw new Error('Failed to upload image');
+          const data = await response.json();
+          console.log(data);
+          resolve(data.image_url);
+        } catch (error) {
+          reject(error.message);
+        }
       };
-    
-      reader.readAsBinaryString(selectedfile);
-  }
-  }
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(imageFile);
+    });
+  };
+
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    try {
+      // Upload the image and get the URL
+      setLoadingAction('image')
+      const imageUrl = await uploadImage(file);
+      setpackageimage(imageUrl);
+      // toast.success('Image uploaded successfully!');
+      setLoadingAction('')
+    } catch (error) {
+      toast.error(`Image upload failed: ${error}`);
+    }
+  };
+
+
   const handleDeletePackage = async (id) => {
     if (window.confirm('Are you sure you want to delete this package?')) {
       setLoadingAction(id);
@@ -233,14 +258,16 @@ export default function PackageManagement() {
                     <Input
                       type='file'
                       name='image'
-                      onChange={handleimagechange}
+                      accept="image/*"
+                      onChange={handleImageChange}
                       // defaultValue={currentpackage?.[image]}
                     />
                   </div>
                 </div>
-                <Button type="submit" className="w-full" disabled={loadingAction === 'form'}>
+                <Button type="submit" className="w-full" disabled={loadingAction === 'form'|| loadingAction=== 'image'}>
                   {loadingAction === 'form' && <Loader className="mr-2 animate-spin" />}
-                  {currentpackage ? 'Update' : 'Add'} Package
+                  {/* {loadingAction === 'image' && <><Loader className="mr-2 animate-spin" /> Uploading Image</>} */}
+                  {(currentpackage && loadingAction!=='form' && loadingAction!=='image' ) ? 'Update Package' : loadingAction === 'image' ? <><Loader className="mr-2 animate-spin" /> Uploading Image</>:'Add Package'} 
                 </Button>
               </form>
             </DialogContent>
@@ -264,12 +291,16 @@ export default function PackageManagement() {
                   <TableHead>Updated At</TableHead>
                 </TableRow>
               </TableHeader>
+              
               <TableBody>
                 {filteredpackages.map((packages, index) => (
+                  
                   <TableRow key={packages.id}>
                     <TableCell>{index + 1}</TableCell>
+                    
                     <TableCell className='size-28'>{packages.image ?
-                      <img src={decodeURIComponent(packages.image)} className='w-full h-full'></img> :
+
+                      <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${packages.image}`} className='w-full h-full'></img> :
                       <img src='/logo/logo1.jpg' className='w-full h-full'></img>
                     }
                     </TableCell>

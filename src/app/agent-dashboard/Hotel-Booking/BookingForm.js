@@ -58,8 +58,8 @@ export default function BookingForm({ onSubmit, initialData, hotels, isLoading }
             </label>
             <select
               name="hotel_id"
-              defaultValue={initialData?.hotel_id || ''}
               required
+              defaultValue={initialData?.hotel_id || ''}
               className="w-full p-2 border border-gray-300 rounded-md"
             >
               <option value="">Select Hotel</option>

@@ -12,19 +12,19 @@ export default function AddPaymentRequest() {
   const userid = useSelector((state) => state.user.id);
   const [userbalance, setUserbalance] = useState(0);
   // const userbalance = useSelector((state) => state.user.balance);
-  useEffect(()=>{
-     async function fetchuserbalance(){
+  useEffect(() => {
+    async function fetchuserbalance() {
       const response = await fetch(`/api/user/getuserbalance/${userid}`);
       if (!response.ok) {
         throw new Error('Failed to fetch user balance');
       }
       const data = await response.json();
       setUserbalance(data);
-      console.log("data",data);
+      console.log("data", data);
     }
     fetchuserbalance();
 
-  },[userid]);
+  }, [userid]);
 
   const [formData, setFormData] = useState({
     userid: userid,
@@ -85,15 +85,43 @@ export default function AddPaymentRequest() {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle image upload and convert to base64
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setFormData({ ...formData, img_url: event.target.result });
+
+
+  const uploadImage = async (imageFile) => {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+      reader.onload = async () => {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: reader.result }),
+          });
+          if (!response.ok) throw new Error('Failed to upload image');
+          const data = await response.json();
+          console.log(data);
+          resolve(data.image_url);
+        } catch (error) {
+          reject(error.message);
+        }
       };
-      reader.readAsDataURL(file);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(imageFile);
+    });
+  };
+  // Handle form submission
+  // Handle image upload and update formData
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      // Upload the image and get the URL
+      const imageUrl = await uploadImage(file);
+      setFormData({ ...formData, img_url: imageUrl });
+      // toast.success('Image uploaded successfully!');
+    } catch (error) {
+      toast.error(`Image upload failed: ${error}`);
     }
   };
 
@@ -103,6 +131,10 @@ export default function AddPaymentRequest() {
     setLoading(true);
 
     try {
+      if (!formData.img_url) {
+        throw new Error('Please upload a valid image.');
+      }
+
       const payload = {
         ...formData,
         status: 'Pending',
@@ -120,7 +152,7 @@ export default function AddPaymentRequest() {
 
       toast.success('Payment request submitted successfully!');
       setFormData({ userid: userid, transactionno: '', amount: '', img_url: '' });
-      fetchPaymentHistory(); // Refresh the payment history after submission
+      fetchPaymentHistory(); // Refresh payment history after submission
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -128,12 +160,13 @@ export default function AddPaymentRequest() {
     }
   };
 
+
   useEffect(() => {
     fetchPaymentHistory(); // Fetch payment history when the component mounts
   }, [userid]);
 
   return (
-    <> <p className="w-48 mt-4 absolute z-0 top-[60px] right-[250px] text-lg px-4 py-1 rounded-full border-gray-600  border font-bold">Balance : {userbalance}</p>
+    <> <p className="w-48 mt-4 absolute z-0 top-[60px] right-[250px] text-lg px-4 py-1 rounded-full border-gray-600  border font-bold">Balance : {userbalance || 0}</p>
       <Button
         className="w-48 mt-4 absolute z-0 top-[60px] right-[30px]"
         onClick={fetchBankAccounts}
@@ -200,7 +233,7 @@ export default function AddPaymentRequest() {
 
             <div>
               <label htmlFor="img_url" className="block text-sm font-medium">
-                Upload Bank Receipt
+                Upload Bank Receipt
               </label>
               <Input
                 type="file"
@@ -210,12 +243,13 @@ export default function AddPaymentRequest() {
               />
               {formData.img_url && (
                 <img
-                  src={formData.img_url}
-                  alt="Preview"
+                  src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${formData.img_url}`}
+                  alt="Uploaded Receipt"
                   className="mt-4 h-32 w-auto rounded-md shadow-md"
                 />
               )}
             </div>
+
 
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? (

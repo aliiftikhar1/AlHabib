@@ -5,10 +5,10 @@ export async function POST(request) {
   try {
     const body = await request.json();
     console.log('Payload is:', body);
-    const { hotel_id, check_in_date, check_out, rooms, adults, childs, infants, passengers } = body;
+    const { agent_id,hotel_id, check_in_date, check_out, rooms, adults, childs, infants, passengers } = body;
 
     // Validate required fields
-    if (!hotel_id || !check_in_date || !check_out || !rooms ) {
+    if (!agent_id || !hotel_id || !check_in_date || !check_out || !rooms ) {
       return NextResponse.json(
         { message: 'Missing required fields', status: false },
         { status: 400 }
@@ -17,6 +17,7 @@ export async function POST(request) {
 
     const newBooking = await prisma.HotelBooking.create({
       data: {
+        agent_id:parseInt(agent_id),
         hotel_id: parseInt(hotel_id),
         check_in_date: new Date(check_in_date),
         check_out : new Date(check_out),

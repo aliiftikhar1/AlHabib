@@ -16,32 +16,7 @@ const FeaturedPackages = () => {
     fetchPackages();
     setloading(false)
   },[1]);
-  const packages = [
-    {
-      name: "Romantic Paris Getaway",
-      price: "$1,200",
-      description: "A 5-day trip to the city of romance, including flights and accommodations.",
-      image: "https://img.pikbest.com/origin/09/05/64/97SpIkbEsTjpv.jpg!bw700",
-    },
-    {
-      name: "Umrah Package",
-      price: "$2,500",
-      description: "7 days in a luxury water villa with meals and activities included.",
-      image: "https://img.pikbest.com/templates/20240830/islamic-trip-travel--26-tour-for-umrah-and-hajj-square-post-template_10772823.jpg!bw700",
-    },
-    {
-      name: "Premium Worl Tour Package",
-      price: "$10,800",
-      description: "Explore the lush landscapes of Bali with guided tours and cultural experiences.",
-      image: "https://img.pikbest.com/origin/09/05/64/97SpIkbEsTjpv.jpg!bw700",
-    },
-    {
-      name: "Hajj Package",
-      price: "$1,800",
-      description: "Explore the lush landscapes of Bali with guided tours and cultural experiences.",
-      image: "https://img.pikbest.com/templates/20240830/islamic-trip-travel--26-tour-for-umrah-and-hajj-square-post-template_10772823.jpg!bw700",
-    },
-  ];
+
   if(loading){
     return <div>Loading...</div>;
   }
@@ -56,7 +31,7 @@ const FeaturedPackages = () => {
               className=" bg-white border h-full border-gray-400 hover:border-blue-400 hover:scale-[1.01] transition-all duration-500 rounded-lg overflow-hidden group cursor-pointer"
             >
               <img
-                src={pkg.image}
+                src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${pkg.image}`}
                 alt={pkg.title}
                 className="w-full h-40 md:h-[40vh] object-cover border-b border-gray-400"
               />

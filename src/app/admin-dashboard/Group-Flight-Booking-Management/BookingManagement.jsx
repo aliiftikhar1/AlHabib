@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { EyeIcon, Loader, CheckCircle, XCircle } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-
+import { Input } from '@/components/ui/input';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from 'react-redux';
@@ -18,11 +18,11 @@ const fetchBookings = async () => {
   return response.json();
 };
 
-const updateBookingStatus = async (id, status) => {
+const updateBookingStatus = async (id, status, attachment) => {
   const response = await fetch(`/api/admin/group-flight-booking/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({ status, image: attachment }),
   });
   if (!response.ok) {
     throw new Error('Failed to update booking status');
@@ -37,6 +37,8 @@ export default function BookingManagement() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [attachment, setattachment]= useState(null);
+  const [loadingAction, setLoadingAction] = useState('');
 
   useEffect(() => {
     fetchBookings()
@@ -55,9 +57,9 @@ export default function BookingManagement() {
     );
   }, [bookings, searchTerm]);
 
-  const handleAction = async (id, action) => {
+  const handleAction = async (id, action, attachment) => {
     try {
-      await updateBookingStatus(id, action);
+      await updateBookingStatus(id, action, attachment);
       setBookings((prev) =>
         prev.map((b) => (b.id === id ? { ...b, status: action } : b))
       );
@@ -66,6 +68,44 @@ export default function BookingManagement() {
     } catch (err) {
       toast.error(err.message);
     }
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+  
+    try {
+      // Upload the image and get the URL
+      setLoadingAction('image')
+      const imageUrl = await uploadImage(file);
+      setattachment(imageUrl);
+      // toast.success('Image uploaded successfully!');
+      setLoadingAction('')
+    } catch (error) {
+      toast.error(`Image upload failed: ${error}`);
+    }
+  };
+  const uploadImage = async (imageFile) => {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+      reader.onload = async () => {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_API}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: reader.result }),
+          });
+          if (!response.ok) throw new Error('Failed to upload image');
+          const data = await response.json();
+          console.log(data);
+          resolve(data.image_url);
+        } catch (error) {
+          reject(error.message);
+        }
+      };
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(imageFile);
+    });
   };
 
   return (
@@ -107,14 +147,14 @@ export default function BookingManagement() {
                     <TableCell>{booking.SingleGroupFlight?.fare}</TableCell>
                     <TableCell>{booking.status}</TableCell>
                     <TableCell>
-                      <Dialog open={dialogOpen} onOpenChange={setDialogOpen} className="">
+                      <Dialog open={dialogOpen} onOpenChange={setDialogOpen} >
                         <DialogTrigger asChild>
                           <Button variant="ghost">
                             <EyeIcon className="h-5 w-5 text-blue-600" />
                           </Button>
                         </DialogTrigger>
 
-                        <DialogContent className="max-w-3xl p-6 bg-white rounded-md border shadow-lg">
+                        <DialogContent className="max-w-3xl p-6 bg-white rounded-md border shadow-lg max-h-[90vh] overflow-auto">
                           <DialogTitle className="text-xl font-bold mb-4">Flight Details</DialogTitle>
                           <DialogDescription className="text-sm mb-4">
                             Here are the details for this flight booking.
@@ -200,11 +240,27 @@ export default function BookingManagement() {
                             </div>
 
                             <div className="mt-4">
-                              <input type="file" className="block mb-3" />
+                              {booking.attachment?
+                              <div>
+                                <h2 className='text-xl font-bold'>Attachment</h2>
+                                <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${booking.attachment}`}></img>
+                                </div>
+                              :<div key='image' className='relative'>
+                                <label htmlFor='image' className="block text-sm font-medium">
+                                  Image
+                                </label>
+                                <Input
+                                  type='file'
+                                  name='image'
+                                  accept="image/*"
+                                  onChange={handleImageChange}
+                                />
+                              </div>}
+                              
                               {booking.status === 'Pending' && (
                                 <div className="flex justify-end space-x-4 mt-4">
                                   <Button
-                                    onClick={() => handleAction(booking.id, 'Approved')}
+                                    onClick={() => handleAction(booking.id, 'Approved',attachment)}
                                     className="bg-green-500 hover:bg-green-600"
                                   >
                                     Approve

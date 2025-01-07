@@ -302,9 +302,11 @@ export default function LedgerManagement() {
 
 
               </div>
-              <div className='w-full '>
-                <img src={`${selectedEntry?.PaymentRequests?.img_url}`} className='h-full'></img>
-              </div>
+              {selectedEntry.type === 'payment-request' && (
+                <div className='w-full flex justify-center items-center'>
+                  <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${selectedEntry?.PaymentRequests?.img_url}`} className='h-[60vh]'></img>
+                </div>
+              )}
             </div>
             <Button
               onClick={printDialogContent}
@@ -398,18 +400,17 @@ export default function LedgerManagement() {
                   </Table>
 
                 </div>
-                {selectedEntry.type === 'group-flight-booking' && (
-                  <div className='w-full '>
-                    <img src='https://w0.peakpx.com/wallpaper/414/49/HD-wallpaper-car-lamborghini-aventador-black-vertical-car-vertical-cars.jpg' alt='attachment' className='h-[60vh]'></img>
-                  </div>
-                )}
+                {selectedEntry.type === 'group-flight-booking' && (<>
+                  {selectedEntry.GroupFlightBookings?.attachment ?  <div className='w-full '>
+                    <h2 className='text-xl font-bold'>Attachment</h2>
+                    <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${selectedEntry?.GroupFlightBookings?.attachment}`} alt='attachment' className='h-[60vh]'></img>
+                  </div>:  <div className='w-full '>
+                  <img src='https://w0.peakpx.com/wallpaper/414/49/HD-wallpaper-car-lamborghini-aventador-black-vertical-car-vertical-cars.jpg' alt='attachment' className='h-[60vh]'></img>
+                </div>}
+                  
+                  </>)}
               </div>
-              {/* </DialogContent> */}
-              {selectedEntry.type === 'payment-request' && (
-                <div className='w-full '>
-                  <img src={`${selectedEntry?.PaymentRequests?.img_url}`} className='h-[60vh]'></img>
-                </div>
-              )}
+              
             </div>
             <Button
               onClick={printDialogContent}

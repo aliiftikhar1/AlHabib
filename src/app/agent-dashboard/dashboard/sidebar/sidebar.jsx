@@ -62,12 +62,12 @@ const Sidebar = () => {
       icon: <MdHistory className="h-5 w-5" />, // Ticket or history-related icon
       roles: ["admin", "sub admin"],
     },
-    {
-      title: "My Flight Booking",
-      path: "/agent-dashboard/Flight-Bookings",
-      icon: <FaGamepad className="h-5 w-5" />, // Travel-related icon
-      roles: ["admin", "sub admin"],
-    },
+    // {
+    //   title: "My Flight Booking",
+    //   path: "/agent-dashboard/Flight-Bookings",
+    //   icon: <FaGamepad className="h-5 w-5" />, // Travel-related icon
+    //   roles: ["admin", "sub admin"],
+    // },
     {
       title: "Book Packages",
       path: "/agent-dashboard/Book-Package",
@@ -88,12 +88,7 @@ const Sidebar = () => {
     //   icon: <FaUserTie className="h-5 w-5" />, // Formal/business icon for visas
     //   roles: ["admin", "sub admin"],
     // },
-    {
-      title: "My Bookings",
-      path: "/agent-dashboard/My-Booking",
-      icon: <BiCoinStack className="h-5 w-5" />, // Stack icon for personal bookings
-      roles: ["admin", "sub admin"],
-    },
+   
     {
       title: "My Ledger",
       path: "/agent-dashboard/Ledgers",
@@ -111,24 +106,33 @@ const Sidebar = () => {
 
   
   const dropdownMenuItems = [
-    // {
-    //   title: "Settings",
-    //   roles: ["admin"], // Only admin can see this dropdown
-    //   list: [
-    //     {
-    //       title: "System Settings",
-    //       path: "/agent-dashboard/settings",
-    //       icon: <FaCog />,
-    //       roles: ["admin"],
-    //     },
-    //     {
-    //       title: "FAQs",
-    //       path: "/agent-dashboard/faqs",
-    //       icon: <FaQuestionCircle />,
-    //       roles: ["admin", "sub admin"],
-    //     },
-    //   ],
-    // },
+    {
+      title: "My Bookings",
+      // path: "/agent-dashboard/My-Booking",
+      icon: <BiCoinStack className="h-5 w-5" />, // Stack icon for personal bookings
+      roles: ["admin", "sub admin"],
+      list:[
+        {
+          title: "My Hotel Bookings",
+          path: "/agent-dashboard/Hotel-Booking",
+          icon: <BiCoinStack className="h-5 w-5" />, // Stack icon for personal bookings
+          roles: ["admin", "sub admin"],
+        },
+        {
+          title: "My Flight Bookings",
+          path: "/agent-dashboard/Flight-Bookings",
+          icon: <BiCoinStack className="h-5 w-5" />, // Stack icon for personal bookings
+          roles: ["admin", "sub admin"],
+        },
+        {
+          title: "Other Bookings",
+          path: "/agent-dashboard/My-Booking",
+          icon: <BiCoinStack className="h-5 w-5" />, // Stack icon for personal bookings
+          roles: ["admin", "sub admin"],
+        },
+      ]
+    },
+ 
   ];
 
   return (
@@ -157,13 +161,53 @@ const Sidebar = () => {
                     </button>
                   </a>
                 </li>
+                {dropdownMenuItems.map(
+            (category, index) =>
+              category.roles.includes(userRole) && (
+                <li key={category.title}>
+                  <button
+                     className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full"
+                    onClick={() => toggleDropdown(index)}
+                  >
+                    <span className="ml-3 text-sm font-medium">
+                      {category.title}
+                    </span>
+                    <FaChevronDown
+                      className={`h-4 w-4 ml-auto transform transition-transform duration-200 ${
+                        isDropdownOpen[index] ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  {isDropdownOpen[index] && (
+                    <ul className="ml-6 mt-2 space-y-2">
+                      {category.list.map(
+                        (item) =>
+                          item.roles.includes(userRole) && (
+                            <li key={item.title}>
+                              <a href={item.path}>
+                              <button className="flex items-center p-2 hover:bg-gray-200/20 rounded-md w-full">
+                                  {item.icon}
+                                  <span className="ml-3 text-sm font-medium">
+                                    {item.title}
+                                  </span>
+                                </button>
+                              </a>
+                            </li>
+                          )
+                      )}
+                    </ul>
+                  )}
+                </li>
+              )
+          )}
+
                 
           {menuItems.map(
             (item) =>
               item.roles.includes(userRole) && (
                 <li key={item.title}>
                   <a href={item.path}>
-                    <button className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full">
+                  <button className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full">
                       {item.icon}
                       <span className="ml-3 text-sm font-medium">
                         {item.title}
@@ -183,48 +227,7 @@ const Sidebar = () => {
                     </button>
                   </a>
                 </li>
-          {/* Dropdown Menu */}
-          {dropdownMenuItems.map(
-            (category, index) =>
-              category.roles.includes(userRole) && (
-                <li key={category.title}>
-                  <button
-                    className="flex items-center w-full p-3 hover:bg-blue-700 rounded-md focus:outline-none"
-                    onClick={() => toggleDropdown(index)}
-                  >
-                    <span className="ml-3 text-sm font-medium">
-                      {category.title}
-                    </span>
-                    <FaChevronDown
-                      className={`h-4 w-4 ml-auto transform transition-transform duration-200 ${
-                        isDropdownOpen[index] ? 'rotate-180' : ''
-                      }`}
-                    />
-                  </button>
-                  {isDropdownOpen[index] && (
-                    <ul className="ml-6 mt-2 space-y-2">
-                      {category.list.map(
-                        (item) =>
-                          item.roles.includes(userRole) && (
-                            <li key={item.title}>
-                              <a href={item.path}>
-                                <button className="flex items-center p-2 hover:bg-blue-700 rounded-md w-full">
-                                  {item.icon}
-                                  <span className="ml-3 text-sm font-medium">
-                                    {item.title}
-                                  </span>
-                                </button>
-                              </a>
-                            </li>
-                          )
-                      )}
-                    </ul>
-                  )}
-                </li>
-              )
-          )}
-
-          {/* Logout Button */}
+       
           <li className="mt-6">
             <a
               className="flex hover:ml-3 transform transition-all duration-300 items-center p-3 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full"

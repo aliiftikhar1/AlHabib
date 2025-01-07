@@ -5,7 +5,7 @@ export async function PUT(request,{params}) {
   const {id} = params;
   try {
     const body = await request.json();
-    const { status } = body;
+    const { status , image } = body;
 
     if(status === 'Rejected'){
       const newBooking = await prisma.GroupFlightBookings.update({
@@ -86,6 +86,7 @@ export async function PUT(request,{params}) {
           where:{id: parseInt(id)},
           data: {
             status,
+            attachment:image,
             updated_at: new Date(),
           },
         });

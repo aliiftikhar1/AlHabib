@@ -15,6 +15,7 @@ export default function AllBookings() {
     const fetchBookings = async () => {
       setLoading(true);
       try {
+       
         const packageBookingsResponse = await fetch(`/api/user/package-booking/${userid}`);
         const packageBookings = await packageBookingsResponse.json();
 
