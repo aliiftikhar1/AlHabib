@@ -11,13 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import Image from 'next/image'
 
 const backgroundImages = [
-  "https://images.unsplash.com/photo-1454496522488-7a8e488e8606",
-  "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
-  "https://images.unsplash.com/photo-1606117331085-5760e3b58520",
-  "https://images.unsplash.com/photo-1520466809213-7b9a56adcd45",
-  "https://images.unsplash.com/photo-1491555103944-7c647fd857e6"
+  "/bg/bg (1).jpeg",
+  "/bg/bg (2).jpeg",
+  "/bg/bg (3).jpeg",
+  "/bg/bg (4).jpeg",
+  "/bg/bg (5).jpeg",
 ]
 
 export default function NewHeroSection() {
@@ -41,7 +42,9 @@ export default function NewHeroSection() {
             className={`absolute inset-0 transition-opacity duration-1000 ${index === currentImageIndex ? 'opacity-100' : 'opacity-0'
               }`}
           >
-            <img
+            <Image
+              width={1000}
+              height={1000}
               src={image}
               alt={`Travel destination ${index + 1}`}
               className="h-full w-full object-cover"
@@ -70,13 +73,13 @@ export default function NewHeroSection() {
         </h1>
 
         {/* Search Form */}
-       <div className="relative mx-auto  mt-10 m-4 w-full md:max-w-4xl rounded-xl shadow-lg">
+        <div className="relative mx-auto  mt-10 m-4 w-full md:max-w-4xl rounded-xl shadow-lg">
           {/* Tabs */}
           <div className=" flex space-x-2 text-xs md:text-base">
             <button
               className={`flex items-center border-x border-t transition-all duration-500 border-black space-x-2 px-1 py-1 md:px-4 md:py-2 rounded-t-lg ${activeTab === 'flights'
-                  ? 'text-black bg-white'
-                  : 'text-white  backdrop-blur-sm bg-black/50 hover:bg-white/50  hover:text-black'
+                ? 'text-black bg-white'
+                : 'text-white  backdrop-blur-sm bg-black/50 hover:bg-white/50  hover:text-black'
                 }`}
               onClick={() => setActiveTab('flights')}
             >
@@ -85,8 +88,8 @@ export default function NewHeroSection() {
             </button>
             <button
               className={`flex items-center border-x border-t transition-all duration-500 border-black space-x-2 px-4 py-2 rounded-t-lg ${activeTab === 'hotels'
-                  ? ' text-black bg-white'
-                  : 'text-white  backdrop-blur-sm bg-black/50 hover:bg-white/50  hover:text-black'
+                ? ' text-black bg-white'
+                : 'text-white  backdrop-blur-sm bg-black/50 hover:bg-white/50  hover:text-black'
                 }`}
               onClick={() => setActiveTab('hotels')}
             >
@@ -94,78 +97,78 @@ export default function NewHeroSection() {
               <span>Hotels</span>
             </button>
             <a href='/'>
-            <button
-              className={`flex items-center relative border-x border-t transition-all duration-500 border-white space-x-2 px-4 py-2 rounded-t-lg ${activeTab === 'business'
+              <button
+                className={`flex items-center relative border-x border-t transition-all duration-500 border-white space-x-2 px-4 py-2 rounded-t-lg ${activeTab === 'business'
                   ? ' text-black bg-white'
                   : 'text-white  backdrop-blur-sm bg-black/50 hover:bg-white/50  hover:text-black'
-                }`}
+                  }`}
               // onClick={() => setActiveTab('business')}
-            >
-              <Briefcase className="h-5 w-5" />
-              <span>Group Tickets</span>
-              <span className="ml-1 absolute -right-2 -top-2  rounded bg-orange-500 px-1.5 py-0.5 text-xs text-white">NEW</span>
-            </button>
+              >
+                <Briefcase className="h-5 w-5" />
+                <span>Group Tickets</span>
+                <span className="ml-1 absolute -right-2 -top-2  rounded bg-orange-500 px-1.5 py-0.5 text-xs text-white">NEW</span>
+              </button>
             </a>
           </div>
           <div className='border-x border-b border-black rounded-b-lg bg-white text-xs md:text-base'>
 
-          {activeTab === 'flights' && (
-            <div className='bg-white pt-4 px-4'>
-              {/* Trip Type Selection */}
-              <div className="mb-4 flex space-x-4 ">
-                <button className="rounded-full border bg-white px-4 py-1">One-way</button>
-                <button className="rounded-full border bg-primary px-4 py-1 text-white">Round-trip</button>
-                <button className="rounded-full border bg-white px-4 py-1">Multi-city</button>
-              </div>
-
-              {/* Flight Search Fields */}
-              <div className="grid gap-2 md:gap-4 grid-cols-2 md:grid-cols-4">
-                <div className="space-y-2">
-                  <label className="text-xs md:text-sm text-gray-600">From</label>
-                  <Input placeholder="Enter city or airport" className='text-xs md:text-base'/>
+            {activeTab === 'flights' && (
+              <div className='bg-white pt-4 px-4'>
+                {/* Trip Type Selection */}
+                <div className="mb-4 flex space-x-4 ">
+                  <button className="rounded-full border bg-white px-4 py-1">One-way</button>
+                  <button className="rounded-full border bg-primary px-4 py-1 text-white">Round-trip</button>
+                  <button className="rounded-full border bg-white px-4 py-1">Multi-city</button>
                 </div>
-                <div className="space-y-2 relative">
-                  <label className="text-xs md:text-sm text-gray-600">To</label>
-                  <div className="">
-                    <Input placeholder="Enter city or airport" className='text-xs md:text-base'/>
-                    <button className="hidden md:flex absolute  right-[98%] text-2xl border border-black top-[70%] -translate-y-1/2 rounded-full bg-white p-1">
-                      <ArrowLeftRight className="h-4 w-4" />
-                    </button>
+
+                {/* Flight Search Fields */}
+                <div className="grid gap-2 md:gap-4 grid-cols-2 md:grid-cols-4">
+                  <div className="space-y-2">
+                    <label className="text-xs md:text-sm text-gray-600">From</label>
+                    <Input placeholder="Enter city or airport" className='text-xs md:text-base' />
+                  </div>
+                  <div className="space-y-2 relative">
+                    <label className="text-xs md:text-sm text-gray-600">To</label>
+                    <div className="">
+                      <Input placeholder="Enter city or airport" className='text-xs md:text-base' />
+                      <button className="hidden md:flex absolute  right-[98%] text-2xl border border-black top-[70%] -translate-y-1/2 rounded-full bg-white p-1">
+                        <ArrowLeftRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs md:text-sm text-gray-600">Depart</label>
+                    <Input type="date" className='text-xs md:text-base' />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs md:text-sm text-gray-600">Return</label>
+                    <Input type="date" className='text-xs md:text-base' />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs md:text-sm text-gray-600">Depart</label>
-                  <Input type="date" className='text-xs md:text-base'/>
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs md:text-sm text-gray-600">Return</label>
-                  <Input type="date" className='text-xs md:text-base'/>
-                </div>
-              </div>
 
-              {/* Additional Options */}
-              <div className="mt-4 flex flex-nowrap items-center gap-4">
-                <Select defaultValue="1" >
-                  <SelectTrigger className="w-[48%]">
-                    <SelectValue placeholder="Select passengers" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">1 Adult</SelectItem>
-                    <SelectItem value="2">2 Adults</SelectItem>
-                    <SelectItem value="3">3 Adults</SelectItem>
-                  </SelectContent>
-                </Select>
+                {/* Additional Options */}
+                <div className="mt-4 flex flex-nowrap items-center gap-4">
+                  <Select defaultValue="1" >
+                    <SelectTrigger className="w-[48%]">
+                      <SelectValue placeholder="Select passengers" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 Adult</SelectItem>
+                      <SelectItem value="2">2 Adults</SelectItem>
+                      <SelectItem value="3">3 Adults</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                <Select defaultValue="economy">
-                  <SelectTrigger className="w-[48%]">
-                    <SelectValue placeholder="Select class" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="economy">Economy</SelectItem>
-                    <SelectItem value="business">Business</SelectItem>
-                    <SelectItem value="first">First Class</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <Select defaultValue="economy">
+                    <SelectTrigger className="w-[48%]">
+                      <SelectValue placeholder="Select class" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="economy">Economy</SelectItem>
+                      <SelectItem value="business">Business</SelectItem>
+                      <SelectItem value="first">First Class</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="flex items-center space-x-2 mt-4">
                   <input type="checkbox" id="direct-flight" className="rounded border-gray-300" />
@@ -173,69 +176,69 @@ export default function NewHeroSection() {
                     Direct flight only
                   </label>
                 </div>
-              
-            </div>
-          )}
 
-          {activeTab === 'hotels' && (
-            <div className="bg-white p-4 space-y-2">
-              <h2 className="text-xl font-semibold">Where do you want to stay?</h2>
+              </div>
+            )}
 
-              <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-                <div className="space-y-1">
-                  <label className="text-sm text-gray-600">Destination</label>
-                  <Input
-                    placeholder="Enter a destination"
-                    defaultValue="Dera Ghazi Khan, Pakistan"
-                  />
+            {activeTab === 'hotels' && (
+              <div className="bg-white p-4 space-y-2">
+                <h2 className="text-xl font-semibold">Where do you want to stay?</h2>
+
+                <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+                  <div className="space-y-1">
+                    <label className="text-sm text-gray-600">Destination</label>
+                    <Input
+                      placeholder="Enter a destination"
+                      defaultValue="Dera Ghazi Khan, Pakistan"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-sm text-gray-600">Check In</label>
+                    <Input
+                      type="date"
+                      defaultValue="2024-12-13"
+
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-sm text-gray-600">Check Out</label>
+                    <Input
+                      type="date"
+                      defaultValue="2024-12-14"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-sm text-gray-600">Guests & Rooms</label>
+                    <Select defaultValue="2-1">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select guests" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1-1">1 Adult in 1 Room</SelectItem>
+                        <SelectItem value="2-1">2 Adults in 1 Room</SelectItem>
+                        <SelectItem value="2-2">2 Adults in 2 Rooms</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
-                <div className="space-y-1">
-                  <label className="text-sm text-gray-600">Check In</label>
-                  <Input
-                    type="date"
-                    defaultValue="2024-12-13"
-
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-sm text-gray-600">Check Out</label>
-                  <Input
-                    type="date"
-                    defaultValue="2024-12-14"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-sm text-gray-600">Guests & Rooms</label>
-                  <Select defaultValue="2-1">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select guests" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1-1">1 Adult in 1 Room</SelectItem>
-                      <SelectItem value="2-1">2 Adults in 1 Room</SelectItem>
-                      <SelectItem value="2-2">2 Adults in 2 Rooms</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="flex items-center space-x-2">
+                  <input type="checkbox" id="free-cancellation" className="rounded border-gray-300" />
+                  <label htmlFor="free-cancellation" className="text-sm text-gray-600">
+                    Free cancellation
+                  </label>
                 </div>
               </div>
+            )}
 
-              <div className="flex items-center space-x-2">
-                <input type="checkbox" id="free-cancellation" className="rounded border-gray-300" />
-                <label htmlFor="free-cancellation" className="text-sm text-gray-600">
-                  Free cancellation
-                </label>
-              </div>
+            <div className="mt-0 flex justify-end p-4">
+              <Button className="bg-[#5AB54B] hover:bg-[#4a9e3c]">
+                Search
+              </Button>
             </div>
-          )}
-
-          <div className="mt-0 flex justify-end p-4">
-            <Button className="bg-[#5AB54B] hover:bg-[#4a9e3c]">
-              Search
-            </Button>
-          </div>
           </div>
         </div>
 

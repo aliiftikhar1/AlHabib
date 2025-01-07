@@ -136,7 +136,7 @@ export default function Header() {
         
         {username?(
           <div className='flex justify-end md:justify-center items-center gap-4'>
-            <a href='/admin' className='px-4 py-1 rounded-full border hover:bg-blue-100'>Dashboard</a>
+            {userrole==='agent'&&<a href='/admin' className='px-4 py-1 rounded-full border hover:bg-blue-100'>Dashboard</a>}
             <Button onClick={() => dispatch(Logout())} className="bg-red-600 h-8">Logout</Button>
           <div className='hidden md:flex'>{username}</div>
           </div>):(<>
@@ -302,7 +302,7 @@ export default function Header() {
           >
             Hotels
           </a>
-          <button className='p-2 rounded-full border'>Dashboard</button>
+          {userrole==='agent'&&<a href='/admin' className='px-4 py-1 rounded-full border hover:bg-blue-100'>Dashboard</a>}
           {username?(<div className='flex justify-end md:justify-center items-center gap-4'><Button onClick={() => dispatch(Logout())} className="bg-red-600 h-8">Logout</Button>
           <div className='hidden md:flex'>{username}</div>
           </div>):(<>

@@ -1,5 +1,5 @@
 'use client';
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@radix-ui/react-label';
@@ -26,27 +26,38 @@ const AgentSignup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordsMatch, setPasswordsMatch] = useState(false);
   const router = useRouter();
 
   const userrole = useSelector((data) => data.user.role);
-   useEffect(() => {
-        if (userrole === 'admin' || userrole === 'superadmin') {
-          router.push('/admin-dashboard/Analytics');
-        } else if (userrole === 'agent') {
-          router.push('/agent-dashboard/Analytics');
-        }
-    }, [userrole]);
+
+  useEffect(() => {
+    if (userrole === 'admin' || userrole === 'superadmin') {
+      router.push('/admin-dashboard/Analytics');
+    } else if (userrole === 'agent') {
+      router.push('/agent-dashboard/Analytics');
+    }
+  }, [userrole]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
+
+    if (name === 'password' || name === 'confirmPassword') {
+      validatePasswords(formData.password, confirmPassword);
+    }
+  };
+
+  const validatePasswords = (password, confirmPassword) => {
+    setPasswordsMatch(password === confirmPassword);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== confirmPassword) {
+    if (!passwordsMatch) {
       toast.error('Passwords do not match.');
       return;
     }
@@ -70,22 +81,17 @@ const AgentSignup = () => {
   };
 
   return (
-    <div className="w-full h-screen md:h-screen  flex justify-center items-center relative">
-      <div className='hidden md:flex w-1/2 h-full'>
-        <img src='/bg/aeroplane.jpg' className='w-full h-full object-cover'>
-        </img>
-
+    <div className="w-full h-screen md:h-screen flex justify-center items-center relative">
+      <div className="hidden md:flex w-1/2 h-full">
+        <img src="/bg/aeroplane.jpg" className="w-full h-full object-cover" />
       </div>
       <div className="md:w-1/2 z-10 mx-auto p-2 md:p-6 bg-white/70 backdrop-blur-md rounded-md">
-      <img src='/logo/logo1.jpg' className='h-24 mx-auto mb-2 md:mb-4'></img>
+        <img src="/logo/logo1.jpg" className="h-24 mx-auto mb-2 md:mb-4" />
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">User Signup</h2>
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-2 md:gap-6">
           {['name', 'username', 'phoneno', 'city', 'address', 'bname'].map((field) => (
             <div key={field}>
-              <Label
-                htmlFor={field}
-                className="block text-sm font-medium text-gray-800"
-              >
+              <Label htmlFor={field} className="block text-sm font-medium text-gray-800">
                 {field.charAt(0).toUpperCase() + field.slice(1)}
               </Label>
               <Input
@@ -99,7 +105,7 @@ const AgentSignup = () => {
               />
             </div>
           ))}
-          <div className='col-span-1'>
+          <div className="col-span-1">
             <Label htmlFor="role" className="block text-sm font-medium text-gray-800">
               Select Role
             </Label>
@@ -119,60 +125,62 @@ const AgentSignup = () => {
               </SelectContent>
             </Select>
           </div>
-
-<div className='col-span-2 grid grid-cols-2 gap-2 md:gap-6 w-full'>
-          <div className="col-span-1 w-full">
-            <Label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-800"
-            >
-              Password
-            </Label>
-            <div className="relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="mt-1 w-full rounded-md border-gray-300 focus:ring-orange-500 focus:border-orange-500"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-600"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeIcon /> : <EyeClosedIcon />}
-              </button>
+          <div className="col-span-2 grid grid-cols-2 gap-2 md:gap-6 w-full">
+            <div className="col-span-1 w-full">
+              <Label htmlFor="password" className="block text-sm font-medium text-gray-800">
+                Password
+              </Label>
+              <div className="relative">
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  className={`mt-1 w-full rounded-md border-gray-300 focus:ring-orange-500 ${
+                    passwordsMatch ? 'border-green-500' : 'focus:border-orange-500'
+                  }`}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-600"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeIcon /> : <EyeClosedIcon />}
+                </button>
+              </div>
             </div>
-          </div>
-
-          <div className="col-span-1">
-            <Label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-800"
-            >
-              Confirm Password
-            </Label>
-            <div className="relative">
-              <Input
-                type={showConfirmPassword ? 'text' : 'password'}
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                className="mt-1 w-full rounded-md border-gray-300 focus:ring-orange-500 focus:border-orange-500"
-              />
-              <button
-                type="button"
-                className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-600"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            <div className="col-span-1">
+              <Label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-800"
               >
-                {showConfirmPassword ? <EyeIcon /> : <EyeClosedIcon />}
-              </button>
+                Confirm Password
+              </Label>
+              <div className="relative">
+                <Input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    validatePasswords(formData.password, e.target.value);
+                  }}
+                  required
+                  className={`mt-1 w-full rounded-md border-gray-300 focus:ring-orange-500 ${
+                    passwordsMatch ? 'border-green-500' : 'focus:border-orange-500'
+                  }`}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center text-sm text-gray-600"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? <EyeIcon /> : <EyeClosedIcon />}
+                </button>
+              </div>
             </div>
-          </div>
           </div>
           <Button
             type="submit"

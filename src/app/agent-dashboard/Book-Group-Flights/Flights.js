@@ -24,7 +24,7 @@ export default function Flights(group) {
     }, []);
 
     return (
-        <div className="p-4 max-h-[80vh] overflow-auto scroll-smooth">
+        <div className="p-4 max-h-[80vh] overflow-auto scroll-smooth scrol">
             <h1 className="text-2xl font-bold mb-4">Available Flights</h1>
             {loading? <Loader className="animate-spin"/>:flights.length === 0 && (
                 <p className="text-gray-500">No flights available at the moment.</p>
