@@ -177,7 +177,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
             value={searchQuery}
             onChange={(e) => handleSearch(e)}
             placeholder="Search..."
-            className="border border-gray-300 rounded-lg px-4 py-2 w-auto"
+            className="border border-gray-300 rounded-lg px-4 h-10 w-auto"
           />
       {/* Table component would go here */}
       <Button onClick={() => setShowManualEntryDialog(true)} className="mb-4">
