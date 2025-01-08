@@ -5,10 +5,10 @@ export async function POST(request) {
   try {
     const body = await request.json();
     console.log('Payload is:', body);
-    const { agent_id,hotel_id, check_in_date, check_out, rooms, adults, childs, infants, passengers } = body;
+    const { agent_id,hotel_id,roomtype, check_in_date, check_out, rooms, adults, childs, infants, passengers } = body;
 
     // Validate required fields
-    if (!agent_id || !hotel_id || !check_in_date || !check_out || !rooms ) {
+    if (!agent_id || !hotel_id || !check_in_date || !check_out || !rooms || !roomtype) {
       return NextResponse.json(
         { message: 'Missing required fields', status: false },
         { status: 400 }
@@ -21,6 +21,7 @@ export async function POST(request) {
         hotel_id: parseInt(hotel_id),
         check_in_date: new Date(check_in_date),
         check_out : new Date(check_out),
+        roomtype: parseInt(roomtype),
         rooms: parseInt(rooms),
         adults: parseInt(adults),
         infants: parseInt(infants),
@@ -73,8 +74,8 @@ export async function GET() {
         include: {
           Hotel: true,
           Hoteliers: true,
-          Users:true
-
+          Users:true,
+          RoomType:true,
         },
       }
     );

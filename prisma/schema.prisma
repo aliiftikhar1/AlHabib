@@ -90,8 +90,8 @@ model PaymentRequests {
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
 
-  Users Users @relation(fields: [userid], references: [id], onDelete: Cascade)
-  NewLedger     NewLedger[]
+  Users     Users       @relation(fields: [userid], references: [id], onDelete: Cascade)
+  NewLedger NewLedger[]
 }
 
 model Ledger {
@@ -215,7 +215,7 @@ model FlightBookings {
   Users            Users         @relation(fields: [agent_id], references: [id], onDelete: Cascade)
   FlightDetails    FlightDetails @relation(fields: [flightdetails_id], references: [id], onDelete: Cascade)
   Passengers       Passengers[]
-  NewLedger           NewLedger[]
+  NewLedger        NewLedger[]
 }
 
 model Passengers {
@@ -257,12 +257,12 @@ model FlightSector {
 }
 
 model FlightAirline {
-  id         Int      @id @default(autoincrement())
-  name       String
-  sn         String?
-  image      String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id                  Int                   @id @default(autoincrement())
+  name                String
+  sn                  String?
+  image               String
+  created_at          DateTime              @default(now())
+  updated_at          DateTime              @updatedAt
   SingleGroupFlight   SingleGroupFlight[]
   GroupFlightBookings GroupFlightBookings[]
 }
@@ -279,46 +279,46 @@ model SingleGroupFlight {
   dept_time        DateTime @default(now())
   arrival_time     DateTime @default(now())
   baggage          String
-  flight_number2    Int?
-  flight_date2      DateTime @default(now())
+  flight_number2   Int?
+  flight_date2     DateTime @default(now())
   origin2          String?
-  destination2      String?
-  dept_time2        DateTime @default(now())
-  arrival_time2     DateTime @default(now())
+  destination2     String?
+  dept_time2       DateTime @default(now())
+  arrival_time2    DateTime @default(now())
   seats            Int      @default(2)
   fare             Int
   meal             Boolean
   created_at       DateTime @default(now())
   updated_at       DateTime @updatedAt
 
-  FlightGroups  FlightGroups  @relation(fields: [flightgroup_id], references: [id], onDelete: Cascade)
-  FlightSector  FlightSector  @relation(fields: [flightsector_id], references: [id], onDelete: Cascade)
-  FlightAirline FlightAirline @relation(fields: [flightairline_id], references: [id], onDelete: Cascade)
+  FlightGroups        FlightGroups          @relation(fields: [flightgroup_id], references: [id], onDelete: Cascade)
+  FlightSector        FlightSector          @relation(fields: [flightsector_id], references: [id], onDelete: Cascade)
+  FlightAirline       FlightAirline         @relation(fields: [flightairline_id], references: [id], onDelete: Cascade)
   GroupFlightBookings GroupFlightBookings[]
 }
 
 model GroupFlightBookings {
-  id               Int               @id @default(autoincrement())
-  agent_id         Int
-  flightgroup_id   Int
-  flightsector_id  Int
-  flightairline_id Int
-  flight_id        Int @default(7)
-  childs           Int
-  adults           Int
-  infants          Int
-  status           String
-  remarks          String
-  attachment       String?
-  created_at       DateTime          @default(now())
-  updated_at       DateTime          @updatedAt
-  Users            Users             @relation(fields: [agent_id], references: [id], onDelete: Cascade)
+  id                Int               @id @default(autoincrement())
+  agent_id          Int
+  flightgroup_id    Int
+  flightsector_id   Int
+  flightairline_id  Int
+  flight_id         Int               @default(7)
+  childs            Int
+  adults            Int
+  infants           Int
+  status            String
+  remarks           String
+  attachment        String?
+  created_at        DateTime          @default(now())
+  updated_at        DateTime          @updatedAt
+  Users             Users             @relation(fields: [agent_id], references: [id], onDelete: Cascade)
   SingleGroupFlight SingleGroupFlight @relation(fields: [flight_id], references: [id], onDelete: Cascade)
-  FlightGroups     FlightGroups      @relation(fields: [flightgroup_id], references: [id], onDelete: Cascade)
-  FlightSector     FlightSector      @relation(fields: [flightsector_id], references: [id], onDelete: Cascade)
-  FlightAirline    FlightAirline     @relation(fields: [flightairline_id], references: [id], onDelete: Cascade)
-  GroupPassengers  GroupPassengers[]
-  NewLedger           NewLedger[]
+  FlightGroups      FlightGroups      @relation(fields: [flightgroup_id], references: [id], onDelete: Cascade)
+  FlightSector      FlightSector      @relation(fields: [flightsector_id], references: [id], onDelete: Cascade)
+  FlightAirline     FlightAirline     @relation(fields: [flightairline_id], references: [id], onDelete: Cascade)
+  GroupPassengers   GroupPassengers[]
+  NewLedger         NewLedger[]
 }
 
 model GroupPassengers {
@@ -336,88 +336,104 @@ model GroupPassengers {
   GroupFlightBookings GroupFlightBookings @relation(fields: [groupbooking_id], references: [id], onDelete: Cascade)
 }
 
-model RoomType{
-  id                  Int                 @id @default(autoincrement())
-  title               String
-  description        String
-  created_at          DateTime            @default(now())
-  updated_at          DateTime            @updatedAt
-  Hotel               Hotel[]
+model RoomType {
+  id           Int            @id @default(autoincrement())
+  title        String
+  description  String
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  Hotel        Hotel[]
+  HotelBooking HotelBooking[]
+  HotelDetails HotelDetails[]
 }
 
-model  Hotel{
-  id                  Int                 @id @default(autoincrement())
-  name                String
-  description        String
-  location             String
-  price                 Int
-  roomtype              Int
-  availability          Boolean
-  created_at          DateTime            @default(now())
-  updated_at          DateTime            @updatedAt
-  RoomType             RoomType           @relation(fields: [roomtype], references: [id], onDelete: Cascade)
-  HotelBooking          HotelBooking[]
+model Hotel {
+  id           Int            @id @default(autoincrement())
+  name         String
+  description  String
+  location     String
+  availability Boolean
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  HotelDetails HotelDetails[]
+  HotelBooking HotelBooking[]
+  RoomType     RoomType?      @relation(fields: [roomTypeId], references: [id])
+  roomTypeId   Int?
 }
 
-model HotelBooking{
-  id                  Int                 @id @default(autoincrement())
-  agent_id            Int                 @default(8)
-  hotel_id            Int
-  check_in_date         DateTime            @default(now())
-  check_out             DateTime            @default(now())
-  rooms                  Int
-  childs           Int        @default(0)
-  adults           Int        @default(0)
-  infants          Int        @default(0)
-  status            String    @default("Pending")
-  remarks          String     @default("None")
-  attachment       String?
-  created_at          DateTime            @default(now())
-  updated_at          DateTime            @updatedAt
-  Hotel                 Hotel             @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
-  Users                 Users             @relation(fields: [agent_id], references:[id],onDelete: Cascade)
-  NewLedger           NewLedger[]
-  Hoteliers           Hoteliers[]
+model HotelDetails {
+  id          Int      @id @default(autoincrement())
+  hotel_id    Int
+  roomtype_id Int
+  price       Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  Hotel       Hotel    @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
+  RoomType    RoomType @relation(fields: [roomtype_id], references: [id], onDelete: Cascade)
 }
-model Hoteliers{
-  id             Int            @id @default(autoincrement())
-  hotel_booking_id     Int
-  givenname      String
-  surname        String
-  title          String
-  type           String         @default("Adult")
-  passportid     String
-  dob            String
-  doe            String
-  created_at     DateTime       @default(now())
-  updated_at     DateTime       @updatedAt
-  HotelBooking HotelBooking @relation(fields: [hotel_booking_id], references: [id], onDelete: Cascade)
+
+model HotelBooking {
+  id            Int         @id @default(autoincrement())
+  agent_id      Int         @default(8)
+  hotel_id      Int
+  check_in_date DateTime    @default(now())
+  check_out     DateTime    @default(now())
+  rooms         Int
+  roomtype      Int?        @default(1)
+  childs        Int         @default(0)
+  adults        Int         @default(0)
+  infants       Int         @default(0)
+  status        String      @default("Pending")
+  remarks       String      @default("None")
+  attachment    String?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  Hotel         Hotel       @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
+  Users         Users       @relation(fields: [agent_id], references: [id], onDelete: Cascade)
+  RoomType      RoomType?   @relation(fields: [roomtype], references: [id], onDelete: Cascade)
+  NewLedger     NewLedger[]
+  Hoteliers     Hoteliers[]
+}
+
+model Hoteliers {
+  id               Int          @id @default(autoincrement())
+  hotel_booking_id Int
+  givenname        String
+  surname          String
+  title            String
+  type             String       @default("Adult")
+  passportid       String
+  dob              String
+  doe              String
+  created_at       DateTime     @default(now())
+  updated_at       DateTime     @updatedAt
+  HotelBooking     HotelBooking @relation(fields: [hotel_booking_id], references: [id], onDelete: Cascade)
 }
 
 model NewLedger {
-  id                       Int      @id @default(autoincrement())
-  agent_id                 Int
-  description              String
-  date                     DateTime @default(now())
-  amount_out               Float    @default(0.0)
-  amount_in                Float    @default(0.0)
-  balance                  Float    @default(0.0)
-  type                     String   //hotel-booking(credit), flight-booking(credit), group-flight-booking(credit), payment-request(debit)
+  id          Int      @id @default(autoincrement())
+  agent_id    Int
+  description String
+  date        DateTime @default(now())
+  amount_out  Float    @default(0.0)
+  amount_in   Float    @default(0.0)
+  balance     Float    @default(0.0)
+  type        String //hotel-booking(credit), flight-booking(credit), group-flight-booking(credit), payment-request(debit)
 
-  hotel_booking_id         Int? // Reference to a hotel booking
-  flight_booking_id        Int? // Reference to a flight booking
-  flight_group_booking_id  Int? // Reference to a group flight booking
-  payment_request_id       Int? // Reference to a payment request
+  hotel_booking_id        Int? // Reference to a hotel booking
+  flight_booking_id       Int? // Reference to a flight booking
+  flight_group_booking_id Int? // Reference to a group flight booking
+  payment_request_id      Int? // Reference to a payment request
 
   // Relations
-  Users                    Users   @relation(fields: [agent_id], references: [id], onDelete: Cascade)
-  HotelBooking             HotelBooking?             @relation(fields: [hotel_booking_id], references: [id], onDelete: Cascade)
-  FlightBookings           FlightBookings?           @relation(fields: [flight_booking_id], references: [id], onDelete: Cascade)
-  GroupFlightBookings      GroupFlightBookings?      @relation(fields: [flight_group_booking_id], references: [id], onDelete: Cascade)
-  PaymentRequests          PaymentRequests?          @relation(fields: [payment_request_id], references: [id], onDelete: Cascade)
+  Users               Users                @relation(fields: [agent_id], references: [id], onDelete: Cascade)
+  HotelBooking        HotelBooking?        @relation(fields: [hotel_booking_id], references: [id], onDelete: Cascade)
+  FlightBookings      FlightBookings?      @relation(fields: [flight_booking_id], references: [id], onDelete: Cascade)
+  GroupFlightBookings GroupFlightBookings? @relation(fields: [flight_group_booking_id], references: [id], onDelete: Cascade)
+  PaymentRequests     PaymentRequests?     @relation(fields: [payment_request_id], references: [id], onDelete: Cascade)
 
-  created_at               DateTime @default(now())
-  updated_at               DateTime @updatedAt
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@index([agent_id])
   @@index([hotel_booking_id])
@@ -426,13 +442,12 @@ model NewLedger {
   @@index([payment_request_id])
 }
 
-
-model Notifications{
-  id             Int            @id @default(autoincrement())
-  user_id         Int
-  message        String
-  status          String
-  created_at     DateTime       @default(now())
-  updated_at     DateTime       @updatedAt
-  Users           Users         @relation(fields: [user_id], references: [id], onDelete:Cascade)
+model Notifications {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  message    String
+  status     String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Users      Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }

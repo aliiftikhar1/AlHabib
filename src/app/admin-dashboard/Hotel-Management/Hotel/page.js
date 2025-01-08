@@ -19,9 +19,101 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { PencilIcon, TrashIcon, PlusIcon, Loader } from 'lucide-react';
+import { PencilIcon, TrashIcon, PlusIcon, Loader, XIcon } from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
 
+// ... (keep existing fetch functions)
+
+export default function HotelManagement() {
+  const [hotels, setHotels] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentHotel, setCurrentHotel] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingAction, setLoadingAction] = useState(null);
+  const [roomTypes, setRoomTypes] = useState([]);
+  const [selectedRoomTypes, setSelectedRoomTypes] = useState([]);
+
+  useEffect(() => {
+    fetchHotels()
+      .then(setHotels)
+      .catch((err) => toast.error(err.message))
+      .finally(() => setIsLoading(false));
+
+    fetchRoomTypes()
+      .then(setRoomTypes)
+      .catch((err) => toast.error(err.message))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (currentHotel) {
+      // If editing, populate the selected room types from hotel details
+      setSelectedRoomTypes(
+        currentHotel.HotelDetails?.map((detail) => ({
+          roomTypeId: detail.roomtype_id,
+          price: detail.price,
+        })) || []
+      );
+    } else {
+      setSelectedRoomTypes([]);
+    }
+  }, [currentHotel]);
+
+  const handleAddRoomType = (e) => {
+    const roomTypeId = parseInt(e.target.value);
+    if (roomTypeId && !selectedRoomTypes.find(rt => rt.roomTypeId === roomTypeId)) {
+      setSelectedRoomTypes([...selectedRoomTypes, { roomTypeId, price: 0 }]);
+    }
+    e.target.value = ''; // Reset select
+  };
+
+  const handleRemoveRoomType = (roomTypeId) => {
+    setSelectedRoomTypes(selectedRoomTypes.filter(rt => rt.roomTypeId !== roomTypeId));
+  };
+
+  const handlePriceChange = (roomTypeId, price) => {
+    setSelectedRoomTypes(
+      selectedRoomTypes.map(rt =>
+        rt.roomTypeId === roomTypeId ? { ...rt, price: parseInt(price) || 0 } : rt
+      )
+    );
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const hotelData = {
+      name: formData.get('name'),
+      description: formData.get('description'),
+      location: formData.get('location'),
+      availability: formData.get('availability') === 'true',
+      hotelDetails: selectedRoomTypes.map(rt => ({
+        roomtype_id: rt.roomTypeId,
+        price: rt.price
+      }))
+    };
+    
+    setLoadingAction('form');
+
+    try {
+      if (currentHotel) {
+        await updateHotel({ ...currentHotel, ...hotelData });
+        toast.success('Hotel updated successfully');
+      } else {
+        await addHotel(hotelData);
+        toast.success('Hotel added successfully');
+      }
+      const updatedHotels = await fetchHotels();
+      setHotels(updatedHotels);
+      setIsModalOpen(false);
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setLoadingAction(null);
+    }
+  };
+
+ 
 const fetchHotels = async () => {
   const response = await fetch('/api/admin/hotel-management');
   if (!response.ok) {
@@ -73,75 +165,6 @@ const deleteHotel = async (id) => {
   return true;
 };
 
-export default function HotelManagement() {
-  const [hotels, setHotels] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentHotel, setCurrentHotel] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadingAction, setLoadingAction] = useState(null);
-  const [roomTypes, setRoomTypes] = useState([]);
-
-  useEffect(() => {
-    fetchHotels()
-      .then(setHotels)
-      .catch((err) => toast.error(err.message))
-      .finally(() => setIsLoading(false));
-
-    fetchRoomTypes()
-      .then(setRoomTypes)
-      .catch((err) => toast.error(err.message))
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  const handleAddHotel = () => {
-    setCurrentHotel(null);
-    setIsModalOpen(true);
-  };
-
-  const handleUpdateHotel = (hotel) => {
-    setCurrentHotel(hotel);
-    setIsModalOpen(true);
-  };
-
-  const handleDeleteHotel = async (id) => {
-    if (window.confirm('Are you sure you want to delete this hotel?')) {
-      setLoadingAction(id);
-      try {
-        await deleteHotel(id);
-        const updatedHotels = await fetchHotels();
-        setHotels(updatedHotels);
-        toast.success('Hotel deleted successfully');
-      } catch (err) {
-        toast.error(err.message);
-      } finally {
-        setLoadingAction(null);
-      }
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const hotelData = Object.fromEntries(formData.entries());
-    setLoadingAction('form');
-
-    try {
-      if (currentHotel) {
-        await updateHotel({ ...currentHotel, ...hotelData });
-        toast.success('Hotel updated successfully');
-      } else {
-        await addHotel(hotelData);
-        toast.success('Hotel added successfully');
-      }
-      const updatedHotels = await fetchHotels();
-      setHotels(updatedHotels);
-      setIsModalOpen(false);
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
-      setLoadingAction(null);
-    }
-  };
 
   return (
     <div>
@@ -155,18 +178,18 @@ export default function HotelManagement() {
           />
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
-              <Button onClick={handleAddHotel} className="bg-indigo-600">
+              <Button className="bg-indigo-600">
                 <PlusIcon className="h-5 w-5 mr-2" />
                 Add Hotel
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl h-[500px]">
+            <DialogContent className="max-w-4xl h-[600px] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>{currentHotel ? 'Update Hotel' : 'Add Hotel'}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-2 gap-4 mb-4">
-                  {['name', 'description', 'location', 'price'].map((field) => (
+                  {['name', 'description', 'location'].map((field) => (
                     <div key={field}>
                       <label htmlFor={field} className="block text-sm font-medium">
                         {field.charAt(0).toUpperCase() + field.slice(1)}
@@ -191,25 +214,57 @@ export default function HotelManagement() {
                       <option value="false">Unavailable</option>
                     </select>
                   </div>
-                  <div>
-                    <label htmlFor="flightgroup_id" className="block text-sm font-medium">
-                      Room Type
-                    </label>
+                </div>
+
+                <div className="mt-6">
+                  <label className="block text-sm font-medium mb-2">
+                    Room Types and Prices
+                  </label>
+                  <div className="flex gap-4 mb-4">
                     <select
-                      name="roomtype"
-                      defaultValue={currentHotel?.roomtype || ''}
+                      onChange={handleAddRoomType}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     >
-                      <option value="">Select Room Type</option>
-                      {roomTypes.map((group) => (
-                        <option key={group.id} value={group.id}>
-                          {group.title}
+                      <option value="">Add Room Type</option>
+                      {roomTypes.map((type) => (
+                        <option key={type.id} value={type.id}>
+                          {type.title}
                         </option>
                       ))}
                     </select>
                   </div>
+
+                  {selectedRoomTypes.length > 0 && (
+                    <div className="space-y-3">
+                      {selectedRoomTypes.map((rt) => {
+                        const roomType = roomTypes.find(t => t.id === rt.roomTypeId);
+                        return (
+                          <div key={rt.roomTypeId} className="flex items-center gap-4">
+                            <div className="flex-1">
+                              <span className="text-sm font-medium">{roomType?.title}</span>
+                            </div>
+                            <Input
+                              type="number"
+                              value={rt.price}
+                              onChange={(e) => handlePriceChange(rt.roomTypeId, e.target.value)}
+                              placeholder="Price"
+                              className="w-32"
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              onClick={() => handleRemoveRoomType(rt.roomTypeId)}
+                            >
+                              <XIcon className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-                <Button type="submit" className="w-full" disabled={loadingAction === 'form'}>
+
+                <Button type="submit" className="w-full mt-6" disabled={loadingAction === 'form'}>
                   {loadingAction === 'form' && <Loader className="mr-2 animate-spin" />}
                   {currentHotel ? 'Update' : 'Add'} Hotel
                 </Button>
@@ -217,6 +272,7 @@ export default function HotelManagement() {
             </DialogContent>
           </Dialog>
         </div>
+
         {isLoading ? (
           <div className="flex justify-center">
             <Loader className="h-8 w-8 animate-spin" />
@@ -229,7 +285,8 @@ export default function HotelManagement() {
                   <TableHead>No.</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Description</TableHead>
-                  <TableHead>Price</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Room Types</TableHead>
                   <TableHead>Availability</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
@@ -240,12 +297,24 @@ export default function HotelManagement() {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{hotel.name}</TableCell>
                     <TableCell>{hotel.description}</TableCell>
-                    <TableCell>{hotel.price}</TableCell>
+                    <TableCell>{hotel.location}</TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        {hotel.HotelDetails?.map((detail) => {
+                          const roomType = roomTypes.find(t => t.id === detail.roomtype_id);
+                          return (
+                            <div key={detail.id} className="text-sm">
+                              {roomType?.title}: {detail.price} Rs/-
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </TableCell>
                     <TableCell>{hotel.availability ? 'Available' : 'Unavailable'}</TableCell>
                     <TableCell>
-                      <Button onClick={() => handleUpdateHotel(hotel)} variant="ghost">
+                      {/* <Button onClick={() => handleUpdateHotel(hotel)} variant="ghost">
                         <PencilIcon className="h-4 w-4" />
-                      </Button>
+                      </Button> */}
                       <Button
                         onClick={() => handleDeleteHotel(hotel.id)}
                         variant="ghost"

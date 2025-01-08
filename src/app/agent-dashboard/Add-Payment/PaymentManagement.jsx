@@ -34,10 +34,31 @@ export default function AddPaymentRequest() {
   });
   const [loading, setLoading] = useState(false);
   const [paymentHistory, setPaymentHistory] = useState([]);
+  const [filteredpaymentHistory, setfilteredPaymentHistory] = useState([]);
   const [fetchingHistory, setFetchingHistory] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [bankAccounts, setBankAccounts] = useState([]);
   const [fetchingAccounts, setFetchingAccounts] = useState(false);
+  const [date1, setDate1] = useState('');
+  const [date2, setDate2] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.trim() === '') {
+      setfilteredPaymentHistory(paymentHistory);
+      return;
+    }
+
+    const filtered = paymentHistory.filter((entry) =>
+      entry.transactionno.includes(query) ||
+      entry.description?.toLowerCase().includes(query.toLowerCase()) ||
+      entry.status?.toLowerCase().includes(query.toLowerCase())
+    );
+    setfilteredPaymentHistory(filtered);
+  };
 
   // Fetch payment request history
   const fetchPaymentHistory = async () => {
@@ -50,6 +71,7 @@ export default function AddPaymentRequest() {
 
       const data = await response.json();
       setPaymentHistory(data);
+      setfilteredPaymentHistory(data);
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -160,6 +182,26 @@ export default function AddPaymentRequest() {
     }
   };
 
+  const filterByDate = () => {
+    if (!date1 || !date2) {
+      toast.error('Please select both start and end dates.');
+      return;
+    }
+
+    const start = new Date(date1);
+    const end = new Date(date2);
+
+    const filtered = paymentHistory.filter((entry) => {
+      const entryDate = new Date(entry.created_at);
+      return entryDate >= start && entryDate <= end;
+    });
+
+    setfilteredPaymentHistory(filtered);
+
+    if (filtered.length === 0) {
+      toast.info('No entries found for the selected date range.');
+    }
+  };
 
   useEffect(() => {
     fetchPaymentHistory(); // Fetch payment history when the component mounts
@@ -270,8 +312,40 @@ export default function AddPaymentRequest() {
         {/* <div className=' bg-transparent w-2 border-r mr-2'></div> */}
 
         {/* Payment History Table */}
-        <div className="w-1/2">
+        <div className="w-full ">
           <h3 className="text-xl font-bold mb-4">Payment History</h3>
+          <div className='flex justify-between items-center'>
+            <div>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearch(e)}
+                placeholder="Search..."
+                className="border border-gray-300 rounded-lg px-4 py-2 w-auto"
+              />
+
+            </div>
+            <div className="flex space-x-4 mb-4 justify-end mr-4">
+              <input
+                type="date"
+                value={date1}
+                onChange={(e) => setDate1(e.target.value)}
+                className="border border-gray-300 rounded-lg px-4 py-2"
+              />
+              <input
+                type="date"
+                value={date2}
+                onChange={(e) => setDate2(e.target.value)}
+                className="border border-gray-300 rounded-lg px-4 py-2"
+              />
+              <button
+                onClick={filterByDate}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              >
+                Filter
+              </button>
+            </div>
+          </div>
           {fetchingHistory ? (
             <div className="flex justify-center items-center">
               <Loader className="animate-spin" />
@@ -290,7 +364,7 @@ export default function AddPaymentRequest() {
                 </tr>
               </thead>
               <tbody>
-                {paymentHistory.map((payment) => (
+                {filteredpaymentHistory.map((payment) => (
                   <tr key={payment.id}>
                     <td className="px-4 py-2 border-b">{payment.id}</td>
                     <td className="px-4 py-2 border-b">{payment.transactionno}</td>

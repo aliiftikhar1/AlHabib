@@ -27,6 +27,8 @@ const fetchRoomTypes = async () => {
   if (!response.ok) {
     throw new Error('Failed to fetch room types');
   }
+  // const data = await response.json()
+  // console.log("Response",data)
   return response.json();
 };
 

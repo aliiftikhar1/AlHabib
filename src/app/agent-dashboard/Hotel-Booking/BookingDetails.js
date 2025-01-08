@@ -15,6 +15,7 @@ export default function BookingDetails({ booking }) {
               <TableHead>Hotel</TableHead>
               <TableHead>Agent</TableHead>
               <TableHead>Room</TableHead>
+              <TableHead>Room Type</TableHead>
               <TableHead>Adults</TableHead>
               <TableHead>Children</TableHead>
               <TableHead>Infants</TableHead>
@@ -29,6 +30,7 @@ export default function BookingDetails({ booking }) {
               <TableCell>{booking.Hotel?.name}</TableCell>
               <TableCell>{booking.Users?.name}</TableCell>
               <TableCell>{booking.rooms}</TableCell>
+              <TableCell className='capitalize'>{booking.RoomType?.title}</TableCell>
               <TableCell>{booking.adults}</TableCell>
               <TableCell>{booking.childs}</TableCell>
               <TableCell>{booking.infants}</TableCell>

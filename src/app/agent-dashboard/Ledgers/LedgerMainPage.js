@@ -39,7 +39,13 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
   }, []);
 
   const handleSearch = (e) => {
-    setSearchQuery(e.target.value)
+    const query = e.target.value;
+    setSearchQuery(query);
+  
+    if (query.trim() === '') {
+      setFilteredEntries(ledgerEntries);
+      return;
+    }
     const filtered = ledgerEntries.filter((entry) =>
       entry.Users?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       entry.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -114,9 +120,9 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
     filterByDate,
   }));
   return (
-    <div>
+    <div className='relative'>
       <ToastContainer />
-      <div className="flex items-center mb-4">
+      <div className="flex absolute -top-[60px] left-4 items-center gap-4 mb-4">
           <input
             type="text"
             value={searchQuery}
@@ -126,7 +132,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
           />
           
         </div>
-      <div className="p-6">
+      <div className="p-0">
         {isLoading ? (
           <div className="flex justify-center">
             <Loader className="h-8 w-8 animate-spin" />

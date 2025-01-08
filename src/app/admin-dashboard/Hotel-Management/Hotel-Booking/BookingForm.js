@@ -1,16 +1,30 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@radix-ui/react-label';
 import { Loader } from 'lucide-react';
 
-export default function BookingForm({ onSubmit, initialData, hotels, isLoading }) {
+export default function BookingForm({ onSubmit, initialData, hotels, roomTypes, isLoading }) {
   const [adults, setAdults] = useState(initialData?.adults || 0);
   const [children, setChildren] = useState(initialData?.childs || 0);
   const [infants, setInfants] = useState(initialData?.infants || 0);
   const [passengers, setPassengers] = useState(initialData?.passengers || []);
   const [fieldsVisible, setFieldsVisible] = useState(false);
+  const [price, setPrice] = useState(initialData?.price || '');
+  const [selectedRoomType, setSelectedRoomType] = useState(initialData?.roomtype || '');
 
+  useEffect(() => {
+    // Find the hotel details based on the selected room type
+    const roomTypeDetails = hotels
+      .flatMap((hotel) => hotel.HotelDetails)
+      .find((detail) => detail.roomtype_id === Number(selectedRoomType));
+    
+    setPrice(roomTypeDetails?.price || '');
+  }, [selectedRoomType, hotels]);
+
+  useEffect(()=>{
+    
+  })
   const handleConfirm = (e) => {
     e.preventDefault();
     const newPassengers = [];
@@ -51,7 +65,7 @@ export default function BookingForm({ onSubmit, initialData, hotels, isLoading }
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4 mb-4">
-        <div className='grid grid-cols-3 gap-4'>
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <label htmlFor="hotel_id" className="block text-sm font-medium">
               Hotel
@@ -69,6 +83,38 @@ export default function BookingForm({ onSubmit, initialData, hotels, isLoading }
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+            <label htmlFor="roomtype" className="block text-sm font-medium">
+              Room Type
+            </label>
+            <select
+              name="roomtype"
+              value={selectedRoomType}
+              onChange={(e) => setSelectedRoomType(e.target.value)}
+              required
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Select Room Type</option>
+              {roomTypes.map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.title}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium">
+              Price
+            </label>
+            <Input
+              type="number"
+              name="price"
+              
+              value={price}
+              readOnly
+              required
+            />
           </div>
           {['rooms', 'remarks'].map((field) => (
             <div key={field}>
@@ -110,15 +156,36 @@ export default function BookingForm({ onSubmit, initialData, hotels, isLoading }
           <div className="grid grid-cols-4 gap-4 text-xl">
             <div>
               <Label className="text-lg font-bold">Adults</Label>
-              <Input type="number" value={adults} required onChange={(e) => setAdults(Number(e.target.value))} placeholder="0" className="border border-gray-600" />
+              <Input
+                type="number"
+                value={adults}
+                required
+                onChange={(e) => setAdults(Number(e.target.value))}
+                placeholder="0"
+                className="border border-gray-600"
+              />
             </div>
             <div>
               <Label className="text-lg font-bold">Children</Label>
-              <Input type="number" value={children} required onChange={(e) => setChildren(Number(e.target.value))} placeholder="0" className="border border-gray-600" />
+              <Input
+                type="number"
+                value={children}
+                required
+                onChange={(e) => setChildren(Number(e.target.value))}
+                placeholder="0"
+                className="border border-gray-600"
+              />
             </div>
             <div>
               <Label className="text-lg font-bold">Infants</Label>
-              <Input type="number" value={infants} required onChange={(e) => setInfants(Number(e.target.value))} placeholder="0" className="border border-gray-600" />
+              <Input
+                type="number"
+                value={infants}
+                required
+                onChange={(e) => setInfants(Number(e.target.value))}
+                placeholder="0"
+                className="border border-gray-600"
+              />
             </div>
             <div className="flex flex-col justify-end">
               <Button type="button" onClick={handleConfirm}>Confirm</Button>

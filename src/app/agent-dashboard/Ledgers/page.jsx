@@ -14,9 +14,9 @@ const ParentComponent = () => {
   };
 
   return (
-    <div>
+    <div className=''>
       {/* Date Inputs */}
-      <div className="flex space-x-4 mb-4">
+      <div className="flex space-x-4 mb-4 justify-end mr-4">
         <input
           type="date"
           value={date1}

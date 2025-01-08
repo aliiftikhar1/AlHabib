@@ -29,6 +29,7 @@ import { useSelector } from 'react-redux';
 
 export default function HotelBookingManagement() {
   const [bookings, setBookings] = useState([]);
+  const [filteredbookings, setfilteredBookings] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [currentBooking, setCurrentBooking] = useState(null);
@@ -38,7 +39,33 @@ export default function HotelBookingManagement() {
   const [loadingAction, setLoadingAction] = useState(null);
   const [hotels, setHotels] = useState([]);
   const [updateTrigger, setUpdateTrigger] = useState(0);
+  const [roomTypes, setRoomTypes] = useState([]);
+  const [searchQuery, setSearchQuery]= useState('')
   const userid = useSelector((data)=>data.user.id)
+  const [date1, setDate1] = useState('');
+  const [date2, setDate2] = useState('');
+  
+  const filterByDate = () => {
+    if (!date1 || !date2) {
+      toast.error('Please select both start and end dates.');
+      return;
+    }
+
+    const start = new Date(date1);
+    const end = new Date(date2);
+
+    const filtered = bookings.filter((entry) => {
+      const entryDate = new Date(entry.created_at);
+      return entryDate >= start && entryDate <= end;
+    });
+
+    setfilteredBookings(filtered);
+
+    if (filtered.length === 0) {
+      toast.info('No entries found for the selected date range.');
+    }
+  };
+
 
   const fetchData = useCallback(async () => {
     setIsLoading(true);
@@ -48,6 +75,7 @@ export default function HotelBookingManagement() {
         fetchHotel()
       ]);
       setBookings(bookingsData);
+      setfilteredBookings(bookingsData);
       setHotels(hotelsData);
     } catch (err) {
       toast.error(err.message);
@@ -55,8 +83,20 @@ export default function HotelBookingManagement() {
       setIsLoading(false);
     }
   }, []);
+  
+  const fetchRoomTypes = async () => {
+    const response = await fetch('/api/admin/room-type-management');
+    if (!response.ok) {
+      throw new Error('Failed to fetch hotels');
+    }
+    return response.json();
+  };
 
   useEffect(() => {
+    fetchRoomTypes()
+          .then(setRoomTypes)
+          .catch((err) => toast.error(err.message))
+          .finally(() => setIsLoading(false));  
     fetchData();
   }, [fetchData, updateTrigger]);
 
@@ -87,17 +127,53 @@ export default function HotelBookingManagement() {
     }
   }, [currentBooking]);
 
-
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query)
+    if(query.trim()===''){
+      setfilteredBookings(bookings)
+      return;
+    }
+    const filtered = bookings.filter((entry) =>
+      entry.Hotel?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.RoomType?.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.status?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setfilteredBookings(filtered);
+  };
   return (
     <div>
       <ToastContainer />
       <div className="p-6">
         <div className="mb-6 flex justify-between items-center">
+        
           <Input
             type="text"
+            value={searchQuery}
+            onChange={(e) => handleSearch(e)}
             placeholder="Search bookings..."
             className="pl-10 w-auto"
           />
+           <div className="flex space-x-4  justify-end  items-center mr-4">
+              <input
+                type="date"
+                value={date1}
+                onChange={(e) => setDate1(e.target.value)}
+                className="border border-gray-300 rounded-lg px-4 py-2"
+              />
+              <input
+                type="date"
+                value={date2}
+                onChange={(e) => setDate2(e.target.value)}
+                className="border border-gray-300 rounded-lg px-4 py-2"
+              />
+              <button
+                onClick={filterByDate}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              >
+                Filter
+              </button>
+            </div>
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button onClick={handleAddBooking} className="bg-indigo-600">
@@ -113,6 +189,7 @@ export default function HotelBookingManagement() {
                 onSubmit={handleSubmit}
                 initialData={currentBooking}
                 hotels={hotels}
+                roomTypes={roomTypes}
                 isLoading={loadingAction === 'form'}
               />
             </DialogContent>
@@ -132,6 +209,7 @@ export default function HotelBookingManagement() {
                   <TableHead>Check-in</TableHead>
                   <TableHead>Check-out</TableHead>
                   <TableHead>Rooms</TableHead>
+                  <TableHead>Room Type</TableHead>
                   <TableHead>Adults</TableHead>
                   <TableHead>Children</TableHead>
                   <TableHead>Price</TableHead>
@@ -140,13 +218,14 @@ export default function HotelBookingManagement() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {bookings.map((booking, index) => (
+                {filteredbookings.map((booking, index) => (
                   <TableRow key={booking.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{booking.Hotel?.name}</TableCell>
                     <TableCell>{new Date(booking.check_in_date).toLocaleString()}</TableCell>
                     <TableCell>{new Date(booking.check_out).toLocaleString()}</TableCell>
                     <TableCell>{booking.rooms}</TableCell>
+                    <TableCell className='capitalize'>{booking.RoomType?.title}</TableCell>
                     <TableCell>{booking.adults}</TableCell>
                     <TableCell>{booking.childs}</TableCell>
                     <TableCell>{booking.Hotel?.price}</TableCell>

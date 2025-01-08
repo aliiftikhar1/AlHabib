@@ -14,26 +14,29 @@ export default function AllBookings() {
   const userid = useSelector((state) => state.user.id);
   const [bookings, setBookings] = useState([]);
   const [groupFlightBookings, setGroupFlightBookings] = useState([]);
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [filteredBookings, setFilteredBookings] = useState([]);
+  const [filteredGroupBookings, setFilteredGroupBookings] = useState([]);
+  const [date1, setDate1] = useState('');
+  const [date2, setDate2] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchAllData = async () => {
       setLoading(true);
       try {
-        // Fetch flight bookings
         const flightResponse = await fetch(`/api/user/fetchflightbookingofuser/${userid}`);
         if (!flightResponse.ok) throw new Error('Failed to fetch flight bookings.');
         const flightBookings = await flightResponse.json();
         setBookings(flightBookings);
+        setFilteredBookings(flightBookings);
 
-        // Fetch group flight bookings
         const groupResponse = await fetch(`/api/user/fetchgroupflightbookingofuser/${userid}`);
         if (!groupResponse.ok) throw new Error('Failed to fetch group flight bookings.');
         const groupBookings = await groupResponse.json();
         setGroupFlightBookings(groupBookings);
-
- 
+        setFilteredGroupBookings(groupBookings);
       } catch (error) {
         toast.error(error.message || 'Error fetching bookings.');
       } finally {
@@ -43,6 +46,59 @@ export default function AllBookings() {
 
     fetchAllData();
   }, [userid]);
+
+  const filterByDate = () => {
+    if (!date1 || !date2) {
+      toast.error('Please select both start and end dates.');
+      return;
+    }
+
+    const start = new Date(date1);
+    const end = new Date(date2);
+
+    const filteredFlights = bookings.filter((entry) => {
+      const entryDate = new Date(entry.FlightDetails?.flight_date);
+      return entryDate >= start && entryDate <= end;
+    });
+
+    const filteredGroupFlights = groupFlightBookings.filter((entry) => {
+      const entryDate = new Date(entry.SingleGroupFlight?.flight_date);
+      return entryDate >= start && entryDate <= end;
+    });
+
+    setFilteredBookings(filteredFlights);
+    setFilteredGroupBookings(filteredGroupFlights);
+
+    if (filteredFlights.length === 0 && filteredGroupFlights.length === 0) {
+      toast.info('No entries found for the selected date range.');
+    }
+  };
+
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.trim() === '') {
+      setFilteredBookings(bookings);
+      setFilteredGroupBookings(groupFlightBookings);
+      return;
+    }
+
+    const filteredFlights = bookings.filter((entry) =>
+      entry.FlightDetails?.airline.toLowerCase().includes(query) ||
+      entry.Users?.name.toLowerCase().includes(query) ||
+      entry.status.toLowerCase().includes(query)
+    );
+
+    const filteredGroupFlights = groupFlightBookings.filter((entry) =>
+      entry.FlightAirline?.name?.toLowerCase().includes(query) ||
+      entry.Users?.name.toLowerCase().includes(query) ||
+      entry.status.toLowerCase().includes(query)
+    );
+
+    setFilteredBookings(filteredFlights);
+    setFilteredGroupBookings(filteredGroupFlights);
+  };
 
   return (
     <div className="mx-auto p-6 bg-white rounded-lg shadow-md mt-10">
@@ -55,13 +111,55 @@ export default function AllBookings() {
         </div>
       ) : (
         <>
+          <div className="flex justify-between items-center mb-4">
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearch}
+              placeholder="Search..."
+              className="w-1/3"
+            />
+            <div className="flex space-x-4">
+              <Input
+                type="date"
+                value={date1}
+                onChange={(e) => setDate1(e.target.value)}
+              />
+              <Input
+                type="date"
+                value={date2}
+                onChange={(e) => setDate2(e.target.value)}
+              />
+              <Button onClick={filterByDate}>Filter</Button>
+            </div>
+          </div>
+
           {/* Flight Bookings */}
           <section>
             <h3 className="text-xl font-semibold mb-4">Flight Bookings</h3>
-            {bookings.length > 0 ? (
-              <table className="min-w-full table-auto border-collapse">
-                {/* Add your flight bookings table rendering logic here */}
-              </table>
+            {filteredBookings.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>No.</TableHead>
+                    <TableHead>Agent Name</TableHead>
+                    <TableHead>Airline</TableHead>
+                    <TableHead>Fare</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredBookings.map((booking, index) => (
+                    <TableRow key={booking.id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{booking.Users?.name || 'N/A'}</TableCell>
+                      <TableCell>{booking.FlightDetails?.airline || 'N/A'}</TableCell>
+                      <TableCell>{booking.FlightDetails?.fare}</TableCell>
+                      <TableCell>{booking.status}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             ) : (
               <p className="text-center">No flight bookings found.</p>
             )}
@@ -70,7 +168,7 @@ export default function AllBookings() {
           {/* Group Flight Bookings */}
           <section className="mt-8">
             <h3 className="text-xl font-semibold mb-4">Group Flight Bookings</h3>
-            {groupFlightBookings.length > 0 ? (
+            {filteredGroupBookings.length > 0 ? (
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -83,7 +181,7 @@ export default function AllBookings() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {groupFlightBookings.map((booking, index) => (
+                  {filteredGroupBookings.map((booking, index) => (
                     <TableRow key={booking.id}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{booking.Users?.name || 'N/A'}</TableCell>
@@ -91,7 +189,7 @@ export default function AllBookings() {
                       <TableCell>{booking.SingleGroupFlight?.fare}</TableCell>
                       <TableCell>{booking.status}</TableCell>
                       <TableCell>
-                        <Dialog open={dialogOpen} onOpenChange={setDialogOpen} >
+                      <Dialog open={dialogOpen} onOpenChange={setDialogOpen} >
                           <DialogTrigger asChild>
                             <Button variant="ghost">
                               <EyeIcon className="h-5 w-5 text-blue-600" />
@@ -204,10 +302,9 @@ export default function AllBookings() {
               <p className="text-center">No group flight bookings found.</p>
             )}
           </section>
-
-      
         </>
       )}
     </div>
   );
 }
+

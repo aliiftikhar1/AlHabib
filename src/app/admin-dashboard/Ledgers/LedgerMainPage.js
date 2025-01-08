@@ -6,7 +6,7 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Eye, Loader } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import html2canvas from 'html2canvas';
 import { Label } from '@radix-ui/react-label';
@@ -28,42 +28,46 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
   const [ledgerEntries, setLedgerEntries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showManualEntryDialog, setShowManualEntryDialog] = useState(false)
-  const [extra, setextra]=useState(false)
+  const [extra, setextra] = useState(false)
   const [filteredEntries, setFilteredEntries] = useState([]);
-    const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [manualEntry, setManualEntry] = useState({
     agent_id: 8,
     description: '',
     amount_in: 0,
     amount_out: 0,
     type: '',
-    balance:'',
+    balance: '',
   })
 
   useEffect(() => {
     fetchLedgerEntries()
-    .then((entries) => {
-      setLedgerEntries(entries);
-      setFilteredEntries(entries);
-    })
+      .then((entries) => {
+        setLedgerEntries(entries);
+        setFilteredEntries(entries);
+      })
       .catch((err) => toast.error(err.message))
       .finally(() => setIsLoading(false));
   }, [extra]);
 
   const handleSearch = (e) => {
-      setSearchQuery(e.target.value)
-      const filtered = ledgerEntries.filter((entry) =>
-        entry.Users?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        entry.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        entry.type?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredEntries(filtered);
-    };
-  
-    useEffect(() => {
-      console.log("Selected Entry", selectedEntry)
-    }, [selectedEntry])
-  
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query)
+    if(query.trim()===''){
+      setFilteredEntries(ledgerEntries)
+    }
+    const filtered = ledgerEntries.filter((entry) =>
+      entry.Users?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.type?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredEntries(filtered);
+  };
+
+  useEffect(() => {
+    console.log("Selected Entry", selectedEntry)
+  }, [selectedEntry])
+
 
   const printDialogContent = async () => {
     const printArea = document.getElementById('print-section');
@@ -113,10 +117,10 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
     }
     return response.json();
   };
-  
+
   const handleManualEntrySubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const result = await AddManualEntry(manualEntry);
       toast.success('Manual entry added successfully!');
@@ -126,7 +130,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
       toast.error(error.message || 'An error occurred while adding manual entry');
       console.error('Error:', error);
     }
-  
+
     setShowManualEntryDialog(false);
     setManualEntry({
       agent_id: 8,
@@ -141,167 +145,167 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
   const totalDebit = ledgerEntries.reduce((total, entry) => total + entry.amount_in, 0);
   const totalCredit = ledgerEntries.reduce((total, entry) => total + entry.amount_out, 0);
 
-  
-    const filterByDate = () => {
-      if (!date1 || !date2) {
-        toast.error('Please select both start and end dates.');
-        return;
-      }
-  
-      const start = new Date(date1);
-      const end = new Date(date2);
-  
-      const filtered = ledgerEntries.filter((entry) => {
-        const entryDate = new Date(entry.date);
-        return entryDate >= start && entryDate <= end;
-      });
-  
-      setFilteredEntries(filtered);
-  
-      if (filtered.length === 0) {
-        toast.info('No entries found for the selected date range.');
-      }
-    };
-    useImperativeHandle(ref, () => ({
-      filterByDate,
-    }));
+
+  const filterByDate = () => {
+    if (!date1 || !date2) {
+      toast.error('Please select both start and end dates.');
+      return;
+    }
+
+    const start = new Date(date1);
+    const end = new Date(date2);
+
+    const filtered = ledgerEntries.filter((entry) => {
+      const entryDate = new Date(entry.date);
+      return entryDate >= start && entryDate <= end;
+    });
+
+    setFilteredEntries(filtered);
+
+    if (filtered.length === 0) {
+      toast.info('No entries found for the selected date range.');
+    }
+  };
+  useImperativeHandle(ref, () => ({
+    filterByDate,
+  }));
 
 
   return (
     <div>
       <ToastContainer />
       <div className="p-6">
-      <div className='flex justify-between w-full'>
-      <input
+        <div className='flex justify-between w-full'>
+          <input
             type="text"
             value={searchQuery}
             onChange={(e) => handleSearch(e)}
             placeholder="Search..."
             className="border border-gray-300 rounded-lg px-4 h-10 w-auto"
           />
-      {/* Table component would go here */}
-      <Button onClick={() => setShowManualEntryDialog(true)} className="mb-4">
-        Add Manual Entry
-      </Button>
-      {/* Table component would go here */}
-      <Dialog open={showManualEntryDialog} onOpenChange={setShowManualEntryDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add Manual Ledger Entry</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleManualEntrySubmit}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="agent_id" className="text-right">
-                  Agent ID
-                </Label>
-                <Input
-                  id="agent_id"
-                  value={manualEntry.agent_id}
-                  disabled
-                  onChange={(e) =>
-                    setManualEntry({ ...manualEntry, agent_id: e.target.value })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="description" className="text-right">
-                  Description
-                </Label>
-                <Input
-                  id="description"
-                  value={manualEntry.description}
-                  onChange={(e) =>
-                    setManualEntry({ ...manualEntry, description: e.target.value })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="amount_in" className="text-right">
-                  Amount In
-                </Label>
-                <Input
-                  id="amount_in"
-                  type="number"
-                  value={manualEntry.amount_in}
-                  onChange={(e) =>
-                    setManualEntry({
-                      ...manualEntry,
-                      amount_in: parseFloat(e.target.value),
-                    })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-             
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="amount_out" className="text-right">
-                  Amount Out
-                </Label>
-                <Input
-                  id="amount_out"
-                  type="number"
-                  value={manualEntry.amount_out}
-                  onChange={(e) =>
-                    setManualEntry({
-                      ...manualEntry,
-                      amount_out: parseFloat(e.target.value),
-                    })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="balance" className="text-right">
-                  Balance
-                </Label>
-                <Input
-                  id="balance"
-                  type="number"
-                  value={manualEntry.balance}
-                  onChange={(e) =>
-                    setManualEntry({
-                      ...manualEntry,
-                      balance: parseFloat(e.target.value),
-                    })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="type" className="text-right">
-                  Type
-                </Label>
-                <Select
-                  onValueChange={(value) =>
-                    setManualEntry({ ...manualEntry, type: value })
-                  }
-                >
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="hotel-booking">Hotel Booking</SelectItem>
-                    <SelectItem value="flight-booking">Flight Booking</SelectItem>
-                    <SelectItem value="group-flight-booking">
-                      Group Flight Booking
-                    </SelectItem>
-                    <SelectItem value="payment-request">
-                      Payment Request
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">Add Entry</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
+
+          <Button onClick={() => setShowManualEntryDialog(true)} className="mb-4">
+            Add Manual Entry
+          </Button>
+
+          <Dialog open={showManualEntryDialog} onOpenChange={setShowManualEntryDialog}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Manual Ledger Entry</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleManualEntrySubmit}>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="agent_id" className="text-right">
+                      Agent ID
+                    </Label>
+                    <Input
+                      id="agent_id"
+                      value={manualEntry.agent_id}
+                      disabled
+                      onChange={(e) =>
+                        setManualEntry({ ...manualEntry, agent_id: e.target.value })
+                      }
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="description" className="text-right">
+                      Description
+                    </Label>
+                    <Input
+                      id="description"
+                      value={manualEntry.description}
+                      onChange={(e) =>
+                        setManualEntry({ ...manualEntry, description: e.target.value })
+                      }
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="amount_in" className="text-right">
+                      Amount In
+                    </Label>
+                    <Input
+                      id="amount_in"
+                      type="number"
+                      value={manualEntry.amount_in}
+                      onChange={(e) =>
+                        setManualEntry({
+                          ...manualEntry,
+                          amount_in: parseFloat(e.target.value),
+                        })
+                      }
+                      className="col-span-3"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="amount_out" className="text-right">
+                      Amount Out
+                    </Label>
+                    <Input
+                      id="amount_out"
+                      type="number"
+                      value={manualEntry.amount_out}
+                      onChange={(e) =>
+                        setManualEntry({
+                          ...manualEntry,
+                          amount_out: parseFloat(e.target.value),
+                        })
+                      }
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="balance" className="text-right">
+                      Balance
+                    </Label>
+                    <Input
+                      id="balance"
+                      type="number"
+                      value={manualEntry.balance}
+                      onChange={(e) =>
+                        setManualEntry({
+                          ...manualEntry,
+                          balance: parseFloat(e.target.value),
+                        })
+                      }
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="type" className="text-right">
+                      Type
+                    </Label>
+                    <Select
+                      onValueChange={(value) =>
+                        setManualEntry({ ...manualEntry, type: value })
+                      }
+                    >
+                      <SelectTrigger className="col-span-3">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hotel-booking">Hotel Booking</SelectItem>
+                        <SelectItem value="flight-booking">Flight Booking</SelectItem>
+                        <SelectItem value="group-flight-booking">
+                          Group Flight Booking
+                        </SelectItem>
+                        <SelectItem value="payment-request">
+                          Payment Request
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit">Add Entry</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
         {isLoading ? (
           <div className="flex justify-center">
             <Loader className="h-8 w-8 animate-spin" />
@@ -346,7 +350,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
                         <>
                           -
                         </>
-                      )} 
+                      )}
                       {entry.type === 'group-flight-booking' && (
                         <>
                           -

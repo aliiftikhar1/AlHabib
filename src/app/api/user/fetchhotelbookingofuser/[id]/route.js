@@ -12,6 +12,7 @@ export async function GET(request, { params }) {
         Hotel:true,
         Users:true,
         Hoteliers:true,
+        RoomType:true,
       }
     });
     

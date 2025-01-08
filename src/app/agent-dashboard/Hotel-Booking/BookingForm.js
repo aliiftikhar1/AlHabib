@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@radix-ui/react-label';
 import { Loader } from 'lucide-react';
 
-export default function BookingForm({ onSubmit, initialData, hotels, isLoading }) {
+export default function BookingForm({ onSubmit, initialData, hotels, roomTypes, isLoading }) {
   const [adults, setAdults] = useState(initialData?.adults || 0);
   const [children, setChildren] = useState(initialData?.childs || 0);
   const [infants, setInfants] = useState(initialData?.infants || 0);
@@ -45,6 +45,7 @@ export default function BookingForm({ onSubmit, initialData, hotels, isLoading }
     bookingData.infants = infants;
     bookingData.passengers = passengers;
 
+
     onSubmit(bookingData);
   };
 
@@ -58,14 +59,31 @@ export default function BookingForm({ onSubmit, initialData, hotels, isLoading }
             </label>
             <select
               name="hotel_id"
-              required
               defaultValue={initialData?.hotel_id || ''}
+              required
               className="w-full p-2 border border-gray-300 rounded-md"
             >
               <option value="">Select Hotel</option>
               {hotels.map((hotel) => (
                 <option key={hotel.id} value={hotel.id}>
                   {hotel.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="roomtype" className="block text-sm font-medium">
+              Room Type
+            </label>
+            <select
+              name="roomtype"
+              defaultValue={initialData?.roomtype || ''}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Select Room Type</option>
+              {roomTypes.map((group) => (
+                <option key={group.id} value={group.id}>
+                  {group.title}
                 </option>
               ))}
             </select>

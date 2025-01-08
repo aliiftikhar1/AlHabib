@@ -1,14 +1,13 @@
 'use client';
 
-import { toast, ToastContainer } from 'react-toastify';
 import { useState, useEffect } from 'react';
-import { EyeIcon, Loader, CheckCircle, XCircle } from 'lucide-react';
+import { toast, ToastContainer } from 'react-toastify';
+import { EyeIcon, Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSelector } from 'react-redux';
 
 const fetchBookings = async () => {
   const response = await fetch('/api/admin/group-flight-booking');
@@ -37,7 +36,9 @@ export default function BookingManagement() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [attachment, setattachment]= useState(null);
+  const [attachment, setAttachment] = useState(null);
+  const [date1, setDate1] = useState('');
+    const [date2, setDate2] = useState('');
   const [loadingAction, setLoadingAction] = useState('');
 
   useEffect(() => {
@@ -51,13 +52,15 @@ export default function BookingManagement() {
     setFilteredBookings(
       bookings.filter(
         (booking) =>
+          String(booking.SingleGroupFlight?.fare).includes(searchTerm) ||
           String(booking.agent_id).toLowerCase().includes(searchTerm.toLowerCase()) ||
-          String(booking.FlightDetails?.airline).toLowerCase().includes(searchTerm.toLowerCase())
+          String(booking.FlightAirline?.name).toLowerCase().includes(searchTerm.toLowerCase())||
+          String(booking.Users?.name).toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
   }, [bookings, searchTerm]);
 
-  const handleAction = async (id, action, attachment) => {
+  const handleAction = async (id, action) => {
     try {
       await updateBookingStatus(id, action, attachment);
       setBookings((prev) =>
@@ -75,16 +78,16 @@ export default function BookingManagement() {
     if (!file) return;
   
     try {
-      // Upload the image and get the URL
-      setLoadingAction('image')
+      setLoadingAction('image');
       const imageUrl = await uploadImage(file);
-      setattachment(imageUrl);
-      // toast.success('Image uploaded successfully!');
-      setLoadingAction('')
+      setAttachment(imageUrl);
+      setLoadingAction('');
     } catch (error) {
       toast.error(`Image upload failed: ${error}`);
+      setLoadingAction('');
     }
   };
+
   const uploadImage = async (imageFile) => {
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
@@ -97,7 +100,6 @@ export default function BookingManagement() {
           });
           if (!response.ok) throw new Error('Failed to upload image');
           const data = await response.json();
-          console.log(data);
           resolve(data.image_url);
         } catch (error) {
           reject(error.message);
@@ -108,22 +110,67 @@ export default function BookingManagement() {
     });
   };
 
+  const handleSetDialogOpen = (booking) => {
+    setSelectedBooking(booking);
+    setDialogOpen(true);
+  };
+  const filterByDate = () => {
+    if (!date1 || !date2) {
+      toast.error('Please select both start and end dates.');
+      return;
+    }
+
+    const start = new Date(date1);
+    const end = new Date(date2);
+
+    const filtered = bookings.filter((entry) => {
+      const entryDate = new Date(entry.created_at);
+      return entryDate >= start && entryDate <= end;
+    });
+
+    setFilteredBookings(filtered);
+
+    if (filtered.length === 0) {
+      toast.info('No entries found for the selected date range.');
+    }
+  }; 
+
   return (
     <div>
       <ToastContainer />
       <div className="p-6">
-        <div className="mb-6">
-          <input
+        <div className="mb-6 flex justify-between">
+          <Input
             type="text"
             placeholder="Search bookings..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
+            className="w-auto px-3 py-2 border rounded-md"
           />
+          <div className="flex space-x-4 mb-4 justify-end mr-4">
+        <input
+          type="date"
+          value={date1}
+          onChange={(e) => setDate1(e.target.value)}
+          className="border border-gray-300 rounded-lg px-4 py-2"
+        />
+        <input
+          type="date"
+          value={date2}
+          onChange={(e) => setDate2(e.target.value)}
+          className="border border-gray-300 rounded-lg px-4 py-2"
+        />
+        <button
+          onClick={filterByDate}
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+        >
+          Filter
+        </button>
+      </div>
         </div>
         {isLoading ? (
           <div className="flex justify-center">
-            <Loader className="h-8 w-8 animate-spin" />
+            <Loader2 className="h-8 w-8 animate-spin" />
           </div>
         ) : (
           <div className="overflow-auto max-h-[72vh]">
@@ -135,6 +182,7 @@ export default function BookingManagement() {
                   <TableHead>Airline</TableHead>
                   <TableHead>Fare</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Date</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -146,10 +194,11 @@ export default function BookingManagement() {
                     <TableCell>{booking.FlightAirline?.name || 'N/A'}</TableCell>
                     <TableCell>{booking.SingleGroupFlight?.fare}</TableCell>
                     <TableCell>{booking.status}</TableCell>
+                    <TableCell>{new Date(booking.created_at).toLocaleString()}</TableCell>
                     <TableCell>
-                      <Dialog open={dialogOpen} onOpenChange={setDialogOpen} >
+                      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                         <DialogTrigger asChild>
-                          <Button variant="ghost">
+                          <Button variant="ghost" onClick={() => handleSetDialogOpen(booking)}>
                             <EyeIcon className="h-5 w-5 text-blue-600" />
                           </Button>
                         </DialogTrigger>
@@ -160,9 +209,9 @@ export default function BookingManagement() {
                             Here are the details for this flight booking.
                           </DialogDescription>
                           <div className="space-y-2">
-                            <p><strong>Agent Name:</strong> {booking.Users?.name}  </p>
-                            <p><strong>Business Name:</strong> {booking.Users?.bname} </p>
-                            <p><strong>Airline:</strong> {booking.FlightAirline?.name}</p>
+                            <p><strong>Agent Name:</strong> {selectedBooking?.Users?.name}</p>
+                            <p><strong>Business Name:</strong> {selectedBooking?.Users?.bname}</p>
+                            <p><strong>Airline:</strong> {selectedBooking?.FlightAirline?.name}</p>
                             <Table className="w-full border-collapse border border-gray-300">
                               <TableHeader>
                                 <TableRow>
@@ -175,40 +224,33 @@ export default function BookingManagement() {
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
-                                {booking && (
+                                {selectedBooking && (
                                   <>
                                     <TableRow>
-                                      <TableCell className="border border-gray-300 p-2"> {booking.SingleGroupFlight?.flight_number || 'N/A'}
-                                      </TableCell>
-                                      <TableCell className="border border-gray-300 p-2"> {booking.SingleGroupFlight?.origin}
-                                      </TableCell>
-                                      <TableCell className="border border-gray-300 p-2"> {booking.SingleGroupFlight?.destination}
-                                      </TableCell>
-                                      <TableCell className="border border-gray-300 p-2"> {new Date(booking.SingleGroupFlight?.flight_date).toLocaleDateString() || 'N/A'}</TableCell>
-                                      <TableCell className="border border-gray-300 p-2"> {new Date(booking.SingleGroupFlight?.dept_time).toLocaleTimeString() || 'N/A'}</TableCell>
-                                      <TableCell className="border border-gray-300 p-2"> {new Date(booking.SingleGroupFlight?.arrival_time).toLocaleTimeString() || 'N/A'}</TableCell>
+                                      <TableCell className="border border-gray-300 p-2">{selectedBooking?.SingleGroupFlight?.flight_number || 'N/A'}</TableCell>
+                                      <TableCell className="border border-gray-300 p-2">{selectedBooking?.SingleGroupFlight?.origin}</TableCell>
+                                      <TableCell className="border border-gray-300 p-2">{selectedBooking?.SingleGroupFlight?.destination}</TableCell>
+                                      <TableCell className="border border-gray-300 p-2">{new Date(selectedBooking?.SingleGroupFlight?.flight_date).toLocaleDateString() || 'N/A'}</TableCell>
+                                      <TableCell className="border border-gray-300 p-2">{new Date(selectedBooking?.SingleGroupFlight?.dept_time).toLocaleTimeString() || 'N/A'}</TableCell>
+                                      <TableCell className="border border-gray-300 p-2">{new Date(selectedBooking?.SingleGroupFlight?.arrival_time).toLocaleTimeString() || 'N/A'}</TableCell>
                                     </TableRow>
-                                    {booking.FlightSector?.type === 'two-way' && (
+                                    {selectedBooking?.FlightSector?.type === 'two-way' && (
                                       <TableRow>
-                                        <TableCell className="border border-gray-300 p-2"> {booking.SingleGroupFlight?.flight_number2 || 'N/A'}
-                                        </TableCell>
-                                        <TableCell className="border border-gray-300 p-2"> {booking.SingleGroupFlight?.origin2}
-                                        </TableCell>
-                                        <TableCell className="border border-gray-300 p-2"> {booking.SingleGroupFlight?.destination2}
-                                        </TableCell>
-                                        <TableCell className="border border-gray-300 p-2"> {new Date(booking.SingleGroupFlight?.flight_date2).toLocaleDateString() || 'N/A'}</TableCell>
-                                        <TableCell className="border border-gray-300 p-2"> {new Date(booking.SingleGroupFlight?.dept_time2).toLocaleTimeString() || 'N/A'}</TableCell>
-                                        <TableCell className="border border-gray-300 p-2"> {new Date(booking.SingleGroupFlight?.arrival_time2).toLocaleTimeString() || 'N/A'}</TableCell>
+                                        <TableCell className="border border-gray-300 p-2">{selectedBooking?.SingleGroupFlight?.flight_number2 || 'N/A'}</TableCell>
+                                        <TableCell className="border border-gray-300 p-2">{selectedBooking?.SingleGroupFlight?.origin2}</TableCell>
+                                        <TableCell className="border border-gray-300 p-2">{selectedBooking?.SingleGroupFlight?.destination2}</TableCell>
+                                        <TableCell className="border border-gray-300 p-2">{new Date(selectedBooking?.SingleGroupFlight?.flight_date2).toLocaleDateString() || 'N/A'}</TableCell>
+                                        <TableCell className="border border-gray-300 p-2">{new Date(selectedBooking?.SingleGroupFlight?.dept_time2).toLocaleTimeString() || 'N/A'}</TableCell>
+                                        <TableCell className="border border-gray-300 p-2">{new Date(selectedBooking?.SingleGroupFlight?.arrival_time2).toLocaleTimeString() || 'N/A'}</TableCell>
                                       </TableRow>
                                     )}
                                   </>
                                 )}
-
                               </TableBody>
                             </Table>
-                            <p><strong>Flight Type:</strong> {booking.FlightSector?.type}</p>
-                            <p><strong>Status:</strong> {booking.status}</p>
-                            <p><strong>Fare:</strong> {booking.SingleGroupFlight?.fare}</p>
+                            <p><strong>Flight Type:</strong> {selectedBooking?.FlightSector?.type}</p>
+                            <p><strong>Status:</strong> {selectedBooking?.status}</p>
+                            <p><strong>Fare:</strong> {selectedBooking?.SingleGroupFlight?.fare}</p>
                             <div>
                               <strong>Passengers:</strong>
                               <Table>
@@ -223,7 +265,7 @@ export default function BookingManagement() {
                                   </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                  {booking.GroupPassengers?.map((p, index) => (
+                                  {selectedBooking?.GroupPassengers?.map((p, index) => (
                                     <TableRow key={p.id}>
                                       <TableCell>{index + 1}</TableCell>
                                       <TableCell>{p.title + " " + p.givenname + " " + p.surname || 'N/A'}</TableCell>
@@ -235,43 +277,48 @@ export default function BookingManagement() {
                                   ))}
                                 </TableBody>
                               </Table>
-                              {/* {p.title} {p.givenname} {p.surname} ({p.type}) */}
-
                             </div>
 
                             <div className="mt-4">
-                              {booking.attachment?
-                              <div>
-                                <h2 className='text-xl font-bold'>Attachment</h2>
-                                <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${booking.attachment}`}></img>
+                              {selectedBooking?.attachment ? (
+                                <div>
+                                  <h2 className='text-xl font-bold'>Attachment</h2>
+                                  <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${selectedBooking?.attachment}`} alt="Booking Attachment" />
                                 </div>
-                              :<div key='image' className='relative'>
-                                <label htmlFor='image' className="block text-sm font-medium">
-                                  Image
-                                </label>
-                                <Input
-                                  type='file'
-                                  name='image'
-                                  accept="image/*"
-                                  onChange={handleImageChange}
-                                />
-                              </div>}
+                              ) : (
+                                <div key='image' className='relative'>
+                                  <label htmlFor='image' className="block text-sm font-medium">
+                                    Image
+                                  </label>
+                                  <Input
+                                    type='file'
+                                    name='image'
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    disabled={loadingAction === 'image'}
+                                  />
+                                  {loadingAction === 'image' && <Loader2 className="h-5 w-5 animate-spin absolute right-2 top-8" />}
+                                </div>
+                              )}
                               
-                              {booking.status === 'Pending' && (
+                              {selectedBooking?.status === 'Pending' && (
                                 <div className="flex justify-end space-x-4 mt-4">
                                   <Button
-                                    onClick={() => handleAction(booking.id, 'Approved',attachment)}
+                                    onClick={() => handleAction(selectedBooking?.id, 'Approved')}
                                     className="bg-green-500 hover:bg-green-600"
+                                    disabled={loadingAction === 'image'}
                                   >
+                                    <CheckCircle className="mr-2 h-4 w-4" />
                                     Approve
                                   </Button>
                                   <Button
-                                    onClick={() => handleAction(booking.id, 'Rejected')}
+                                    onClick={() => handleAction(selectedBooking?.id, 'Rejected')}
                                     className="bg-red-500 hover:bg-red-600"
+                                    disabled={loadingAction === 'image'}
                                   >
+                                    <XCircle className="mr-2 h-4 w-4" />
                                     Reject
                                   </Button>
-
                                 </div>
                               )}
                             </div>
@@ -289,3 +336,4 @@ export default function BookingManagement() {
     </div>
   );
 }
+

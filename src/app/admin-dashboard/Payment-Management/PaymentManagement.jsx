@@ -27,6 +27,8 @@ export default function PaymentRequestManagement() {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [paymentImage, setPaymentImage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [date1, setDate1] = useState('');
+  const [date2, setDate2] = useState('');
   const [dialogMode, setDialogMode] = useState(null); // 'view', 'add', 'edit'
   const [formData, setFormData] = useState({
     userid: '',
@@ -38,6 +40,26 @@ export default function PaymentRequestManagement() {
   });
   const username = useSelector((state) => state.user.username);
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.trim() === '') {
+      setFilteredPaymentRequests(paymentRequests);
+      return;
+    }
+    console.log("The query is : ",query)
+
+    const filtered = paymentRequests.filter((req) =>
+      req.transactionno?.toLowerCase().includes(query.toLowerCase())||
+      req.Users?.name.toLowerCase().includes(query.toLowerCase()) ||
+      req.status.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredPaymentRequests(filtered);
+  };
+
   useEffect(() => {
     fetchPaymentRequests()
       .then((data) => {
@@ -48,16 +70,7 @@ export default function PaymentRequestManagement() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  useEffect(() => {
-    setFilteredPaymentRequests(
-      paymentRequests.filter((req) =>
-        [req.userid, req.transactionno]
-          .join(' ')
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase())
-      )
-    );
-  }, [paymentRequests, searchTerm]);
+  
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
@@ -199,7 +212,26 @@ export default function PaymentRequestManagement() {
     window.location.href = apiUrl;
   };
 
+  const filterByDate = () => {
+    if (!date1 || !date2) {
+      toast.error('Please select both start and end dates.');
+      return;
+    }
 
+    const start = new Date(date1);
+    const end = new Date(date2);
+
+    const filtered = paymentRequests.filter((entry) => {
+      const entryDate = new Date(entry.created_at);
+      return entryDate >= start && entryDate <= end;
+    });
+
+    setFilteredPaymentRequests(filtered);
+
+    if (filtered.length === 0) {
+      toast.info('No entries found for the selected date range.');
+    }
+  };
 
   return (
     <div>
@@ -209,10 +241,30 @@ export default function PaymentRequestManagement() {
           <Input
             type="text"
             placeholder="Search payment requests..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => handleSearch(e)}
             className="pl-10 w-auto"
           />
+           <div className="flex space-x-4  justify-end  items-center mr-4">
+              <input
+                type="date"
+                value={date1}
+                onChange={(e) => setDate1(e.target.value)}
+                className="border border-gray-300 rounded-lg px-4 py-2"
+              />
+              <input
+                type="date"
+                value={date2}
+                onChange={(e) => setDate2(e.target.value)}
+                className="border border-gray-300 rounded-lg px-4 py-2"
+              />
+              <button
+                onClick={filterByDate}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              >
+                Filter
+              </button>
+            </div>
         </div>
         {isLoading ? (
           <div className="flex justify-center">

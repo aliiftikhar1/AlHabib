@@ -11,10 +11,18 @@ export async function GET(request, { params }) {
       include: {
         FlightDetails: {
             include: {
-              SingleFlight: true, // Include related SingleFlight data through FlightDetails
+              SingleFlight: true, 
+              FlightBookings:{
+                include: {
+                  Users:true,
+                  FlightDetails:true,
+                  Passengers:true,
+                }
+              },
             },
           },
-          Passengers: true, // Include related passengers
+          Passengers: true, 
+          Users:true,
         },
     });
     

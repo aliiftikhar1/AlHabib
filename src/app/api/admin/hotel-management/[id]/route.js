@@ -7,9 +7,9 @@ export async function PUT(request, { params }) {
     const body = await request.json();
     console.log("Payload is:", body);
 
-    const { name, description, location, price, roomtype, availability } = body;
+    const { name, description, location, price, availability } = body;
     // Validate required fields
-    if (!name || !description || !location || !price || !roomtype || !availability) {
+    if (!name || !description || !location || !price || !availability) {
       return NextResponse.json(
         { message: 'Missing required fields', status: false },
         { status: 400 }
@@ -23,7 +23,6 @@ export async function PUT(request, { params }) {
       description,
       location,
       price: parseInt(price),
-      roomtype: parseInt(roomtype),
       availability: (availability && availability === 'true') ? true : false,
       updated_at: new Date(),
     };
