@@ -47,17 +47,18 @@ export default function Header() {
     fetchUserDetails();
   }, [userId, dispatch]);
 
-  const handleLogin = async () => {
-    e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault(); // Ensure the form submission is prevented
     setIsLoading(true);
     setErrorMessage('');
-
+  
     try {
-      const { data } = await axios.post('/api/user/login', loginForm);
+      console.log("Hello...");
+      const { data } = await axios.post('/api/admin/user/login', loginForm);
       dispatch(AddUser(data.user));
       toast.success('Login successful! Redirecting to dashboard...');
       setIsLoginModalOpen(false);
-      
+  
       setTimeout(() => {
         const dashboardRoute = data.user.role === 'agent' ? '/agent-dashboard/Analytics' : '/admin-dashboard/Analytics';
         router.push(dashboardRoute);
@@ -72,6 +73,7 @@ export default function Header() {
       setIsLoading(false);
     }
   };
+  
 
   const navItems = [
     { href: '/', label: 'Home' },
