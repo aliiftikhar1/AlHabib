@@ -1,20 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Eye, Loader } from 'lucide-react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import html2canvas from 'html2canvas';
-import { Label } from '@radix-ui/react-label';
-import { Input } from '@/components/ui/input';
-import { Select, SelectTrigger, SelectContent, SelectValue, SelectItem } from '@/components/ui/select';
-// Fetch Ledger Entries from API
-const fetchLedgerEntries = async () => {
+import { useSelector } from 'react-redux';
 
-  const response = await fetch('/api/admin/ledger');
+const fetchLedgerEntries = async (id) => {
+
+  const response = await fetch(`/api/user/ledger/${id}`);
   if (!response.ok) {
     throw new Error('Failed to fetch ledger entries');
   }
@@ -26,23 +24,29 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [ledgerEntries, setLedgerEntries] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showManualEntryDialog, setShowManualEntryDialog] = useState(false)
-  const [extra, setextra]=useState(false)
-  const [manualEntry, setManualEntry] = useState({
-    agent_id: 8,
-    description: '',
-    amount_in: 0,
-    amount_out: 0,
-    type: '',
-    balance:'',
-  })
+  const [filteredEntries, setFilteredEntries] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const userid = useSelector((data)=>data.user.id)
 
   useEffect(() => {
-    fetchLedgerEntries()
-      .then(setLedgerEntries)
+    fetchLedgerEntries(userid)
+      .then((entries) => {
+        setLedgerEntries(entries);
+        setFilteredEntries(entries);
+      })
       .catch((err) => toast.error(err.message))
       .finally(() => setIsLoading(false));
-  }, [extra]);
+  }, []);
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value)
+    const filtered = ledgerEntries.filter((entry) =>
+      entry.Users?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.type?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredEntries(filtered);
+  };
 
   useEffect(() => {
     console.log("Selected Entry", selectedEntry)
@@ -57,13 +61,10 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
     }
 
     try {
-      // Capture the screenshot of the specified element
       const canvas = await html2canvas(printArea, { useCORS: true });
 
-      // Convert the canvas to an image
       const imageData = canvas.toDataURL('image/png');
 
-      // Open a new window for printing
       const printWindow = window.open('', '', 'width=800,height=600');
 
       if (printWindow) {
@@ -72,192 +73,66 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
         printWindow.document.write('</body></html>');
         printWindow.document.close();
 
-        // Add a fallback in case the image load event fails
         setTimeout(() => {
           if (printWindow) {
             printWindow.print();
             printWindow.close();
           }
-        }, 3000); // 3-second fallback
+        }, 3000);
       }
     } catch (error) {
       console.error('Failed to capture screenshot for printing:', error);
     }
   };
-  const AddManualEntry = async (entry) => {
-    const response = await fetch('/api/admin/ledger/manual-entry', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(entry),
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to add manual entry');
-    }
-    return response.json();
-  };
-  
-  const handleManualEntrySubmit = async (e) => {
-    e.preventDefault();
-  
-    try {
-      const result = await AddManualEntry(manualEntry);
-      toast.success('Manual entry added successfully!');
-      console.log('Manual entry submitted:', result);
-      setextra(!extra);
-    } catch (error) {
-      toast.error(error.message || 'An error occurred while adding manual entry');
-      console.error('Error:', error);
-    }
-  
-    setShowManualEntryDialog(false);
-    setManualEntry({
-      agent_id: 8,
-      description: '',
-      amount_in: 0,
-      amount_out: 0,
-      type: '',
-      balance: '',
-    });
-  };
-  // Calculate total debit and credit
+
+
   const totalDebit = ledgerEntries.reduce((total, entry) => total + entry.amount_in, 0);
   const totalCredit = ledgerEntries.reduce((total, entry) => total + entry.amount_out, 0);
 
+
+  const filterByDate = () => {
+    if (!date1 || !date2) {
+      toast.error('Please select both start and end dates.');
+      return;
+    }
+
+    const start = new Date(date1);
+    const end = new Date(date2);
+
+    const filtered = ledgerEntries.filter((entry) => {
+      const entryDate = new Date(entry.date);
+      return entryDate >= start && entryDate <= end;
+    });
+
+    setFilteredEntries(filtered);
+
+    if (filtered.length === 0) {
+      toast.info('No entries found for the selected date range.');
+    }
+  };
+  useImperativeHandle(ref, () => ({
+    filterByDate,
+  }));
   return (
     <div>
       <ToastContainer />
+      <div className="flex items-center mb-4">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => handleSearch(e)}
+            placeholder="Search..."
+            className="border border-gray-300 rounded-lg px-4 py-2 w-auto"
+          />
+          
+        </div>
       <div className="p-6">
-      <div>
-      {/* Table component would go here */}
-      <Button onClick={() => setShowManualEntryDialog(true)} className="mb-4">
-        Add Manual Entry
-      </Button>
-      {/* Table component would go here */}
-      <Dialog open={showManualEntryDialog} onOpenChange={setShowManualEntryDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add Manual Ledger Entry</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleManualEntrySubmit}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="agent_id" className="text-right">
-                  Agent ID
-                </Label>
-                <Input
-                  id="agent_id"
-                  value={manualEntry.agent_id}
-                  disabled
-                  onChange={(e) =>
-                    setManualEntry({ ...manualEntry, agent_id: e.target.value })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="description" className="text-right">
-                  Description
-                </Label>
-                <Input
-                  id="description"
-                  value={manualEntry.description}
-                  onChange={(e) =>
-                    setManualEntry({ ...manualEntry, description: e.target.value })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="amount_in" className="text-right">
-                  Amount In
-                </Label>
-                <Input
-                  id="amount_in"
-                  type="number"
-                  value={manualEntry.amount_in}
-                  onChange={(e) =>
-                    setManualEntry({
-                      ...manualEntry,
-                      amount_in: parseFloat(e.target.value),
-                    })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-             
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="amount_out" className="text-right">
-                  Amount Out
-                </Label>
-                <Input
-                  id="amount_out"
-                  type="number"
-                  value={manualEntry.amount_out}
-                  onChange={(e) =>
-                    setManualEntry({
-                      ...manualEntry,
-                      amount_out: parseFloat(e.target.value),
-                    })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="balance" className="text-right">
-                  Balance
-                </Label>
-                <Input
-                  id="balance"
-                  type="number"
-                  value={manualEntry.balance}
-                  onChange={(e) =>
-                    setManualEntry({
-                      ...manualEntry,
-                      balance: parseFloat(e.target.value),
-                    })
-                  }
-                  className="col-span-3"
-                />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="type" className="text-right">
-                  Type
-                </Label>
-                <Select
-                  onValueChange={(value) =>
-                    setManualEntry({ ...manualEntry, type: value })
-                  }
-                >
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="hotel-booking">Hotel Booking</SelectItem>
-                    <SelectItem value="flight-booking">Flight Booking</SelectItem>
-                    <SelectItem value="group-flight-booking">
-                      Group Flight Booking
-                    </SelectItem>
-                    <SelectItem value="payment-request">
-                      Payment Request
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">Add Entry</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
         {isLoading ? (
           <div className="flex justify-center">
             <Loader className="h-8 w-8 animate-spin" />
           </div>
         ) : (
-          <div className="overflow-auto max-h-[72vh]">
+          <div className="overflow-auto">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -275,7 +150,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
                 </TableRow>
               </TableHeader>
               <TableBody >
-                {ledgerEntries.map((entry, index) => (
+                {filteredEntries.map((entry, index) => (
                   <TableRow key={entry.id}>
                     <TableCell>{index + 1}</TableCell>
                     {/* <TableCell>{entry.agent_id}</TableCell> */}
@@ -293,11 +168,6 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
                         </>
                       )}
                       {entry.type === 'flight-booking' && (
-                        <>
-                          -
-                        </>
-                      )} 
-                      {entry.type === 'group-flight-booking' && (
                         <>
                           -
                         </>
@@ -474,9 +344,11 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
 
 
               </div>
-              <div className='w-full '>
-                <img src={`${selectedEntry?.PaymentRequests?.img_url}`} className='h-full'></img>
-              </div>
+              {selectedEntry.type === 'payment-request' && (
+                <div className='w-full flex justify-center items-center'>
+                  <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${selectedEntry?.PaymentRequests?.img_url}`} className='h-[60vh]'></img>
+                </div>
+              )}
             </div>
             <Button
               onClick={printDialogContent}
@@ -570,18 +442,17 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
                   </Table>
 
                 </div>
-                {selectedEntry.type === 'group-flight-booking' && (
-                  <div className='w-full '>
-                    <img src='https://w0.peakpx.com/wallpaper/414/49/HD-wallpaper-car-lamborghini-aventador-black-vertical-car-vertical-cars.jpg' alt='attachment' className='h-[60vh]'></img>
-                  </div>
-                )}
+                {selectedEntry.type === 'group-flight-booking' && (<>
+                  {selectedEntry.GroupFlightBookings?.attachment ?  <div className='w-full '>
+                    <h2 className='text-xl font-bold'>Attachment</h2>
+                    <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${selectedEntry?.GroupFlightBookings?.attachment}`} alt='attachment' className='h-[60vh]'></img>
+                  </div>:  <div className='w-full '>
+                  <img src='https://w0.peakpx.com/wallpaper/414/49/HD-wallpaper-car-lamborghini-aventador-black-vertical-car-vertical-cars.jpg' alt='attachment' className='h-[60vh]'></img>
+                </div>}
+                  
+                  </>)}
               </div>
-              {/* </DialogContent> */}
-              {selectedEntry.type === 'payment-request' && (
-                <div className='w-full '>
-                  <img src={`${selectedEntry?.PaymentRequests?.img_url}`} className='h-[60vh]'></img>
-                </div>
-              )}
+              
             </div>
             <Button
               onClick={printDialogContent}
@@ -590,12 +461,11 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
               Print
             </Button>
           </>)}
-
         </DialogContent>
       </Dialog>
     </div>
 
   );
-}
-)
+})
+
 export default LedgerManagement;

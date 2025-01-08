@@ -53,7 +53,7 @@ export default function Header() {
     setErrorMessage('');
 
     try {
-      const { data } = await axios.post('/api/admin/user/login', loginForm);
+      const { data } = await axios.post('/api/user/login', loginForm);
       dispatch(AddUser(data.user));
       toast.success('Login successful! Redirecting to dashboard...');
       setIsLoginModalOpen(false);
