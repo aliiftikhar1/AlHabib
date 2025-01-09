@@ -34,7 +34,7 @@ export default function VerifyPage() {
         if (response.ok) {
           toast.success(data.message || 'Email verified successfully!');
           setTimeout(() => {
-            router.push('/admin');
+            router.push('/');
           }, 3000); 
           setverified(true);
         } else {
