@@ -26,7 +26,7 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { Logout } from '@/app/Store/Slice';
 import Image from 'next/image';
-import { Group, Plane, PlaneLanding } from 'lucide-react';
+import { Group, Hotel, Plane, PlaneLanding } from 'lucide-react';
 const Sidebar = () => {
   const dispatch = useDispatch();
   const [userName, setUserName] = useState('Guest'); // Default values
@@ -66,7 +66,7 @@ const Sidebar = () => {
       roles: ["admin", "sub admin"],
     },
     {
-      title: "Flight",
+      title: "Flight Management",
       icon: <PlaneLanding className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
       subitems: [
@@ -108,6 +108,50 @@ const Sidebar = () => {
         },
       ]
     },
+    {
+      title: "Hotel Management",
+      icon: <Hotel className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+      subitems: [
+        {
+          title: "Room Types",
+          path: "/admin-dashboard/Hotel-Management/Room-Type",
+          icon: <Home className="h-5 w-5" />,
+          roles: ["admin", "sub admin"],
+        },
+        {
+          title: "Hotels",
+          path: "/admin-dashboard/Hotel-Management/Hotel",
+          icon: <Home className="h-5 w-5" />,
+          roles: ["admin", "sub admin"],
+        },
+        {
+          title: "Hotel Booking",
+          path: "/admin-dashboard/Hotel-Management//Hotel-Booking",
+          icon: <PiHandWithdraw className="h-5 w-5" />,
+          roles: ["admin", "sub admin"],
+        },
+      ]
+    },
+    {
+      title: "Package Management",
+      path: "/admin-dashboard/Package-Management",
+      icon: <FaSuitcaseRolling className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Visa Management",
+      path: "/admin-dashboard/Visa-Management",
+      icon: <PiHandDeposit className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+    {
+      title: "Ticket Management",
+      path: "/admin-dashboard/Ticket-Management",
+      icon: <PiHandDeposit className="h-5 w-5" />,
+      roles: ["admin", "sub admin"],
+    },
+   
     // {
     //   title: "Flight Groups",
     //   path: "/admin-dashboard/Flight-Group-Management",
@@ -133,31 +177,6 @@ const Sidebar = () => {
     //   roles: ["admin", "sub admin"],
     // },
     {
-      title: "Hotel Management",
-      icon: <PlaneLanding className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-      subitems: [
-        {
-          title: "Room Types",
-          path: "/admin-dashboard/Hotel-Management/Room-Type",
-          icon: <CiBank className="h-5 w-5" />,
-          roles: ["admin", "sub admin"],
-        },
-        {
-          title: "Hotels",
-          path: "/admin-dashboard/Hotel-Management/Hotel",
-          icon: <CiBank className="h-5 w-5" />,
-          roles: ["admin", "sub admin"],
-        },
-        {
-          title: "Hotel Booking",
-          path: "/admin-dashboard/Hotel-Management//Hotel-Booking",
-          icon: <PiHandWithdraw className="h-5 w-5" />,
-          roles: ["admin", "sub admin"],
-        },
-      ]
-    },
-    {
       title: "Package Bookings",
       path: "/admin-dashboard/Package-Booking-Management",
       icon: <FaBoxOpen className="h-5 w-5" />,
@@ -182,24 +201,6 @@ const Sidebar = () => {
       roles: ["admin", "sub admin"],
     },
     {
-      title: "Package Management",
-      path: "/admin-dashboard/Package-Management",
-      icon: <FaSuitcaseRolling className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
-    {
-      title: "Visa Management",
-      path: "/admin-dashboard/Visa-Management",
-      icon: <PiHandDeposit className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
-    {
-      title: "Ticket Management",
-      path: "/admin-dashboard/Ticket-Management",
-      icon: <PiHandDeposit className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
-    {
       title: "Ledgers",
       path: "/admin-dashboard/Ledgers",
       icon: <MdHistory className="h-5 w-5" />,
@@ -218,6 +219,8 @@ const Sidebar = () => {
       roles: ["admin"],
     },
   ];
+  
+  
 
 
   return (
@@ -246,16 +249,7 @@ const Sidebar = () => {
             </a>
           </li>
 
-          <li key='profile'>
-            <a href='/admin-dashboard/Manage-Profile'>
-              <button className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full">
-                <UserIcon className='size-5' />
-                <span className="ml-3 text-sm font-medium">
-                  Manage Profile
-                </span>
-              </button>
-            </a>
-          </li>
+        
           {menuItems.map((item) =>
             item.roles.includes(userRole) && (<>
               {item.path ? <>  <li key={item.title}>
@@ -302,7 +296,16 @@ const Sidebar = () => {
               </>)} </>))}
 
 
-
+              <li key='profile'>
+            <a href='/admin-dashboard/Manage-Profile'>
+              <button className="flex hover:ml-3 transform transition-all duration-300 items-center p-2 hover:bg-gray-200/20 border-gray-500/20 border hover:border-gray-800 hover:border-1 rounded-md w-full">
+                <UserIcon className='size-5' />
+                <span className="ml-3 text-sm font-medium">
+                  Manage Profile
+                </span>
+              </button>
+            </a>
+          </li>
           {/* Logout Button */}
           <li className="mt-6">
             <button

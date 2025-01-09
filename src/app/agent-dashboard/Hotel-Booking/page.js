@@ -305,7 +305,7 @@ export default function HotelBookingManagement() {
                         </DialogContent>
                       </Dialog>
                      
-                      <Button
+                      {/* <Button
                         onClick={() => handleDeleteBooking(booking.id)}
                         variant="ghost"
                         className="text-red-600"
@@ -316,7 +316,7 @@ export default function HotelBookingManagement() {
                         ) : (
                           <TrashIcon className="h-4 w-4" />
                         )}
-                      </Button>
+                      </Button> */}
                     </TableCell>
                   </TableRow>
                 ))}
