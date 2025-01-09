@@ -24,6 +24,7 @@ export default function PaymentRequestManagement() {
   const [paymentRequests, setPaymentRequests] = useState([]);
   const [filteredPaymentRequests, setFilteredPaymentRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingAction,setloadingAction]= useState('')
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [paymentImage, setPaymentImage] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
@@ -94,6 +95,7 @@ export default function PaymentRequestManagement() {
   };
 
   const handleApprove = async () => {
+    setloadingAction('approve')
     try {
       const payload = {
         ...selectedRequest,
@@ -119,15 +121,19 @@ export default function PaymentRequestManagement() {
             req.id === selectedRequest.id ? { ...req, status: 'Approved' } : req
           )
         );
+        setloadingAction('')
       } else {
         toast.error(result.message || 'Failed to approve payment request.');
+        setloadingAction('')
       }
     } catch (err) {
       toast.error(`Error: ${err.message}`);
+      setloadingAction('')
     }
   };
 
   const handleReject = async () => {
+    setloadingAction('reject')
     try {
       const payload = { ...selectedRequest, status: 'Rejected', verified_by: username };
       const response = await fetch(
@@ -150,9 +156,12 @@ export default function PaymentRequestManagement() {
           req.id === selectedRequest.id ? { ...req, status: 'Rejected' } : req
         )
       );
+      setloadingAction('')
     } catch (err) {
       toast.error(err.message);
+      setloadingAction('')
     }
+    setloadingAction('')
   };
 
   const handleAction = async () => {
@@ -321,13 +330,13 @@ export default function PaymentRequestManagement() {
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button
+                      {/* <Button
                         onClick={() => handleDelete(req.id)}
                         variant="ghost"
                         className="text-red-600"
                       >
                         <TrashIcon className="h-4 w-4" />
-                      </Button>
+                      </Button> */}
 
                     </TableCell>
                   </TableRow>
@@ -376,9 +385,9 @@ export default function PaymentRequestManagement() {
                 {selectedRequest.status !== 'Approved' && (
                   <div className='flex justify-between w-full'>
                     <div className='space-x-4'>
-                      <Button onClick={handleApprove}>Approve</Button>
+                      <Button onClick={handleApprove}> {loadingAction==='approve'? <Loader className='animate-spin'/>:'Approve'}</Button>
                       <Button onClick={handleReject} className="bg-red-600">
-                        Reject
+                      {loadingAction==='reject'? <Loader className='animate-spin'/>:'Reject'}
                       </Button>
                     </div>
                     <div>

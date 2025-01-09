@@ -164,7 +164,17 @@ const deleteHotel = async (id) => {
   }
   return true;
 };
-
+function handleDeleteHotel(id){
+  setLoadingAction(id)
+  deleteHotel(id).then(() => {
+    toast.success("Hotel deleted successfully!")
+    }).catch((error) => {
+      toast.error("Hotel deleted successfully!")
+      });
+      const hotels = fetchHotels()
+      setHotels(hotels)
+      setLoadingAction('')
+}
 
   return (
     <div>

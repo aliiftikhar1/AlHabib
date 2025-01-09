@@ -23,8 +23,9 @@ export async function POST(request) {
       arrival_time2,
       flightgroup_id,
       flightsector_id,
-      flightairline_id,meal } = body;
-
+      flightairline_id,meal } = body.flights;
+      
+      
     const createdFlights = await
       prisma.SingleGroupFlight.create({
         data: {
