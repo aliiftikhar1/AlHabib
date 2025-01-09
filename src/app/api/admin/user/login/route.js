@@ -53,7 +53,7 @@ export async function POST(request) {
 
     if(user.status === "Pending"){
       return NextResponse.json({
-        message: "Your Request is Pending for approval from Admin",
+        message: "Your Request is pending for approval from Admin",
       }, { status: 401 });
     }
 
