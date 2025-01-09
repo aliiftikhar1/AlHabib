@@ -2,38 +2,89 @@ import { NextResponse } from 'next/server';
 import prisma from '@/utils/prisma';
 
 export async function PUT(request, { params }) {
-  const {id} = await params;
+  const { id } = params;
+
   try {
     const body = await request.json();
-    console.log("Payload is:", body);
+    console.log('Payload is:', body);
 
-    const { name, description, location, price, availability } = body;
+    const { name, description, location, availability, hotelDetails } = body;
+
     // Validate required fields
-    if (!name || !description || !location || !price || !availability) {
+    if (!name || !description || !location || availability === undefined || !Array.isArray(hotelDetails)) {
       return NextResponse.json(
         { message: 'Missing required fields', status: false },
         { status: 400 }
       );
     }
 
+    // Parse availability as boolean
+    const parsedAvailability = Boolean(availability);
 
-    // Construct the data object conditionally
-    const updateData = {
-      name,
-      description,
-      location,
-      price: parseInt(price),
-      availability: (availability && availability === 'true') ? true : false,
-      updated_at: new Date(),
-    };
+    // Start a transaction to update hotel and hotelDetails atomically
+    const updatedHotel = await prisma.$transaction(async (prisma) => {
+      // Update the hotel
+      const hotel = await prisma.hotel.update({
+        where: { id: parseInt(id, 10) },
+        data: {
+          name,
+          description,
+          location,
+          availability: parsedAvailability,
+          updated_at: new Date(),
+        },
+      });
 
-    // Update the package in the database
-    const updatedhotel = await prisma.hotel.update({
-      where: { id: parseInt(id) },
-      data: updateData,
+      // Update HotelDetails
+      const existingDetails = await prisma.hotelDetails.findMany({
+        where: { hotel_id: parseInt(id, 10) },
+      });
+
+      const existingDetailIds = existingDetails.map((detail) => detail.id);
+      const newDetailIds = hotelDetails.map((detail) => detail.id).filter(Boolean);
+
+      // Delete details not in the new payload
+      const detailsToDelete = existingDetailIds.filter((id) => !newDetailIds.includes(id));
+      await prisma.hotelDetails.deleteMany({
+        where: { id: { in: detailsToDelete } },
+      });
+
+      // Update or create details
+      const detailsPromises = hotelDetails.map((detail) => {
+        if (detail.id) {
+          // Update existing detail
+          return prisma.hotelDetails.update({
+            where: { id: detail.id },
+            data: {
+              roomtype_id: detail.roomtype_id,
+              price: detail.price,
+              updated_at: new Date(),
+            },
+          });
+        } else {
+          // Create new detail
+          return prisma.hotelDetails.create({
+            data: {
+              hotel_id: hotel.id,
+              roomtype_id: detail.roomtype_id,
+              price: detail.price,
+              created_at: new Date(),
+              updated_at: new Date(),
+            },
+          });
+        }
+      });
+
+      await Promise.all(detailsPromises);
+
+      return hotel;
     });
 
-    return NextResponse.json(updatedhotel);
+    return NextResponse.json({
+      message: 'Hotel and details updated successfully',
+      status: true,
+      hotel: updatedHotel,
+    });
   } catch (error) {
     console.error('Error updating hotel:', error.message);
     return NextResponse.json(
@@ -46,6 +97,7 @@ export async function PUT(request, { params }) {
     );
   }
 }
+
 
 // GET request to fetch all hotel
 export async function GET() {

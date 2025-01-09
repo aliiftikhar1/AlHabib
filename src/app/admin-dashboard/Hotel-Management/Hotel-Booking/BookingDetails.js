@@ -34,7 +34,7 @@ export default function BookingDetails({ booking, onApprove, onReject, isLoading
               <TableCell>{booking.infants}</TableCell>
               <TableCell>{new Date(booking.check_in_date).toLocaleString()}</TableCell>
               <TableCell>{new Date(booking.check_out).toLocaleString()}</TableCell>
-              <TableCell>{booking.Hotel?.price}</TableCell>
+              <TableCell>{booking.price}</TableCell>
               <TableCell>{booking.status}</TableCell>
             </TableRow>
           </TableBody>

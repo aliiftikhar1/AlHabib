@@ -23,6 +23,12 @@ export async function PUT(request, { params }) {
                 { status: 404 }
             );
         }
+        if (booking.status==="Approved") {
+            return NextResponse.json(
+                { message: "Your Booking is already approved"},
+                { status: 400 }
+            );
+        }
 
         // Update the booking status
         const updatedData = await prisma.hotelBooking.update({
@@ -43,7 +49,7 @@ export async function PUT(request, { params }) {
                 );
             }
 
-            if (user.balance < booking.Hotel?.price) {
+            if (user.balance < booking.price) {
                 console.log("Insufficient balance");
                 return NextResponse.json(
                     { message: "Insufficient balance", status: false },
@@ -51,21 +57,21 @@ export async function PUT(request, { params }) {
                 );
             } else {
                 // Deduct amount from user's balance
-                const newBalance = user.balance - booking.Hotel?.price;
+                const newBalance = user.balance - booking.price;
 
                 await prisma.users.update({
                     where: { id: booking.agent_id },
                     data: { balance: Math.max(newBalance, 0) },
                 });
 
-                console.log("Ledger entry creation", booking.agent_id, booking.Hotel?.price);
+                console.log("Ledger entry creation", booking.agent_id, booking.price);
 
                 // Create a new ledger record
                 await prisma.NewLedger.create({
                     data: {
                         agent_id: booking.agent_id,
                         amount_in: 0,
-                        amount_out: booking.Hotel?.price,
+                        amount_out: booking.price,
                         balance: Math.max(newBalance, 0),
                         description: "Hotel Booking is completed",
                         type: "hotel-booking",

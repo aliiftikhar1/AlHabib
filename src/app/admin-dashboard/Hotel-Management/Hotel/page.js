@@ -22,8 +22,6 @@ import {
 import { PencilIcon, TrashIcon, PlusIcon, Loader, XIcon } from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
 
-// ... (keep existing fetch functions)
-
 export default function HotelManagement() {
   const [hotels, setHotels] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,7 +45,6 @@ export default function HotelManagement() {
 
   useEffect(() => {
     if (currentHotel) {
-      // If editing, populate the selected room types from hotel details
       setSelectedRoomTypes(
         currentHotel.HotelDetails?.map((detail) => ({
           roomTypeId: detail.roomtype_id,
@@ -64,7 +61,7 @@ export default function HotelManagement() {
     if (roomTypeId && !selectedRoomTypes.find(rt => rt.roomTypeId === roomTypeId)) {
       setSelectedRoomTypes([...selectedRoomTypes, { roomTypeId, price: 0 }]);
     }
-    e.target.value = ''; // Reset select
+    e.target.value = '';
   };
 
   const handleRemoveRoomType = (roomTypeId) => {
@@ -106,6 +103,7 @@ export default function HotelManagement() {
       const updatedHotels = await fetchHotels();
       setHotels(updatedHotels);
       setIsModalOpen(false);
+      setCurrentHotel(null);
     } catch (err) {
       toast.error(err.message);
     } finally {
@@ -113,68 +111,74 @@ export default function HotelManagement() {
     }
   };
 
- 
-const fetchHotels = async () => {
-  const response = await fetch('/api/admin/hotel-management');
-  if (!response.ok) {
-    throw new Error('Failed to fetch hotels');
-  }
-  return response.json();
-};
+  const fetchHotels = async () => {
+    const response = await fetch('/api/admin/hotel-management');
+    if (!response.ok) {
+      throw new Error('Failed to fetch hotels');
+    }
+    return response.json();
+  };
 
-const fetchRoomTypes = async () => {
-  const response = await fetch('/api/admin/room-type-management');
-  if (!response.ok) {
-    throw new Error('Failed to fetch hotels');
-  }
-  return response.json();
-};
+  const fetchRoomTypes = async () => {
+    const response = await fetch('/api/admin/room-type-management');
+    if (!response.ok) {
+      throw new Error('Failed to fetch room types');
+    }
+    return response.json();
+  };
 
-const addHotel = async (hotel) => {
-  const response = await fetch('/api/admin/hotel-management', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(hotel),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to add hotel');
-  }
-  return response.json();
-};
+  const addHotel = async (hotel) => {
+    const response = await fetch('/api/admin/hotel-management', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(hotel),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to add hotel');
+    }
+    return response.json();
+  };
 
-const updateHotel = async (hotel) => {
-  const response = await fetch(`/api/admin/hotel-management/${hotel.id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(hotel),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to update hotel');
-  }
-  return response.json();
-};
+  const updateHotel = async (hotel) => {
+    const response = await fetch(`/api/admin/hotel-management/${hotel.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(hotel),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to update hotel');
+    }
+    return response.json();
+  };
 
-const deleteHotel = async (id) => {
-  const response = await fetch(`/api/admin/hotel-management/${id}`, {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-  });
-  if (!response.ok) {
-    throw new Error('Failed to delete hotel');
-  }
-  return true;
-};
-function handleDeleteHotel(id){
-  setLoadingAction(id)
-  deleteHotel(id).then(() => {
-    toast.success("Hotel deleted successfully!")
-    }).catch((error) => {
-      toast.error("Hotel deleted successfully!")
-      });
-      const hotels = fetchHotels()
-      setHotels(hotels)
-      setLoadingAction('')
-}
+  const deleteHotel = async (id) => {
+    const response = await fetch(`/api/admin/hotel-management/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete hotel');
+    }
+    return true;
+  };
+
+  const handleDeleteHotel = async (id) => {
+    setLoadingAction(id);
+    try {
+      await deleteHotel(id);
+      toast.success("Hotel deleted successfully!");
+      const updatedHotels = await fetchHotels();
+      setHotels(updatedHotels);
+    } catch (error) {
+      toast.error("Failed to delete hotel");
+    } finally {
+      setLoadingAction(null);
+    }
+  };
+
+  const handleUpdateHotel = (hotel) => {
+    setCurrentHotel(hotel);
+    setIsModalOpen(true);
+  };
 
   return (
     <div>
@@ -186,7 +190,10 @@ function handleDeleteHotel(id){
             placeholder="Search hotels..."
             className="pl-10 w-auto"
           />
-          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <Dialog open={isModalOpen} onOpenChange={(open) => {
+            setIsModalOpen(open);
+            if (!open) setCurrentHotel(null);
+          }}>
             <DialogTrigger asChild>
               <Button className="bg-indigo-600">
                 <PlusIcon className="h-5 w-5 mr-2" />
@@ -217,7 +224,7 @@ function handleDeleteHotel(id){
                     </label>
                     <select
                       name="availability"
-                      defaultValue={currentHotel?.availability || 'true'}
+                      defaultValue={currentHotel?.availability.toString() || 'true'}
                       className="w-full border p-2 rounded-md"
                     >
                       <option value="true">Available</option>
@@ -302,7 +309,7 @@ function handleDeleteHotel(id){
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {hotels.map((hotel, index) => (
+                {hotels?.map((hotel, index) => (
                   <TableRow key={hotel.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{hotel.name}</TableCell>
@@ -322,9 +329,9 @@ function handleDeleteHotel(id){
                     </TableCell>
                     <TableCell>{hotel.availability ? 'Available' : 'Unavailable'}</TableCell>
                     <TableCell>
-                      {/* <Button onClick={() => handleUpdateHotel(hotel)} variant="ghost">
+                      <Button onClick={() => handleUpdateHotel(hotel)} variant="ghost">
                         <PencilIcon className="h-4 w-4" />
-                      </Button> */}
+                      </Button>
                       <Button
                         onClick={() => handleDeleteHotel(hotel.id)}
                         variant="ghost"
@@ -348,3 +355,4 @@ function handleDeleteHotel(id){
     </div>
   );
 }
+

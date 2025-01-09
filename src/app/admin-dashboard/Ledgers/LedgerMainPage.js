@@ -351,11 +351,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
                           -
                         </>
                       )}
-                      {entry.type === 'group-flight-booking' && (
-                        <>
-                          -
-                        </>
-                      )}
+                      
                       {entry.type === 'group-flight-booking' && (
                         <>
                           <ul>

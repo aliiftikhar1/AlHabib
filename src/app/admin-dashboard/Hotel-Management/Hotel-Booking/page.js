@@ -149,7 +149,7 @@ export default function HotelBookingManagement() {
 
   const handleSubmit = useCallback(async (bookingData) => {
     setLoadingAction('form');
-    const updatedBooking = { ...bookingData, agent_id: 8 };
+    const updatedBooking = { ...bookingData, agent_id: 15 };
     try {
       if (currentBooking) {
         await updateHotelBooking({ ...currentBooking, ...updatedBooking });
@@ -263,6 +263,7 @@ export default function HotelBookingManagement() {
               <TableHeader>
                 <TableRow>
                   <TableHead>No.</TableHead>
+                  <TableHead>Agent</TableHead>
                   <TableHead>Hotel</TableHead>
                   <TableHead>Check-in</TableHead>
                   <TableHead>Check-out</TableHead>
@@ -278,13 +279,14 @@ export default function HotelBookingManagement() {
                 {filteredbookings.map((booking, index) => (
                   <TableRow key={booking.id}>
                     <TableCell>{index + 1}</TableCell>
+                    <TableCell>{booking.Users?.name}</TableCell>
                     <TableCell>{booking.Hotel?.name}</TableCell>
                     <TableCell>{new Date(booking.check_in_date).toLocaleString()}</TableCell>
                     <TableCell>{new Date(booking.check_out).toLocaleString()}</TableCell>
                     <TableCell>{booking.rooms}</TableCell>
                     <TableCell>{booking.adults}</TableCell>
                     <TableCell>{booking.childs}</TableCell>
-                    <TableCell>{booking.Hotel?.price}</TableCell>
+                    <TableCell>{booking.price}</TableCell>
                     <TableCell>{booking.status}</TableCell>
                     <TableCell>
                       <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
@@ -302,9 +304,7 @@ export default function HotelBookingManagement() {
                           />
                         </DialogContent>
                       </Dialog>
-                      {/* <Button onClick={() => handleUpdateBooking(booking)} variant="ghost">
-                        <PencilIcon className="h-4 w-4" />
-                      </Button> */}
+                     
                       <Button
                         onClick={() => handleDeleteBooking(booking.id)}
                         variant="ghost"

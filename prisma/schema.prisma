@@ -386,6 +386,7 @@ model HotelBooking {
   status        String      @default("Pending")
   remarks       String      @default("None")
   attachment    String?
+  price         Int
   created_at    DateTime    @default(now())
   updated_at    DateTime    @updatedAt
   Hotel         Hotel       @relation(fields: [hotel_id], references: [id], onDelete: Cascade)

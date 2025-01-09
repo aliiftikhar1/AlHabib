@@ -12,19 +12,41 @@ export default function BookingForm({ onSubmit, initialData, hotels, roomTypes, 
   const [fieldsVisible, setFieldsVisible] = useState(false);
   const [price, setPrice] = useState(initialData?.price || '');
   const [selectedRoomType, setSelectedRoomType] = useState(initialData?.roomtype || '');
+  const [selectedHotel, setSelectedHotel] = useState(initialData?.hotel_id || '');
+  const [filteredRoomTypes, setFilteredRoomTypes] = useState([]);
+  const [rooms, setRooms] = useState(initialData?.rooms || 1);
 
+  // Filter room types based on the selected hotel
   useEffect(() => {
-    // Find the hotel details based on the selected room type
+    if (!selectedHotel) {
+      setFilteredRoomTypes([]);
+      return;
+    }
+
+    const hotelDetails = hotels.find((hotel) => hotel.id === Number(selectedHotel))?.HotelDetails || [];
+    const availableRoomTypes = roomTypes.filter((roomType) =>
+      hotelDetails.some((detail) => detail.roomtype_id === roomType.id)
+    );
+
+    setFilteredRoomTypes(availableRoomTypes);
+    setSelectedRoomType(''); 
+  }, [selectedHotel, hotels, roomTypes]);
+
+  
+  useEffect(() => {
+    if (!selectedRoomType) {
+      setPrice('');
+      return;
+    }
+
     const roomTypeDetails = hotels
       .flatMap((hotel) => hotel.HotelDetails)
       .find((detail) => detail.roomtype_id === Number(selectedRoomType));
-    
-    setPrice(roomTypeDetails?.price || '');
-  }, [selectedRoomType, hotels]);
 
-  useEffect(()=>{
-    
-  })
+    const roomPrice = roomTypeDetails?.price || 0;
+    setPrice(roomPrice * rooms); // Multiply price by the number of rooms
+  }, [selectedRoomType, hotels, rooms])
+
   const handleConfirm = (e) => {
     e.preventDefault();
     const newPassengers = [];
@@ -72,7 +94,8 @@ export default function BookingForm({ onSubmit, initialData, hotels, roomTypes, 
             </label>
             <select
               name="hotel_id"
-              defaultValue={initialData?.hotel_id || ''}
+              value={selectedHotel}
+              onChange={(e) => setSelectedHotel(e.target.value)}
               required
               className="w-full p-2 border border-gray-300 rounded-md"
             >
@@ -94,9 +117,10 @@ export default function BookingForm({ onSubmit, initialData, hotels, roomTypes, 
               onChange={(e) => setSelectedRoomType(e.target.value)}
               required
               className="w-full p-2 border border-gray-300 rounded-md"
+              disabled={!filteredRoomTypes.length}
             >
               <option value="">Select Room Type</option>
-              {roomTypes.map((group) => (
+              {filteredRoomTypes.map((group) => (
                 <option key={group.id} value={group.id}>
                   {group.title}
                 </option>
@@ -110,13 +134,25 @@ export default function BookingForm({ onSubmit, initialData, hotels, roomTypes, 
             <Input
               type="number"
               name="price"
-              
               value={price}
               readOnly
               required
             />
           </div>
-          {['rooms', 'remarks'].map((field) => (
+          <div>
+            <label htmlFor="rooms" className="block text-sm font-medium">
+              Rooms
+            </label>
+            <Input
+              type="number"
+              name="rooms"
+              value={rooms}
+              onChange={(e) => setRooms(Number(e.target.value))}
+              required
+              min={1}
+            />
+          </div>
+          {['remarks'].map((field) => (
             <div key={field}>
               <label htmlFor={field} className="block text-sm font-medium">
                 {field.charAt(0).toUpperCase() + field.slice(1)}

@@ -22,14 +22,14 @@ import {
 } from '@/components/ui/dialog';
 import { PencilIcon, TrashIcon, PlusIcon, Loader, Eye } from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
-import { fetchHotelBookings, fetchHotel, addHotelBooking } from './api';
+import { fetchHotelBookings, fetchHotel, addHotelBooking, updateHotelBooking, deleteHotelBooking } from './api';
 import BookingForm from './BookingForm';
 import BookingDetails from './BookingDetails';
 import { useSelector } from 'react-redux';
 
 export default function HotelBookingManagement() {
   const [bookings, setBookings] = useState([]);
-  const [filteredbookings, setfilteredBookings] = useState([]);
+  const [filteredbookings, setfilteredBookings] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [currentBooking, setCurrentBooking] = useState(null);
@@ -40,11 +40,28 @@ export default function HotelBookingManagement() {
   const [hotels, setHotels] = useState([]);
   const [updateTrigger, setUpdateTrigger] = useState(0);
   const [roomTypes, setRoomTypes] = useState([]);
-  const [searchQuery, setSearchQuery]= useState('')
-  const userid = useSelector((data)=>data.user.id)
   const [date1, setDate1] = useState('');
   const [date2, setDate2] = useState('');
-  
+  const [searchQuery, setSearchQuery] = useState('');
+  const userid = useSelector((data)=>data.user.id)
+
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.trim() === '') {
+      setfilteredBookings(bookings);
+      return;
+    }
+    console.log("The query is : ",query)
+
+    const filtered = bookings.filter((booking) =>
+      
+      booking.Hotel?.name.toLowerCase().includes(query.toLowerCase()) ||
+      booking.status?.toLowerCase().includes(query.toLowerCase())
+    );
+    setfilteredBookings(filtered);
+  };
   const filterByDate = () => {
     if (!date1 || !date2) {
       toast.error('Please select both start and end dates.');
@@ -83,20 +100,12 @@ export default function HotelBookingManagement() {
       setIsLoading(false);
     }
   }, []);
-  
-  const fetchRoomTypes = async () => {
-    const response = await fetch('/api/admin/room-type-management');
-    if (!response.ok) {
-      throw new Error('Failed to fetch hotels');
-    }
-    return response.json();
-  };
 
   useEffect(() => {
     fetchRoomTypes()
-          .then(setRoomTypes)
-          .catch((err) => toast.error(err.message))
-          .finally(() => setIsLoading(false));  
+      .then(setRoomTypes)
+      .catch((err) => toast.error(err.message))
+      .finally(() => setIsLoading(false));
     fetchData();
   }, [fetchData, updateTrigger]);
 
@@ -110,14 +119,47 @@ export default function HotelBookingManagement() {
     setIsViewModalOpen(true);
   }, []);
 
+  const handleUpdateBooking = useCallback((booking) => {
+    setCurrentBooking(booking);
+    setIsModalOpen(true);
+  }, []);
+
+  const fetchRoomTypes = async () => {
+    const response = await fetch('/api/admin/room-type-management');
+    if (!response.ok) {
+      throw new Error('Failed to fetch hotels');
+    }
+    return response.json();
+  };
+
+
+  const handleDeleteBooking = useCallback(async (id) => {
+    if (window.confirm('Are you sure you want to delete this booking?')) {
+      setLoadingAction(id);
+      try {
+        await deleteHotelBooking(id);
+        setUpdateTrigger(prev => prev + 1);
+        toast.success('Booking deleted successfully');
+      } catch (err) {
+        toast.error(err.message);
+      } finally {
+        setLoadingAction(null);
+      }
+    }
+  }, []);
+
+
   const handleSubmit = useCallback(async (bookingData) => {
     setLoadingAction('form');
-    console.log("Booking data : ",bookingData);
-    const updatedBooking = { ...bookingData, agent_id: userid }; 
-    console.log("New Booking data with agent_id : ", updatedBooking);
+    const updatedBooking = { ...bookingData, agent_id: userid };
     try {
+      if (currentBooking) {
+        await updateHotelBooking({ ...currentBooking, ...updatedBooking });
+        toast.success('Booking updated successfully');
+      } else {
         await addHotelBooking(updatedBooking);
         toast.success('Booking added successfully');
+      }
       setUpdateTrigger(prev => prev + 1);
       setIsModalOpen(false);
     } catch (err) {
@@ -127,34 +169,51 @@ export default function HotelBookingManagement() {
     }
   }, [currentBooking]);
 
-  const handleSearch = (e) => {
-    const query = e.target.value.toLowerCase();
-    setSearchQuery(query)
-    if(query.trim()===''){
-      setfilteredBookings(bookings)
-      return;
+  const handleStatusUpdateBooking = useCallback(async (status, booking) => {
+    setApiLoading(true);
+    try {
+      const response = await fetch(
+        `/api/admin/hotel-booking-management/booking-${status}/${booking.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ bookingid: booking.id, status: status === 'approve' ? "Approved" : "Rejected" }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || `Failed to ${status} booking`);
+      }
+      setIsViewModalOpen(false)
+      toast.success(data.message || `Booking successfully ${status}d`);
+      setUpdateTrigger(prev => prev + 1);
+    } catch (error) {
+      console.error(error);
+      toast.error(`An unexpected error occurred while ${status}ing the booking`);
+    } finally {
+      setApiLoading(false);
     }
-    const filtered = bookings.filter((entry) =>
-      entry.Hotel?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entry.RoomType?.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entry.status?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setfilteredBookings(filtered);
-  };
+  }, []);
+
   return (
     <div>
       <ToastContainer />
       <div className="p-6">
         <div className="mb-6 flex justify-between items-center">
-        
-          <Input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => handleSearch(e)}
-            placeholder="Search bookings..."
-            className="pl-10 w-auto"
-          />
-           <div className="flex space-x-4  justify-end  items-center mr-4">
+       
+            <div className='flex justify-center items-center'>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearch(e)}
+                placeholder="Search..."
+                className="border border-gray-300 rounded-lg px-4 py-2 w-auto"
+              />
+
+            </div>
+            <div className="flex space-x-4  justify-end  items-center mr-4">
               <input
                 type="date"
                 value={date1}
@@ -174,6 +233,7 @@ export default function HotelBookingManagement() {
                 Filter
               </button>
             </div>
+          
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
               <Button onClick={handleAddBooking} className="bg-indigo-600">
@@ -209,7 +269,6 @@ export default function HotelBookingManagement() {
                   <TableHead>Check-in</TableHead>
                   <TableHead>Check-out</TableHead>
                   <TableHead>Rooms</TableHead>
-                  <TableHead>Room Type</TableHead>
                   <TableHead>Adults</TableHead>
                   <TableHead>Children</TableHead>
                   <TableHead>Price</TableHead>
@@ -225,10 +284,9 @@ export default function HotelBookingManagement() {
                     <TableCell>{new Date(booking.check_in_date).toLocaleString()}</TableCell>
                     <TableCell>{new Date(booking.check_out).toLocaleString()}</TableCell>
                     <TableCell>{booking.rooms}</TableCell>
-                    <TableCell className='capitalize'>{booking.RoomType?.title}</TableCell>
                     <TableCell>{booking.adults}</TableCell>
                     <TableCell>{booking.childs}</TableCell>
-                    <TableCell>{booking.Hotel?.price}</TableCell>
+                    <TableCell>{booking.price}</TableCell>
                     <TableCell>{booking.status}</TableCell>
                     <TableCell>
                       <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
@@ -238,14 +296,27 @@ export default function HotelBookingManagement() {
                           </Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-7xl h-auto max-h-[90vh] overflow-auto">
-                          <DialogHeader>
-                            <DialogTitle>Hotel Booking Details</DialogTitle>
-                          </DialogHeader>
                           <BookingDetails
                             booking={selectedBooking}
+                            onApprove={() => handleStatusUpdateBooking('approve', selectedBooking)}
+                            onReject={() => handleStatusUpdateBooking('reject', selectedBooking)}
+                            isLoading={apiLoading}
                           />
                         </DialogContent>
                       </Dialog>
+                     
+                      <Button
+                        onClick={() => handleDeleteBooking(booking.id)}
+                        variant="ghost"
+                        className="text-red-600"
+                        disabled={loadingAction === booking.id}
+                      >
+                        {loadingAction === booking.id ? (
+                          <Loader className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <TrashIcon className="h-4 w-4" />
+                        )}
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
