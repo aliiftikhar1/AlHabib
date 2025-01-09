@@ -102,7 +102,7 @@ export default function Header() {
           {username && (
             <Button onClick={() => setIsNotificationSheetOpen(true)} className="relative bg-transparent hover:bg-gray-100/50 rounded-full">
               <Bell className="w-6 h-6 text-black" />
-              {notifications.length > 0 && (
+              {notifications && notifications.length > 0 && (
                 <span className="absolute top-0 right-0 w-4 h-4 text-xs text-white bg-red-600 rounded-full flex items-center justify-center">
                   {notifications.length}
                 </span>
