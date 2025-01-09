@@ -200,7 +200,7 @@ export default function Header() {
             <SheetDescription>Your latest notifications</SheetDescription>
           </SheetHeader>
           <div className="mt-4 space-y-2">
-            {notifications.length > 0 ? notifications.map((notification, index) => (
+            {notifications && notifications.length > 0 ? notifications.map((notification, index) => (
               <div key={index} className="p-2 bg-gray-100 rounded shadow">
                 <p className='font-semibold'>Message</p>
                 <p>{notification.message}</p>
