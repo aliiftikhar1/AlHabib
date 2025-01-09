@@ -337,7 +337,7 @@ export default function UserManagement() {
                       <Button onClick={() => handleUpdateUser(user)} variant="ghost">
                         <PencilIcon className="h-4 w-4" />
                       </Button>
-                      <Button
+                      {user.id==15? '': <Button
                         onClick={() => handleDeleteUser(user.id)}
                         variant="ghost"
                         className="text-red-600"
@@ -348,7 +348,8 @@ export default function UserManagement() {
                         ) : (
                           <TrashIcon className="h-4 w-4" />
                         )}
-                      </Button>
+                      </Button>}
+                     
                       {/* <Button
                         onClick={() => handleApproveUser(user.id)}
                         variant="ghost"
