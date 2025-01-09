@@ -3,15 +3,14 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-
     const ledgerEntries = await prisma.NewLedger.findMany({
       include: {
         Users: true,
         HotelBooking: {
-          include:{
-            Hotel:true,
-            Hoteliers:true,
-          }
+          include: {
+            Hotel: true,
+            Hoteliers: true,
+          },
         },
         FlightBookings: true,
         GroupFlightBookings: {
@@ -26,14 +25,21 @@ export async function GET() {
         },
         PaymentRequests: true,
       },
+      orderBy: {
+        updated_at: 'desc',
+      },
     });
+
     return NextResponse.json(ledgerEntries);
   } catch (error) {
     console.error('Error fetching ledger entries:', error);
-    return NextResponse.json({
-      message: 'Failed to fetch ledger entries',
-      status: false,
-      error: error.message,
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        message: 'Failed to fetch ledger entries',
+        status: false,
+        error: error.message,
+      },
+      { status: 500 }
+    );
   }
 }

@@ -31,6 +31,9 @@ export async function GET(request, {params}){
         },
         PaymentRequests: true,
       },
+      orderBy: {
+        createdAt: 'desc', 
+      },
     });
     return NextResponse.json(ledgerEntries);
   } catch (error) {
