@@ -32,7 +32,7 @@ export async function GET(request, {params}){
         PaymentRequests: true,
       },
       orderBy: {
-        createdAt: 'desc', 
+        created_at: 'desc', 
       },
     });
     return NextResponse.json(ledgerEntries);

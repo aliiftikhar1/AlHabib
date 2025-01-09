@@ -57,9 +57,9 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
       setFilteredEntries(ledgerEntries)
     }
     const filtered = ledgerEntries.filter((entry) =>
-      entry.Users?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entry.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entry.type?.toLowerCase().includes(searchQuery.toLowerCase())
+      entry.Users?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      entry.type.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredEntries(filtered);
   };
@@ -433,7 +433,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
                         <TableCell>{selectedEntry.HotelBooking?.infants}</TableCell>
                         <TableCell>{new Date(selectedEntry.HotelBooking?.check_in_date).toLocaleString()}</TableCell>
                         <TableCell>{new Date(selectedEntry.HotelBooking?.check_out).toLocaleString()}</TableCell>
-                        <TableCell>{selectedEntry.HotelBooking?.Hotel?.price}</TableCell>
+                        <TableCell>{selectedEntry.HotelBooking?.price}</TableCell>
                         <TableCell>{selectedEntry.HotelBooking?.status}</TableCell>
                       </TableRow>
                     </TableBody>
