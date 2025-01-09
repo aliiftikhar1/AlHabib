@@ -643,14 +643,14 @@ const LedgerManagement =() => {
                 </div>
                 {selectedEntry.type === 'group-flight-booking' && (
                   <div className='w-full '>
-                    <img src='https://w0.peakpx.com/wallpaper/414/49/HD-wallpaper-car-lamborghini-aventador-black-vertical-car-vertical-cars.jpg' alt='attachment' className='h-[60vh]'></img>
+                    <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${selectedEntry?.GroupFlightBookings?.attachment}`} alt='attachment' className='h-[60vh]'></img>
                   </div>
                 )}
               </div>
               {/* </DialogContent> */}
               {selectedEntry.type === 'payment-request' && (
                 <div className='w-full '>
-                  <img src={`${selectedEntry?.PaymentRequests?.img_url}`} className='h-[60vh]'></img>
+                  <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${selectedEntry?.PaymentRequests?.img_url}`} className='h-[60vh]'></img>
                 </div>
               )}
             </div>

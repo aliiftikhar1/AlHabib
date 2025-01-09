@@ -29,12 +29,18 @@ export async function PUT(request,{params}) {
       where: { id: parseInt(id) },
       include: { SingleGroupFlight: true },
     });
-
+    console.log("The booking is : ",booking)
     // Check if user exists and balance is sufficient
     if (!booking) {
       return NextResponse.json(
         { message: 'Booking not found', status: false },
         { status: 404 }
+      );
+    }
+    if (booking.status==="Approved") {
+      return NextResponse.json(
+        { message: 'Booking is already approved', status: false },
+        { status: 400 }
       );
     }
 
@@ -56,6 +62,7 @@ export async function PUT(request,{params}) {
         { message: 'Insufficient balance', status: false },
         { status: 400 }
       );
+      
     }else{
       const newamount = user.balance - booking.price;
       const update = await prisma.users.update({

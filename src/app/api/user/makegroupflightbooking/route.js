@@ -7,7 +7,6 @@ export async function POST(request) {
 
         console.log("Data received", data);
 
-        // Destructure the expected fields
         const {
             flight_id,
             flightgroup_id,
@@ -16,12 +15,12 @@ export async function POST(request) {
             agent_id,
             agentRemarks,
             adults,
-            children,
+            childs,
             infants,
             passengers,
         } = data;
 
-        // Define required fields and check for missing ones
+        // Validate required fields
         const requiredFields = {
             flightgroup_id,
             flightsector_id,
@@ -29,39 +28,38 @@ export async function POST(request) {
             flight_id,
             agent_id,
             agentRemarks,
-            passengers,
         };
-
         const missingFields = Object.entries(requiredFields)
-            .filter(([key, value]) => !value || (Array.isArray(value) && value.length === 0))
+            .filter(([_, value]) => !value)
             .map(([key]) => key);
 
         if (missingFields.length > 0) {
-            console.error("Missing fields:", missingFields.join(", "));
             return NextResponse.json(
                 { message: `Invalid data. Missing fields: ${missingFields.join(", ")}` },
                 { status: 400 }
             );
         }
 
-        // Ensure flight_id contains fare information
-        if (!flight_id || typeof flight_id.fare !== "number") {
-            console.error("Invalid flight_id or fare is not a number");
+        if (!Array.isArray(passengers) || passengers.length === 0) {
             return NextResponse.json(
-                { message: "Invalid flight data. Fare information is missing or incorrect." },
+                { message: "Invalid data. Passengers must be a non-empty array." },
                 { status: 400 }
             );
         }
 
         const flight = await prisma.singleGroupFlight.findUnique({
-            where:{
-                id:parseInt(flight_id)
-            }
-        })
-        // Calculate total price
-        const totalPrice = flight.fare * (adults + children + infants);
+            where: { id: parseInt(flight_id) },
+        });
 
-        // Create a FlightBooking record
+        if (!flight) {
+            return NextResponse.json(
+                { message: "Flight not found." },
+                { status: 404 }
+            );
+        }
+
+        const totalPrice = parseInt(flight.fare) * (parseInt(adults || 0) + parseInt(childs || 0) + parseInt(infants || 0));
+
         const newBooking = await prisma.GroupFlightBookings.create({
             data: {
                 flightgroup_id: parseInt(flightgroup_id),
@@ -69,18 +67,15 @@ export async function POST(request) {
                 flightairline_id: parseInt(flightairline_id),
                 flight_id: parseInt(flight_id),
                 agent_id: parseInt(agent_id),
-                children: children || 0,
-                adults: adults || 0,
+                childs: parseInt(childs || 0),
+                adults: parseInt(adults || 0),
+                infants: parseInt(infants || 0),
                 price: totalPrice,
-                infants: infants || 0,
                 status: "Pending",
                 remarks: agentRemarks || "",
             },
         });
 
-        console.log("Booking created successfully:", newBooking);
-
-        // Create Passengers linked to the new booking
         const passengerPromises = passengers.map((passenger) =>
             prisma.GroupPassengers.create({
                 data: {
@@ -103,10 +98,9 @@ export async function POST(request) {
             { status: 201 }
         );
     } catch (error) {
-        console.error("Error saving booking or passengers:", error);
-
+        console.error("Error saving booking or passengers:", error.message || error);
         return NextResponse.json(
-            { message: "An error occurred while saving the data.", error: error.message },
+            { message: "An error occurred while saving the data.", error: error.message || "Unknown error" },
             { status: 500 }
         );
     }

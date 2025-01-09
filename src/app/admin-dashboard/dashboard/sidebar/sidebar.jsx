@@ -139,18 +139,18 @@ const Sidebar = () => {
       icon: <FaSuitcaseRolling className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
-    {
-      title: "Visa Management",
-      path: "/admin-dashboard/Visa-Management",
-      icon: <PiHandDeposit className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
-    {
-      title: "Ticket Management",
-      path: "/admin-dashboard/Ticket-Management",
-      icon: <PiHandDeposit className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
+    // {
+    //   title: "Visa Management",
+    //   path: "/admin-dashboard/Visa-Management",
+    //   icon: <PiHandDeposit className="h-5 w-5" />,
+    //   roles: ["admin", "sub admin"],
+    // },
+    // {
+    //   title: "Ticket Management",
+    //   path: "/admin-dashboard/Ticket-Management",
+    //   icon: <PiHandDeposit className="h-5 w-5" />,
+    //   roles: ["admin", "sub admin"],
+    // },
    
     // {
     //   title: "Flight Groups",
@@ -182,18 +182,18 @@ const Sidebar = () => {
       icon: <FaBoxOpen className="h-5 w-5" />,
       roles: ["admin", "sub admin"],
     },
-    {
-      title: "Ticket Bookings",
-      path: "/admin-dashboard/Ticket-Booking-Management",
-      icon: <FaTicketAlt className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
-    {
-      title: "Visa Bookings",
-      path: "/admin-dashboard/Visa-Booking-Management",
-      icon: <FaPassport className="h-5 w-5" />,
-      roles: ["admin", "sub admin"],
-    },
+    // {
+    //   title: "Ticket Bookings",
+    //   path: "/admin-dashboard/Ticket-Booking-Management",
+    //   icon: <FaTicketAlt className="h-5 w-5" />,
+    //   roles: ["admin", "sub admin"],
+    // },
+    // {
+    //   title: "Visa Bookings",
+    //   path: "/admin-dashboard/Visa-Booking-Management",
+    //   icon: <FaPassport className="h-5 w-5" />,
+    //   roles: ["admin", "sub admin"],
+    // },
     {
       title: "Payment Requests",
       path: "/admin-dashboard/Payment-Management",
