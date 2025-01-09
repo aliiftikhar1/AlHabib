@@ -52,7 +52,7 @@ export default function BookingManagement() {
     setFilteredBookings(
       bookings.filter(
         (booking) =>
-          String(booking.SingleGroupFlight?.fare).includes(searchTerm) ||
+          String(booking.price).includes(searchTerm) ||
           String(booking.agent_id).toLowerCase().includes(searchTerm.toLowerCase()) ||
           String(booking.FlightAirline?.name).toLowerCase().includes(searchTerm.toLowerCase())||
           String(booking.Users?.name).toLowerCase().includes(searchTerm.toLowerCase())
@@ -192,7 +192,7 @@ export default function BookingManagement() {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{booking.Users?.name || 'N/A'}</TableCell>
                     <TableCell>{booking.FlightAirline?.name || 'N/A'}</TableCell>
-                    <TableCell>{booking.SingleGroupFlight?.fare}</TableCell>
+                    <TableCell>{booking.price}</TableCell>
                     <TableCell>{booking.status}</TableCell>
                     <TableCell>{new Date(booking.created_at).toLocaleString()}</TableCell>
                     <TableCell>
@@ -250,7 +250,7 @@ export default function BookingManagement() {
                             </Table>
                             <p><strong>Flight Type:</strong> {selectedBooking?.FlightSector?.type}</p>
                             <p><strong>Status:</strong> {selectedBooking?.status}</p>
-                            <p><strong>Fare:</strong> {selectedBooking?.SingleGroupFlight?.fare}</p>
+                            <p><strong>Fare:</strong> {selectedBooking?.price}</p>
                             <div>
                               <strong>Passengers:</strong>
                               <Table>

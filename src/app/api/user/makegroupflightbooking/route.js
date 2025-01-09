@@ -5,11 +5,21 @@ export async function POST(request) {
     try {
         const data = await request.json();
 
-        console.log("data received", data);
-
+        console.log("Data received", data);
 
         // Destructure the expected fields
-        const {flight_id, flightgroup_id,flightsector_id,flightairline_id,agent_id, agentRemarks, adults, children, infants, passengers } = data;
+        const {
+            flight_id,
+            flightgroup_id,
+            flightsector_id,
+            flightairline_id,
+            agent_id,
+            agentRemarks,
+            adults,
+            children,
+            infants,
+            passengers,
+        } = data;
 
         // Define required fields and check for missing ones
         const requiredFields = {
@@ -34,6 +44,23 @@ export async function POST(request) {
             );
         }
 
+        // Ensure flight_id contains fare information
+        if (!flight_id || typeof flight_id.fare !== "number") {
+            console.error("Invalid flight_id or fare is not a number");
+            return NextResponse.json(
+                { message: "Invalid flight data. Fare information is missing or incorrect." },
+                { status: 400 }
+            );
+        }
+
+        const flight = await prisma.singleGroupFlight.findUnique({
+            where:{
+                id:parseInt(flight_id)
+            }
+        })
+        // Calculate total price
+        const totalPrice = flight.fare * (adults + children + infants);
+
         // Create a FlightBooking record
         const newBooking = await prisma.GroupFlightBookings.create({
             data: {
@@ -42,9 +69,10 @@ export async function POST(request) {
                 flightairline_id: parseInt(flightairline_id),
                 flight_id: parseInt(flight_id),
                 agent_id: parseInt(agent_id),
-                childs: children,
-                adults: adults,
-                infants: infants,
+                children: children || 0,
+                adults: adults || 0,
+                price: totalPrice,
+                infants: infants || 0,
                 status: "Pending",
                 remarks: agentRemarks || "",
             },

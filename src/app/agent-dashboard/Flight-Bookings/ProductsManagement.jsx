@@ -186,7 +186,7 @@ export default function AllBookings() {
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{booking.Users?.name || 'N/A'}</TableCell>
                       <TableCell>{booking.FlightAirline?.name || 'N/A'}</TableCell>
-                      <TableCell>{booking.SingleGroupFlight?.fare}</TableCell>
+                      <TableCell>{booking.price}</TableCell>
                       <TableCell>{booking.status}</TableCell>
                       <TableCell>
                       <Dialog open={dialogOpen} onOpenChange={setDialogOpen} >
@@ -250,7 +250,7 @@ export default function AllBookings() {
                               </Table>
                               <p><strong>Flight Type:</strong> {booking.FlightSector?.type}</p>
                               <p><strong>Status:</strong> {booking.status}</p>
-                              <p><strong>Fare:</strong> {booking.SingleGroupFlight?.fare}</p>
+                              <p><strong>Fare:</strong> {booking.price}</p>
                               <div>
                                 <strong>Passengers:</strong>
                                 <Table>

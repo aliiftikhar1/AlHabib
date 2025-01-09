@@ -321,26 +321,26 @@ export default function AddPaymentRequest() {
                 value={searchQuery}
                 onChange={(e) => handleSearch(e)}
                 placeholder="Search..."
-                className="border border-gray-300 rounded-lg px-4 py-2 w-auto"
+                className="border border-gray-300 rounded-lg px-3 py-1 w-auto"
               />
 
             </div>
-            <div className="flex space-x-4 mb-4 justify-end mr-4">
+            <div className="flex space-x-2  justify-end mr-4">
               <input
                 type="date"
                 value={date1}
                 onChange={(e) => setDate1(e.target.value)}
-                className="border border-gray-300 rounded-lg px-4 py-2"
+                className="border border-gray-300 rounded-lg px-3 py-1"
               />
               <input
                 type="date"
                 value={date2}
                 onChange={(e) => setDate2(e.target.value)}
-                className="border border-gray-300 rounded-lg px-4 py-2"
+                className="border border-gray-300 rounded-lg px-3 py-1"
               />
               <button
                 onClick={filterByDate}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600"
               >
                 Filter
               </button>

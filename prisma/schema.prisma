@@ -309,6 +309,7 @@ model GroupFlightBookings {
   infants           Int
   status            String
   remarks           String
+  price             Int?
   attachment        String?
   created_at        DateTime          @default(now())
   updated_at        DateTime          @updatedAt

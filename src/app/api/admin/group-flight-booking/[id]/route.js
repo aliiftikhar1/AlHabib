@@ -50,27 +50,27 @@ export async function PUT(request,{params}) {
         { status: 404 }
       );
     }
-    if (user.balance < booking.SingleGroupFlight?.fare) {
+    if (user.balance < booking.price) {
         console.log("insufficient balance")
       return NextResponse.json(
         { message: 'Insufficient balance', status: false },
         { status: 400 }
       );
     }else{
-      const newamount = user.balance - booking.SingleGroupFlight?.fare;
+      const newamount = user.balance - booking.price;
       const update = await prisma.users.update({
         where: { id: booking.agent_id },
         data:{
           balance: newamount>0 ? newamount : 0
         }
       });
-      console.log("ledger is going to create",booking.agent_id,booking.SingleGroupFlight?.fare)
+      console.log("ledger is going to create",booking.agent_id,booking.price)
 
       const newrecord = await prisma.NewLedger.create({
         data: {
           agent_id: parseInt(booking.agent_id), // Correct user ID
           amount_in: parseFloat(0),
-          amount_out: parseFloat(booking.SingleGroupFlight?.fare),
+          amount_out: parseFloat(booking.price),
           balance: parseFloat(newamount>0 ? newamount : 0),
           description: 'Group Flight Booking is happened',
           type: 'group-flight-booking',

@@ -419,7 +419,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
                 </Table>
                 <p><strong>Flight Type:</strong> {selectedEntry.GroupFlightBookings?.FlightSector?.type}</p>
                 <p><strong>Status:</strong> {selectedEntry.GroupFlightBookings?.status}</p>
-                <p><strong>Fare:</strong> {selectedEntry.GroupFlightBookings?.SingleGroupFlight?.fare}</p>
+                <p><strong>Fare:</strong> {selectedEntry.GroupFlightBookings?.price}</p>
                 <div>
                   <strong>Passengers:</strong>
                   <Table>
