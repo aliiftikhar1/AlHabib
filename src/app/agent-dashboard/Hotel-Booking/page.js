@@ -281,8 +281,8 @@ export default function HotelBookingManagement() {
                   <TableRow key={booking.id}>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{booking.Hotel?.name}</TableCell>
-                    <TableCell>{new Date(booking.check_in_date).toLocaleString()}</TableCell>
-                    <TableCell>{new Date(booking.check_out).toLocaleString()}</TableCell>
+                    <TableCell>{new Date(booking.check_in_date).toLocaleDateString()}</TableCell>
+                    <TableCell>{new Date(booking.check_out).toLocaleDateString()}</TableCell>
                     <TableCell>{booking.rooms}</TableCell>
                     <TableCell>{booking.adults}</TableCell>
                     <TableCell>{booking.childs}</TableCell>

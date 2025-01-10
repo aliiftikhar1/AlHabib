@@ -51,6 +51,7 @@ export async function POST(request) {
             where: { id: parseInt(flight_id) },
         });
 
+        console.log("Flight Found: ", flight);
         if (!flight) {
             return NextResponse.json(
                 { message: "Flight not found." },
@@ -58,7 +59,11 @@ export async function POST(request) {
             );
         }
 
-        const totalPrice = parseInt(flight.fare) * (parseInt(adults || 0) + parseInt(childs || 0) + parseInt(infants || 0));
+        const totalpassengers = passengers.length
+        console.log("TOtal passengers are: ",totalpassengers);
+        const totalprice = flight.fare * totalpassengers
+        console.log("Total price ; ",totalprice)
+        // const totalPrice = parseInt(flight.fare) * (parseInt(adults || 0) + parseInt(childs || 0) + parseInt(infants || 0));
 
         const newBooking = await prisma.GroupFlightBookings.create({
             data: {
@@ -70,7 +75,7 @@ export async function POST(request) {
                 childs: parseInt(childs || 0),
                 adults: parseInt(adults || 0),
                 infants: parseInt(infants || 0),
-                price: totalPrice,
+                price: totalprice,
                 status: "Pending",
                 remarks: agentRemarks || "",
             },

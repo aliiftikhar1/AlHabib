@@ -9,6 +9,8 @@ import { Label } from "@radix-ui/react-label";
 import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { Loader } from 'lucide-react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 export default function BookingForm() {
     const params = useParams()
     const { id } = params;
@@ -31,7 +33,8 @@ export default function BookingForm() {
             const result = await response.json();
             setFlightdata(result.data);
         } catch (error) {
-            console.error("Error fetching flight data:", error);
+            toast.error('Failed to fetch flights');
+            // console.error("Error fetching flight data:", error);
         } finally {
             setLoading(false);
         }
@@ -44,7 +47,8 @@ export default function BookingForm() {
             const result = await response.json();
             setUserData(result);
         } catch (error) {
-            console.error("Error fetching flight data:", error);
+            toast.error('Error fetching user details');
+            
         } finally {
             setLoading(false);
         }
@@ -124,15 +128,18 @@ export default function BookingForm() {
 
                 if (response.ok) {
                     const result = await response.json();
-                    alert('Booking successful!');
+                    toast.success(result.message || 'Booking deleted successfully');
                     console.log('Booking Result:', result);
-                } else {
-                    alert('Failed to book flight. Please try again.');
+                    window.location.href = '/agent-dashboard/Flight-Bookings'; // Redirect to /my booking
+                }
+                else {
+                    const result = await response.json();
+                    toast.error(result.message || 'Booking deleted successfully');
                 }
                 setLoading(false);
             } catch (error) {
                 console.error('Error submitting booking:', error);
-                alert('An error occurred. Please try again later.');
+                toast.error(error || 'Booking Failed');
                 setLoading(false);
             }
         }
@@ -151,7 +158,7 @@ export default function BookingForm() {
 
     return (
         <div className="flex flex-col bg-[#f1f6f9] w-full h-full rounded">
-
+<ToastContainer />
             <div className="flex flex-col m-2">
                 <div><h1 className="text-3xl text-left font-bold ">New Booking</h1></div>
                 <div className="p-4 border rounded-lg bg-white mt-4">

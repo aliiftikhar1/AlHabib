@@ -25,4 +25,26 @@ export const fetchHotelBookings = async (id) => {
     }
     return response.json();
   };
+  export const updateHotelBooking = async (booking) => {
+    const response = await fetch(`/api/admin/hotel-booking-management/${booking.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(booking),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to update hotel booking');
+    }
+    return response.json();
+  };
+  
+  export const deleteHotelBooking = async (id) => {
+    const response = await fetch(`/api/admin/hotel-booking-management/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete hotel booking');
+    }
+    return true;
+  };
+  
   

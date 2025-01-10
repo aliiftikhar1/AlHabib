@@ -5,10 +5,10 @@ export async function POST(request) {
   try {
     const body = await request.json();
     console.log('Payload is:', body);
-    const { agent_id, hotel_id, roomtype, price, check_in_date, check_out, rooms, adults, childs, infants, passengers } = body;
+    const { agent_id, hotel_id, remarks, totalprice, roomtype, price, check_in_date, check_out, rooms, adults, childs, infants, passengers } = body;
 
     // Validate required fields
-    if (!agent_id || !hotel_id || !price || !check_in_date || !check_out || !rooms || !roomtype) {
+    if (!agent_id || !hotel_id || !totalprice || !check_in_date || !check_out || !rooms || !roomtype) {
       return NextResponse.json(
         { message: 'Missing required fields', status: false },
         { status: 400 }
@@ -28,7 +28,8 @@ export async function POST(request) {
         adults: parseInt(adults),
         infants: parseInt(infants),
         childs: parseInt(childs),
-        price: parseInt(price),
+        price: parseInt(totalprice),
+        remarks: remarks,
         created_at: new Date(),
         updated_at: new Date(),
       },
@@ -85,7 +86,11 @@ export async function GET() {
   try {
     const hotelBookings = await prisma.HotelBooking.findMany({
       include: {
-        Hotel: true,
+        Hotel: {
+          include:{
+            HotelDetails:true
+          }
+        },
         Hoteliers: true,
         Users: true,
         RoomType: true,

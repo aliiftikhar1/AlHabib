@@ -1,5 +1,6 @@
-'use client'
-import React from "react";
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   BarElement,
@@ -11,9 +12,10 @@ import {
   PointElement,
   Tooltip,
   Legend,
-} from "chart.js";
-import { Bar, Doughnut, Line } from "react-chartjs-2";
-import { FaPlane, FaPassport, FaMoneyCheckAlt, FaArrowUp, FaArrowDown } from "react-icons/fa";
+} from 'chart.js';
+import { Bar, Doughnut, Line } from 'react-chartjs-2';
+import { FaPlane, FaPassport, FaArrowUp, FaArrowDown } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
 // Register Chart.js components
 ChartJS.register(
@@ -42,106 +44,132 @@ const Card = ({ title, value, icon }) => {
   );
 };
 
+// Fetch Data Hook
+const useAnalyticsData = () => {
+  const [data, setData] = useState({
+    flightBookingPending: 0,
+    flightBookingApproved: 0,
+    groupflightBookingPending: 0,
+    groupflightBookingApproved: 0,
+    hotelBookingPending: 0,
+    hotelBookingApproved: 0,
+    paymentPending: 0,
+    paymentApproved: 0,
+  });
+  const userid = useSelector((data)=>data.user.id)
+
+  const fetchData = async () => {
+    try {
+      const [flightPending, flightApproved, hotelPending, hotelApproved, paymentPending, paymentApproved] = await Promise.all([
+        fetch(`/api/Analytics/FlightBooking/Pending/${userid}`).then((res) => res.json()),
+        fetch(`/api/Analytics/FlightBooking/Approved/${userid}`).then((res) => res.json()),
+        fetch(`/api/Analytics/HotelBooking/Pending/${userid}`).then((res) => res.json()),
+        fetch(`/api/Analytics/HotelBooking/Approved/${userid}`).then((res) => res.json()),
+        fetch(`/api/Analytics/Payments/Pending/${userid}`).then((res) => res.json()),
+        fetch(`/api/Analytics/Payments/Approved/${userid}`).then((res) => res.json()),
+      ]);
+
+      setData({
+        flightBookingPending: flightPending?.flightBookings?.count || 0,
+        flightBookingApproved: flightApproved?.flightBookings?.count || 0,
+        groupflightBookingPending: flightPending?.groupFlightBookings?.count || 0,
+        groupflightBookingApproved: flightApproved?.groupFlightBookings?.count || 0,
+        hotelBookingPending: hotelPending?.hotelBookings?.count || 0,
+        hotelBookingApproved: hotelApproved?.hotelBookings?.count || 0,
+        paymentPending: paymentPending?.paymentRequests?.count || 0,
+        paymentApproved: paymentApproved?.paymentRequests?.count || 0,
+      });
+    } catch (error) {
+      console.error('Failed to fetch analytics data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return data;
+};
+
 // Bar Chart for Revenue by Service
-const RevenueByService = () => {
-  const data = {
-    labels: ["Ticket Booking", "Visa Booking", "Payable", "Receivable"],
+const RevenueByService = ({ data }) => {
+  const chartData = {
+    labels: ['Flight Bookings', 'Hotel Bookings', 'Payments'],
     datasets: [
       {
-        label: "Revenue (USD)",
-        data: [80000, 50000, 30000, 70000],
-        backgroundColor: ["#3B82F6", "#10B981", "#F59E0B", "#EF4444"],
+        label: 'Revenue',
+        data: [
+          data.flightBookingApproved,
+          data.hotelBookingApproved,
+          data.paymentApproved,
+        ],
+        backgroundColor: ['#3B82F6', '#10B981', '#F59E0B'],
       },
     ],
   };
 
   const options = {
     responsive: true,
-    plugins: { legend: { position: "top" } },
+    plugins: { legend: { position: 'top' } },
   };
 
   return (
     <div className="bg-white p-6 rounded-lg border">
-      <h4 className="text-gray-500 text-sm mb-4">Revenue by Service</h4>
-      <Bar data={data} options={options} />
-      <MonthlyRevenue />
+      <h4 className="text-gray-500 text-sm mb-4">Stats</h4>
+      <Bar data={chartData} options={options} />
     </div>
   );
 };
 
 // Doughnut Chart for Booking Status
-const BookingStatus = () => {
-  const data = {
-    labels: ["Completed", "Pending", "Cancelled"],
+const BookingStatus = ({ data }) => {
+  const chartData = {
+    labels: ['Approved', 'Pending'],
     datasets: [
       {
-        label: "Bookings",
-        data: [65, 25, 10],
-        backgroundColor: ["#10B981", "#3B82F6", "#EF4444"],
+        label: 'Bookings',
+        data: [
+          data.flightBookingApproved + data.hotelBookingApproved,
+          data.flightBookingPending + data.hotelBookingPending,
+        ],
+        backgroundColor: ['#10B981', '#3B82F6'],
       },
     ],
   };
 
   const options = {
     responsive: true,
-    plugins: { legend: { position: "bottom" } },
+    plugins: { legend: { position: 'bottom' } },
   };
 
   return (
     <div className="bg-white p-6 rounded-lg border">
       <h4 className="text-gray-500 text-sm mb-4">Booking Status Distribution</h4>
-      <Doughnut data={data} options={options} />
+      <Doughnut data={chartData} options={options} />
     </div>
   );
 };
 
-// Line Chart for Monthly Revenue
-const MonthlyRevenue = () => {
-  const data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Revenue (USD)",
-        data: [60000, 65000, 70000, 75000, 80000, 85000],
-        borderColor: "#3B82F6",
-        backgroundColor: "rgba(59, 130, 246, 0.2)",
-        fill: true,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: { legend: { position: "top" } },
-    scales: {
-      x: { grid: { display: false } },
-      y: { ticks: { beginAtZero: true } },
-    },
-  };
-
-  return (
-    <div className="bg-white rounded-lg">
-      <h4 className="text-gray-500 text-sm mb-4">Monthly Revenue</h4>
-      <Line data={data} options={options} />
-    </div>
-  );
-};
-
-// Analytics Page Component
+// Main Analytics Page Component
 const TravelAnalyticsPage = () => {
+  const analyticsData = useAnalyticsData();
+
   return (
-    <div className="bg-white min-h-screen">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <Card title="Total Revenue" value="$300,000" icon={FaMoneyCheckAlt} />
-        <Card title="Total Ticket Bookings" value="1,500" icon={FaPlane} />
-        <Card title="Total Visa Applications" value="800" icon={FaPassport} />
-        <Card title="Total Payable" value="$90,000" icon={FaArrowDown} />
-        <Card title="Total Receivable" value="$120,000" icon={FaArrowUp} />
+    <div className="bg-gray-100 min-h-screen p-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <Card title="Pending Flight Bookings" value={analyticsData.flightBookingPending} icon={FaPlane} />
+        <Card title="Approved Flight Bookings" value={analyticsData.flightBookingApproved} icon={FaPlane} />
+        <Card title="Pending Group Flight Bookings" value={analyticsData.groupflightBookingPending} icon={FaPlane} />
+        <Card title="Approved Group Flight Bookings" value={analyticsData.groupflightBookingApproved} icon={FaPlane} />
+        <Card title="Pending Hotel Bookings" value={analyticsData.hotelBookingPending} icon={FaPassport} />
+        <Card title="Approved Hotel Bookings" value={analyticsData.hotelBookingApproved} icon={FaPassport} />
+        <Card title="Pending Payments" value={analyticsData.paymentPending} icon={FaArrowDown} />
+        <Card title="Approved Payments" value={analyticsData.paymentApproved} icon={FaArrowUp} />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <RevenueByService />
-        <BookingStatus />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <RevenueByService data={analyticsData} />
+        <BookingStatus data={analyticsData} />
       </div>
     </div>
   );

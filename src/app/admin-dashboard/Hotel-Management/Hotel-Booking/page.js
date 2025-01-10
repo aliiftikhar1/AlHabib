@@ -90,6 +90,7 @@ export default function HotelBookingManagement() {
         fetchHotel()
       ]);
       setBookings(bookingsData);
+      console.log("Boking data",bookingsData)
       setfilteredBookings(bookingsData);
       setHotels(hotelsData);
     } catch (err) {
@@ -281,8 +282,8 @@ export default function HotelBookingManagement() {
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{booking.Users?.name}</TableCell>
                     <TableCell>{booking.Hotel?.name}</TableCell>
-                    <TableCell>{new Date(booking.check_in_date).toLocaleString()}</TableCell>
-                    <TableCell>{new Date(booking.check_out).toLocaleString()}</TableCell>
+                    <TableCell>{new Date(booking.check_in_date).toLocaleDateString()}</TableCell>
+                    <TableCell>{new Date(booking.check_out).toLocaleDateString()}</TableCell>
                     <TableCell>{booking.rooms}</TableCell>
                     <TableCell>{booking.adults}</TableCell>
                     <TableCell>{booking.childs}</TableCell>
