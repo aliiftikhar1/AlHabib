@@ -22,7 +22,7 @@ const fetchLedgerEntries = async () => {
   return response.json();
 };
 
-const LedgerManagement =() => {
+const LedgerManagement = () => {
   const [dialogMode, setDialogMode] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [ledgerEntries, setLedgerEntries] = useState([]);
@@ -32,7 +32,7 @@ const LedgerManagement =() => {
   const [filteredEntries, setFilteredEntries] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [date1, setDate1] = useState('');
-    const [date2, setDate2] = useState('');
+  const [date2, setDate2] = useState('');
   const [manualEntry, setManualEntry] = useState({
     agent_id: 8,
     description: '',
@@ -55,7 +55,7 @@ const LedgerManagement =() => {
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query)
-    if(query.trim()===''){
+    if (query.trim() === '') {
       setFilteredEntries(ledgerEntries)
     }
     const filtered = ledgerEntries.filter((entry) =>
@@ -168,7 +168,7 @@ const LedgerManagement =() => {
       toast.info('No entries found for the selected date range.');
     }
   };
-  
+
 
 
   return (
@@ -184,26 +184,26 @@ const LedgerManagement =() => {
             className="border border-gray-300 rounded-lg px-4 h-10 w-auto"
           />
 
-<div className="flex space-x-4 mb-4">
-        <input
-          type="date"
-          value={date1}
-          onChange={(e) => setDate1(e.target.value)}
-          className="border border-gray-300 rounded-lg px-4 py-1"
-        />
-        <input
-          type="date"
-          value={date2}
-          onChange={(e) => setDate2(e.target.value)}
-          className="border border-gray-300 rounded-lg px-4 py-2"
-        />
-        <button
-          onClick={filterByDate}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-        >
-          Filter
-        </button>
-      </div>
+          <div className="flex space-x-4 mb-4">
+            <input
+              type="date"
+              value={date1}
+              onChange={(e) => setDate1(e.target.value)}
+              className="border border-gray-300 rounded-lg px-4 py-1"
+            />
+            <input
+              type="date"
+              value={date2}
+              onChange={(e) => setDate2(e.target.value)}
+              className="border border-gray-300 rounded-lg px-4 py-2"
+            />
+            <button
+              onClick={filterByDate}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            >
+              Filter
+            </button>
+          </div>
 
           {/* <Button onClick={() => setShowManualEntryDialog(true)} className="mb-4">
             Add Manual Entry
@@ -372,7 +372,7 @@ const LedgerManagement =() => {
                           -
                         </>
                       )}
-                      
+
                       {entry.type === 'group-flight-booking' && (
                         <>
                           <ul>
@@ -387,6 +387,11 @@ const LedgerManagement =() => {
                           -
                         </>
                       )}
+                      {entry.type === 'package-booking' && (
+                        <>
+                          -
+                        </>
+                      )}
 
                     </TableCell>
                     <TableCell>{entry.amount_in}</TableCell>
@@ -394,7 +399,7 @@ const LedgerManagement =() => {
                     <TableCell>{entry.balance}</TableCell>
                     <TableCell>{entry.description}</TableCell>
                     <TableCell>{new Date(entry.date).toLocaleString()}</TableCell>
-                    <TableCell><Button
+                    {entry.type === 'package-booking' ? '' : <TableCell><Button
                       onClick={() => {
                         setSelectedEntry(entry);
                         setDialogMode(true);
@@ -403,7 +408,8 @@ const LedgerManagement =() => {
                       className="text-indigo-600"
                     >
                       <Eye className="h-4 w-4" />
-                    </Button></TableCell>
+                    </Button></TableCell>}
+
                   </TableRow>
                 ))}
               </TableBody>

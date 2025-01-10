@@ -124,6 +124,7 @@ model PackageBookings {
 
   Users    Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   Packages Packages @relation(fields: [package_id], references: [id], onDelete: Cascade)
+  NewLedger NewLedger[]
 }
 
 model VisaBookings {
@@ -426,6 +427,7 @@ model NewLedger {
   flight_booking_id       Int? // Reference to a flight booking
   flight_group_booking_id Int? // Reference to a group flight booking
   payment_request_id      Int? // Reference to a payment request
+  package_booking_id      Int?
 
   // Relations
   Users               Users                @relation(fields: [agent_id], references: [id], onDelete: Cascade)
@@ -433,6 +435,7 @@ model NewLedger {
   FlightBookings      FlightBookings?      @relation(fields: [flight_booking_id], references: [id], onDelete: Cascade)
   GroupFlightBookings GroupFlightBookings? @relation(fields: [flight_group_booking_id], references: [id], onDelete: Cascade)
   PaymentRequests     PaymentRequests?     @relation(fields: [payment_request_id], references: [id], onDelete: Cascade)
+  PackageBookings     PackageBookings?     @relation(fields: [package_booking_id], references: [booking_id], onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

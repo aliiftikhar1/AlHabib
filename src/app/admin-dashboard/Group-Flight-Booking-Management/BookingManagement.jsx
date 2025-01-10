@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { EyeIcon, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { EyeIcon, Loader2, CheckCircle, XCircle, Loader } from 'lucide-react';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +24,9 @@ const updateBookingStatus = async (id, status, attachment) => {
     body: JSON.stringify({ status, image: attachment }),
   });
   if (!response.ok) {
-    throw new Error('Failed to update booking status');
+    const data = await response.json();
+    console.log("data received",data)
+    throw new Error(data.message||'Failed to update booking status');
   }
   return response.json();
 };
@@ -40,13 +42,14 @@ export default function BookingManagement() {
   const [date1, setDate1] = useState('');
     const [date2, setDate2] = useState('');
   const [loadingAction, setLoadingAction] = useState('');
+  const [trigger, settrigger]=useState(false)
 
   useEffect(() => {
     fetchBookings()
       .then(setBookings)
       .catch((err) => toast.error(err.message))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [trigger]);
 
   useEffect(() => {
     setFilteredBookings(
@@ -61,16 +64,21 @@ export default function BookingManagement() {
   }, [bookings, searchTerm]);
 
   const handleAction = async (id, action) => {
+    setLoadingAction(action)
     try {
       await updateBookingStatus(id, action, attachment);
       setBookings((prev) =>
         prev.map((b) => (b.id === id ? { ...b, status: action } : b))
       );
-      toast.success(`Booking ${action.toLowerCase()}ed`);
+      toast.success(`Booking ${action.toLowerCase()}`);
+      settrigger(!trigger)
       setDialogOpen(false);
+      setLoadingAction('')
     } catch (err) {
       toast.error(err.message);
+      setLoadingAction('')
     }
+    setLoadingAction('')
   };
 
   const handleImageChange = async (e) => {
@@ -288,7 +296,7 @@ export default function BookingManagement() {
                               ) : (
                                 <div key='image' className='relative'>
                                   <label htmlFor='image' className="block text-sm font-medium">
-                                    Image
+                                    Attachment
                                   </label>
                                   <Input
                                     type='file'
@@ -306,18 +314,21 @@ export default function BookingManagement() {
                                   <Button
                                     onClick={() => handleAction(selectedBooking?.id, 'Approved')}
                                     className="bg-green-500 hover:bg-green-600"
-                                    disabled={loadingAction === 'image'}
+                                    disabled={loadingAction === 'image' || loadingAction === 'Approved'}
                                   >
-                                    <CheckCircle className="mr-2 h-4 w-4" />
-                                    Approve
+                                    {loadingAction === 'Approved' ? <Loader className='animate-spin'/> :<> <CheckCircle className="mr-2 h-4 w-4" />
+                                    Approve</>}
+                                   
                                   </Button>
                                   <Button
                                     onClick={() => handleAction(selectedBooking?.id, 'Rejected')}
                                     className="bg-red-500 hover:bg-red-600"
-                                    disabled={loadingAction === 'image'}
+                                    disabled={loadingAction === 'image' || loadingAction === 'Rejected'}
                                   >
-                                    <XCircle className="mr-2 h-4 w-4" />
-                                    Reject
+                                     {loadingAction === 'Rejected' ? <Loader className='animate-spin'/> :<> <XCircle className="mr-2 h-4 w-4" />
+                                      Reject</>}
+                                   
+                                   
                                   </Button>
                                 </div>
                               )}

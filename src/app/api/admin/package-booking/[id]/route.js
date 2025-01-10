@@ -50,20 +50,31 @@ export async function PUT(request,{params}) {
         }
       });
       console.log("ledger is going to create")
-
-      const newrecord = await prisma.ledger.create({
+      console.log("Data for ledger is : ",booking.user_id,booking.total_amount,newamount,booking)
+      const newrecord = await prisma.NewLedger.create({
         data: {
-          userId: parseInt(booking.user_id), // Correct user ID
-          credit: parseFloat(0),
-          debit: parseFloat(booking.total_amount),
+          agent_id: parseInt(booking.user_id), // Correct user ID
+          amount_in: parseFloat(0),
+          amount_out: parseFloat(booking.total_amount),
           balance: parseFloat(newamount>0 ? newamount : 0),
-          description: 'Booking is happened',
+          description: 'Package Booking is happened',
+          type: 'package-booking',
+          package_booking_id: parseInt(booking.booking_id),
         },
       }).catch(error => {
         console.error("Error creating ledger record:", error);
         throw new Error("Failed to create ledger record");
       });
-
+      const notification = await prisma.Notifications.create({
+        data: {
+          user_id: parseInt(booking.user_id), // Correct user ID
+          message: "Your package booking has been approved",
+          status: "sent"
+        },
+      }).catch(error => {
+        console.error("Error creating notification record:", error);
+        throw new Error("Failed to create notification record");
+      });
     }
 
     // Create the booking if balance is sufficient

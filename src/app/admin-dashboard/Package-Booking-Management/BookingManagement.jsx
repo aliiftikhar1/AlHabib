@@ -184,7 +184,7 @@ export default function BookingManagement() {
                           <CheckCircle className="h-4 w-4 text-green-600" />
                         )}
                       </Button>
-                      <Button
+                      {booking.status ==="Approved"? '': <Button
                         onClick={() => handleReject(booking.booking_id)}
                         variant="ghost"
                         disabled={loadingAction === booking.booking_id || booking.status === 'Rejected'}
@@ -192,10 +192,12 @@ export default function BookingManagement() {
                         {loadingAction === booking.booking_id ? (
                           <Loader className="h-4 w-4 animate-spin" />
                         ) : (
+                          
                           <XCircle className="h-4 w-4 text-red-600" />
                         )}
-                      </Button>
-                      <Button
+                      </Button>}
+                      
+                      {/* <Button
                         onClick={() => handleDelete(booking.booking_id)}
                         variant="ghost"
                         className="text-red-600"
@@ -206,7 +208,7 @@ export default function BookingManagement() {
                         ) : (
                           <TrashIcon className="h-4 w-4" />
                         )}
-                      </Button>
+                      </Button> */}
                     </TableCell>
                   </TableRow>
                 ))}

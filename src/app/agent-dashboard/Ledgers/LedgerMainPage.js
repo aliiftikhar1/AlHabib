@@ -26,7 +26,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
   const [isLoading, setIsLoading] = useState(true);
   const [filteredEntries, setFilteredEntries] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const userid = useSelector((data)=>data.user.id)
+  const userid = useSelector((data) => data.user.id)
 
   useEffect(() => {
     fetchLedgerEntries(userid)
@@ -41,7 +41,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
   const handleSearch = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-  
+
     if (query.trim() === '') {
       setFilteredEntries(ledgerEntries);
       return;
@@ -123,15 +123,15 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
     <div className='relative'>
       <ToastContainer />
       <div className="flex absolute -top-[60px] left-4 items-center gap-4 mb-4">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => handleSearch(e)}
-            placeholder="Search..."
-            className="border border-gray-300 rounded-lg px-4 py-2 w-auto"
-          />
-          
-        </div>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => handleSearch(e)}
+          placeholder="Search..."
+          className="border border-gray-300 rounded-lg px-4 py-2 w-auto"
+        />
+
+      </div>
       <div className="p-0">
         {isLoading ? (
           <div className="flex justify-center">
@@ -192,14 +192,18 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
                           -
                         </>
                       )}
-
+                      {entry.type === 'package-booking' && (
+                        <>
+                          -
+                        </>
+                      )}
                     </TableCell>
                     <TableCell>{entry.amount_in}</TableCell>
                     <TableCell>{entry.amount_out}</TableCell>
                     <TableCell>{entry.balance}</TableCell>
                     <TableCell>{entry.description}</TableCell>
                     <TableCell>{new Date(entry.date).toLocaleString()}</TableCell>
-                    <TableCell><Button
+                    {entry.type === 'package-booking' ? '' : <TableCell><Button
                       onClick={() => {
                         setSelectedEntry(entry);
                         setDialogMode(true);
@@ -208,7 +212,7 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
                       className="text-indigo-600"
                     >
                       <Eye className="h-4 w-4" />
-                    </Button></TableCell>
+                    </Button></TableCell>}
                   </TableRow>
                 ))}
               </TableBody>
@@ -449,16 +453,16 @@ const LedgerManagement = forwardRef(({ date1, date2 }, ref) => {
 
                 </div>
                 {selectedEntry.type === 'group-flight-booking' && (<>
-                  {selectedEntry.GroupFlightBookings?.attachment ?  <div className='w-full '>
+                  {selectedEntry.GroupFlightBookings?.attachment ? <div className='w-full '>
                     <h2 className='text-xl font-bold'>Attachment</h2>
                     <img src={`${process.env.NEXT_PUBLIC_IMAGE_UPLOAD_PATH}/${selectedEntry?.GroupFlightBookings?.attachment}`} alt='attachment' className='h-[60vh]'></img>
-                  </div>:  <div className='w-full '>
-                  <img src='https://w0.peakpx.com/wallpaper/414/49/HD-wallpaper-car-lamborghini-aventador-black-vertical-car-vertical-cars.jpg' alt='attachment' className='h-[60vh]'></img>
-                </div>}
-                  
-                  </>)}
+                  </div> : <div className='w-full '>
+                    <img src='https://w0.peakpx.com/wallpaper/414/49/HD-wallpaper-car-lamborghini-aventador-black-vertical-car-vertical-cars.jpg' alt='attachment' className='h-[60vh]'></img>
+                  </div>}
+
+                </>)}
               </div>
-              
+
             </div>
             <Button
               onClick={printDialogContent}
