@@ -1,3 +1,11 @@
+export const fetchHotellocations = async () => {
+  const response = await fetch(`/api/user/getlocations`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch hotel locations');
+  }
+  return response.json();
+};
+
 export const fetchHotelBookings = async () => {
     const response = await fetch('/api/admin/hotel-booking-management');
     if (!response.ok) {

@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@radix-ui/react-label';
 import { Loader } from 'lucide-react';
 
-export default function BookingForm({ onSubmit, initialData, hotels, roomTypes, isLoading }) {
+export default function BookingForm({ onSubmit,location, initialData, hotels, roomTypes, isLoading }) {
   const [adults, setAdults] = useState(initialData?.adults || 0);
   const [children, setChildren] = useState(initialData?.childs || 0);
   const [infants, setInfants] = useState(initialData?.infants || 0);
@@ -15,7 +15,7 @@ export default function BookingForm({ onSubmit, initialData, hotels, roomTypes, 
   const [selectedHotel, setSelectedHotel] = useState(initialData?.hotel_id || '');
   const [filteredRoomTypes, setFilteredRoomTypes] = useState([]);
   // const [rooms, setRooms] = useState(initialData?.rooms || 1);
-
+  const[selectedlocation, setSelectedLocation]= useState()
   const [selectedRoomType, setSelectedRoomType] = useState(initialData?.roomtype_id || '');
   const [rooms, setRooms] = useState(initialData?.rooms || 1);
   const [price, setPrice] = useState('');
@@ -122,6 +122,25 @@ export default function BookingForm({ onSubmit, initialData, hotels, roomTypes, 
     <form onSubmit={handleSubmit}>
       <div className="flex flex-col gap-4 mb-4">
         <div className="grid grid-cols-3 gap-4">
+        <div>
+            <label htmlFor="hotel_id" className="block text-sm font-medium">
+              Locations
+            </label>
+            <select
+              name="location"
+              value={selectedlocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
+              required
+              className="w-full p-2 border border-gray-300 rounded-md"
+            >
+              <option value="">Select Location</option>
+              {location.map((name,index) => (
+                <option key={index} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </div>
           <div>
             <label htmlFor="hotel_id" className="block text-sm font-medium">
               Hotel
@@ -134,7 +153,7 @@ export default function BookingForm({ onSubmit, initialData, hotels, roomTypes, 
               className="w-full p-2 border border-gray-300 rounded-md"
             >
               <option value="">Select Hotel</option>
-              {hotels.map((hotel) => (
+              {hotels.filter((item)=>item.location===selectedlocation).map((hotel) => (
                 <option key={hotel.id} value={hotel.id}>
                   {hotel.name}
                 </option>
