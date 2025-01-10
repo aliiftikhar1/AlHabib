@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/dialog';
 import { PencilIcon, TrashIcon, PlusIcon, Loader, Eye } from 'lucide-react';
 import 'react-toastify/dist/ReactToastify.css';
-import { fetchHotelBookings, fetchHotel, addHotelBooking, updateHotelBooking, deleteHotelBooking } from './api';
+import { fetchHotelBookings,fetchHotellocations, fetchHotel, addHotelBooking, updateHotelBooking, deleteHotelBooking } from './api';
 import BookingForm from './BookingForm';
 import BookingDetails from './BookingDetails';
 import { useSelector } from 'react-redux';
@@ -44,6 +44,7 @@ export default function HotelBookingManagement() {
   const [date2, setDate2] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const userid = useSelector((data)=>data.user.id)
+  const [location, setlocations]= useState([])
 
   const handleSearch = (e) => {
     const query = e.target.value;
@@ -87,10 +88,12 @@ export default function HotelBookingManagement() {
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [bookingsData, hotelsData] = await Promise.all([
+      const [bookingsData, hotelsData, locationdata] = await Promise.all([
         fetchHotelBookings(userid),
-        fetchHotel()
+        fetchHotel(),
+        fetchHotellocations()
       ]);
+      setlocations(locationdata)
       setBookings(bookingsData);
       setfilteredBookings(bookingsData);
       setHotels(hotelsData);
@@ -248,6 +251,7 @@ export default function HotelBookingManagement() {
               <BookingForm
                 onSubmit={handleSubmit}
                 initialData={currentBooking}
+                location={location}
                 hotels={hotels}
                 roomTypes={roomTypes}
                 isLoading={loadingAction === 'form'}
